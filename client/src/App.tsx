@@ -82,7 +82,7 @@ function Router() {
   );
 }
 
-function App() {
+function AppContent() {
   const { isAuthenticated, isLoading, user } = useAuth();
 
   const style = {
@@ -91,29 +91,35 @@ function App() {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        {!isLoading && isAuthenticated ? (
-          <SidebarProvider style={style as React.CSSProperties}>
-            <div className="flex h-screen w-full">
-              <AppSidebar user={user} />
-              <div className="flex flex-col flex-1 overflow-hidden">
-                <header className="flex items-center justify-between gap-4 p-4 border-b">
-                  <SidebarTrigger data-testid="button-sidebar-toggle" />
-                </header>
-                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-                  <div className="mx-auto max-w-7xl">
-                    <Router />
-                  </div>
-                </main>
-              </div>
+    <TooltipProvider>
+      {!isLoading && isAuthenticated ? (
+        <SidebarProvider style={style as React.CSSProperties}>
+          <div className="flex h-screen w-full">
+            <AppSidebar user={user} />
+            <div className="flex flex-col flex-1 overflow-hidden">
+              <header className="flex items-center justify-between gap-4 p-4 border-b">
+                <SidebarTrigger data-testid="button-sidebar-toggle" />
+              </header>
+              <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+                <div className="mx-auto max-w-7xl">
+                  <Router />
+                </div>
+              </main>
             </div>
-          </SidebarProvider>
-        ) : (
-          <Router />
-        )}
-        <Toaster />
-      </TooltipProvider>
+          </div>
+        </SidebarProvider>
+      ) : (
+        <Router />
+      )}
+      <Toaster />
+    </TooltipProvider>
+  );
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
     </QueryClientProvider>
   );
 }
