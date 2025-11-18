@@ -8,58 +8,58 @@ export function ProfessionalFooter() {
           <div>
             <h3 className="font-semibold mb-4 text-sm">Support</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Complaints and compliments</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Contact us</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Help Centre</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-complaints">Complaints and compliments</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-contact">Contact us</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-careers">Careers</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-help">Help Centre</a></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-semibold mb-4 text-sm">About</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Access and Inclusion</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Investor centre</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">About Our Group</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Sustainability</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-inclusion">Access and Inclusion</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-investor">Investor centre</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-about">About Our Group</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-sustainability">Sustainability</a></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-semibold mb-4 text-sm">Security & Privacy</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Security</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">FAQs</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Privacy</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Fraud Protection</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-security">Security</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-faqs">FAQs</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-privacy">Privacy</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-fraud">Fraud Protection</a></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-semibold mb-4 text-sm">Legal</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Website terms and conditions</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Terms and conditions</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Site index</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Accessibility</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-web-terms">Website terms and conditions</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-terms">Terms and conditions</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-sitemap">Site index</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-accessibility">Accessibility</a></li>
             </ul>
           </div>
         </div>
         
         <div className="flex items-center gap-3 mb-6">
-          <a href="#" className="h-10 w-10 rounded bg-[#1877f2] hover:opacity-90 transition-opacity flex items-center justify-center text-white">
+          <a href="#" className="h-10 w-10 rounded bg-[#1877f2] hover:opacity-90 transition-opacity flex items-center justify-center text-white" data-testid="footer-social-facebook">
             <Facebook className="h-5 w-5" />
           </a>
-          <a href="#" className="h-10 w-10 rounded bg-black hover:opacity-90 transition-opacity flex items-center justify-center text-white">
+          <a href="#" className="h-10 w-10 rounded bg-black hover:opacity-90 transition-opacity flex items-center justify-center text-white" data-testid="footer-social-twitter">
             <Twitter className="h-5 w-5" />
           </a>
-          <a href="#" className="h-10 w-10 rounded bg-[#ff0000] hover:opacity-90 transition-opacity flex items-center justify-center text-white">
+          <a href="#" className="h-10 w-10 rounded bg-[#ff0000] hover:opacity-90 transition-opacity flex items-center justify-center text-white" data-testid="footer-social-youtube">
             <Youtube className="h-5 w-5" />
           </a>
-          <a href="#" className="h-10 w-10 rounded bg-[#0a66c2] hover:opacity-90 transition-opacity flex items-center justify-center text-white">
+          <a href="#" className="h-10 w-10 rounded bg-[#0a66c2] hover:opacity-90 transition-opacity flex items-center justify-center text-white" data-testid="footer-social-linkedin">
             <Linkedin className="h-5 w-5" />
           </a>
-          <a href="#" className="h-10 w-10 rounded bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] hover:opacity-90 transition-opacity flex items-center justify-center text-white">
+          <a href="#" className="h-10 w-10 rounded bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] hover:opacity-90 transition-opacity flex items-center justify-center text-white" data-testid="footer-social-instagram">
             <Instagram className="h-5 w-5" />
           </a>
         </div>
