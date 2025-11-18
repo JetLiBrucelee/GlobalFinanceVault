@@ -19,6 +19,12 @@ import AdminUsers from "@/pages/admin/users";
 import AdminTransactions from "@/pages/admin/transactions";
 import AdminAccessCodes from "@/pages/admin/access-codes";
 import NotFound from "@/pages/not-found";
+import BillPay from "@/pages/bill-pay";
+import Business from "@/pages/business";
+import Investment from "@/pages/investment";
+import Loans from "@/pages/loans";
+import CreditCards from "@/pages/credit-cards";
+import Support from "@/pages/support";
 
 function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -41,6 +47,13 @@ function Router() {
     return (
       <Switch>
         <Route path="/" component={Landing} />
+        <Route path="/transfers" component={Transfers} />
+        <Route path="/bill-pay" component={BillPay} />
+        <Route path="/business" component={Business} />
+        <Route path="/investment" component={Investment} />
+        <Route path="/loans" component={Loans} />
+        <Route path="/credit-cards" component={CreditCards} />
+        <Route path="/support" component={Support} />
         <Route component={Landing} />
       </Switch>
     );

@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, CreditCard, Globe, TrendingUp, Smartphone, Lock, DollarSign, Calculator, PiggyBank, Home, Car, Plane, Building2, Award, Users, Star, Check } from "lucide-react";
+import { Shield, CreditCard, Globe, TrendingUp, Smartphone, Lock, DollarSign, Calculator, PiggyBank, Home, Car, Plane, Building2, Award, Users, Star, Check, Search } from "lucide-react";
 import { ProfessionalFooter } from "@/components/professional-footer";
+import { useLocation } from "wouter";
 import bankLogo from "@assets/bank-logo.jpg";
-import bgPattern from "@assets/stock_images/modern_banking_backg_a263cef9.jpg";
+import bgPattern from "@assets/banking-background.jpg";
 
 export default function Landing() {
+  const [, setLocation] = useLocation();
+  
   const productCategories = [
     { icon: CreditCard, label: "Credit Cards", href: "#cards" },
     { icon: PiggyBank, label: "Savings", href: "#savings" },
@@ -17,6 +20,15 @@ export default function Landing() {
     { icon: Building2, label: "Business", href: "#business" },
     { icon: Calculator, label: "Calculators", href: "#tools" },
   ];
+  
+  const navLinks = [
+    { label: "Transfers", href: "/transfers" },
+    { label: "Bill Pay", href: "/bill-pay" },
+    { label: "Business", href: "/business" },
+    { label: "Investment", href: "/investment" },
+    { label: "Loans", href: "/loans" },
+    { label: "Credit Cards", href: "/credit-cards" },
+  ];
 
   return (
     <div className="min-h-screen relative">
@@ -24,7 +36,7 @@ export default function Landing() {
       <div 
         className="fixed inset-0 z-0" 
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.95)), url(${bgPattern})`,
+          backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.92)), url(${bgPattern})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
@@ -44,11 +56,34 @@ export default function Landing() {
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
+          <div className="flex h-16 items-center justify-between gap-8">
             <div className="flex items-center gap-3">
               <img src={bankLogo} alt="Fundamental Financial Credit" className="h-10 w-10 object-contain" data-testid="logo-icon" />
-              <span className="text-xl font-bold" data-testid="text-brand-name">Fundamental Financial Credit</span>
+              <span className="text-xl font-bold hidden lg:block" data-testid="text-brand-name">Fundamental Financial Credit</span>
             </div>
+            
+            {/* Navigation Menu */}
+            <nav className="hidden md:flex items-center gap-1 flex-1">
+              {navLinks.map((link) => (
+                <Button
+                  key={link.href}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLocation(link.href)}
+                  className="text-sm"
+                >
+                  {link.label}
+                </Button>
+              ))}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-sm"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            </nav>
+            
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"

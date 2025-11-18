@@ -1,6 +1,9 @@
 import { Facebook, Twitter, Youtube, Linkedin, Instagram } from "lucide-react";
+import { useLocation } from "wouter";
 
 export function ProfessionalFooter() {
+  const [, setLocation] = useLocation();
+  
   return (
     <footer className="border-t bg-background">
       <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8">
@@ -8,40 +11,40 @@ export function ProfessionalFooter() {
           <div>
             <h3 className="font-semibold mb-4 text-sm">Support</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-complaints">Complaints and compliments</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-contact">Contact us</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-careers">Careers</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-help">Help Centre</a></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-complaints">Complaints and compliments</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-contact">Contact us</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-careers">Careers</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-help">Help Centre</button></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-semibold mb-4 text-sm">About</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-inclusion">Access and Inclusion</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-investor">Investor centre</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-about">About Our Group</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-sustainability">Sustainability</a></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-inclusion">Access and Inclusion</button></li>
+              <li><button onClick={() => setLocation("/investment")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-investor">Investor centre</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-about">About Our Group</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-sustainability">Sustainability</button></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-semibold mb-4 text-sm">Security & Privacy</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-security">Security</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-faqs">FAQs</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-privacy">Privacy</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-fraud">Fraud Protection</a></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-security">Security</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-faqs">FAQs</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-privacy">Privacy</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-fraud">Fraud Protection</button></li>
             </ul>
           </div>
           
           <div>
             <h3 className="font-semibold mb-4 text-sm">Legal</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-web-terms">Website terms and conditions</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-terms">Terms and conditions</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-sitemap">Site index</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors" data-testid="footer-link-accessibility">Accessibility</a></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-web-terms">Website terms and conditions</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-terms">Terms and conditions</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-sitemap">Site index</button></li>
+              <li><button onClick={() => setLocation("/support")} className="hover:text-foreground transition-colors text-left" data-testid="footer-link-accessibility">Accessibility</button></li>
             </ul>
           </div>
         </div>
