@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, CreditCard, Globe, TrendingUp, Smartphone, Lock } from "lucide-react";
+import { ProfessionalFooter } from "@/components/professional-footer";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 dark:from-slate-950 dark:via-blue-950/20 dark:to-slate-950">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
@@ -165,15 +166,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t py-8">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <div className="text-center text-sm text-muted-foreground">
-            <p data-testid="text-footer-copyright">© 2024 The Peoples Finance. All rights reserved.</p>
-            <p className="mt-2" data-testid="text-footer-regions">Serving customers in Australia, USA, and New Zealand</p>
-          </div>
-        </div>
-      </footer>
+      <ProfessionalFooter />
     </div>
   );
 }
