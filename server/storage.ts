@@ -222,12 +222,10 @@ export function generateAccountNumber(): string {
 }
 
 export function generateBSB(): string {
-  // Generate a random 6-digit BSB for Australia
-  let bsb = '';
-  for (let i = 0; i < 6; i++) {
-    bsb += Math.floor(Math.random() * 10).toString();
-  }
-  return bsb;
+  // Generate a valid Australian BSB (bank code 062-999, branch 000-999)
+  const bankCode = (62 + Math.floor(Math.random() * 938)).toString().padStart(3, '0');
+  const branchCode = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+  return bankCode + branchCode;
 }
 
 export function generateRoutingNumber(): string {

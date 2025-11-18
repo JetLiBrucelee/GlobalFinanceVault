@@ -36,7 +36,7 @@ export default function Landing() {
       <div 
         className="fixed inset-0 z-0" 
         style={{
-          backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.92)), url(${bgPattern})`,
+          backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.85)), url(${bgPattern})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
@@ -93,7 +93,7 @@ export default function Landing() {
                 Log In
               </Button>
               <Button
-                onClick={() => window.location.href = '/api/login'}
+                onClick={() => setLocation('/open-account')}
                 data-testid="button-get-started"
               >
                 Open Account

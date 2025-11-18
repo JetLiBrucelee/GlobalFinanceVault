@@ -50,7 +50,7 @@ export const accounts = pgTable("accounts", {
   routingNumber: varchar("routing_number", { length: 9 }),
   swiftCode: varchar("swift_code", { length: 11 }),
   region: varchar("region", { length: 2 }).notNull(), // AU, US, NZ
-  balance: decimal("balance", { precision: 12, scale: 2 }).default("0.00").notNull(),
+  balance: decimal("balance", { precision: 16, scale: 2 }).default("0.00").notNull(),
   accountType: varchar("account_type", { length: 20 }).default("checking").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -91,10 +91,12 @@ export const transactions = pgTable("transactions", {
   fromAccountId: varchar("from_account_id").references(() => accounts.id, { onDelete: 'set null' }),
   toAccountId: varchar("to_account_id").references(() => accounts.id, { onDelete: 'set null' }),
   amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
-  type: varchar("type", { length: 20 }).notNull(), // transfer, bill_pay, payid, deposit, withdrawal
+  type: varchar("type", { length: 20 }).notNull(), // transfer, bill_pay, payid, deposit, withdrawal, admin_credit
   status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, approved, declined, completed
   description: text("description"),
   reference: varchar("reference"),
+  createdBy: varchar("created_by").references(() => users.id, { onDelete: 'set null' }), // For admin transactions
+  availableAt: timestamp("available_at"), // When funds become available
   createdAt: timestamp("created_at").defaultNow(),
   processedAt: timestamp("processed_at"),
 });

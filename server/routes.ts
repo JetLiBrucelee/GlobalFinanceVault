@@ -138,6 +138,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Open account endpoint (public - no authentication required)
+  app.post('/api/accounts/open', async (req: any, res) => {
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        dateOfBirth,
+        address,
+        city,
+        postalCode,
+        accountType,
+        region,
+        initialDeposit
+      } = req.body;
+
+      // Basic validation
+      if (!firstName || !lastName || !email || !accountType || !region) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      // Create user with Replit
+      const user = await storage.upsertUser({
+        email,
+        firstName,
+        lastName,
+        isAdmin: false,
+        isBlocked: false,
+        isLocked: false,
+      });
+
+      // Generate account details based on region
+      const accountNumber = generateAccountNumber();
+      let bsb = null, routingNumber = null, swiftCode = null;
+      
+      if (region === 'AU') {
+        bsb = generateBSB();
+      } else if (region === 'US') {
+        routingNumber = generateRoutingNumber();
+      }
+      swiftCode = generateSwiftCode();
+
+      // Create account with initial deposit
+      const depositAmount = initialDeposit && parseFloat(initialDeposit) > 0 ? 
+        parseFloat(initialDeposit).toFixed(2) : "0.00";
+      
+      const account = await storage.createAccount({
+        userId: user.id,
+        accountNumber,
+        bsb,
+        routingNumber,
+        swiftCode,
+        region,
+        balance: depositAmount,
+        accountType,
+      });
+
+      // Create debit card
+      const cardholderName = `${firstName} ${lastName}`.toUpperCase();
+      const debitExpiry = generateCardExpiry();
+      await storage.createCard({
+        accountId: account.id,
+        cardNumber: generateCardNumber(),
+        cardType: "debit",
+        cvv: generateCVV(),
+        expiryMonth: debitExpiry.month,
+        expiryYear: debitExpiry.year,
+        cardholderName,
+        isActive: true,
+      });
+
+      // Create credit card
+      const creditExpiry = generateCardExpiry();
+      await storage.createCard({
+        accountId: account.id,
+        cardNumber: generateCardNumber(),
+        cardType: "credit",
+        cvv: generateCVV(),
+        expiryMonth: creditExpiry.month,
+        expiryYear: creditExpiry.year,
+        cardholderName,
+        isActive: true,
+      });
+
+      res.json(account);
+    } catch (error: any) {
+      console.error("Error opening account:", error);
+      res.status(500).json({ message: error.message || "Failed to open account" });
+    }
+  });
+
   // ===================
   // CARD ROUTES
   // ===================
@@ -392,6 +484,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching transactions:", error);
       res.status(500).json({ message: "Failed to fetch transactions" });
+    }
+  });
+
+  // Admin credit user account with scheduled availability
+  app.post('/api/admin/credit-account', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { accountId, amount, description, availabilityOption } = req.body;
+      const adminUserId = req.user.claims.sub;
+
+      if (!accountId || !amount || amount <= 0) {
+        return res.status(400).json({ message: "Invalid account ID or amount" });
+      }
+
+      // Get the target account
+      const accounts = await storage.getAllAccounts();
+      const targetAccount = accounts.find(a => a.id === accountId);
+      
+      if (!targetAccount) {
+        return res.status(404).json({ message: "Account not found" });
+      }
+
+      // Calculate availability time based on option
+      let availableAt = new Date();
+      if (availabilityOption === 'next-hour') {
+        availableAt = new Date(Date.now() + 60 * 60 * 1000);
+      } else if (availabilityOption === 'next-day') {
+        availableAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      } else if (availabilityOption === '2-days') {
+        availableAt = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+      } else if (availabilityOption === 'week') {
+        availableAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      }
+      // 'instant' means now
+
+      // Create transaction
+      const transaction = await storage.createTransaction({
+        toAccountId: accountId,
+        amount: amount.toString(),
+        type: 'admin_credit',
+        status: availabilityOption === 'instant' ? 'completed' : 'pending',
+        description: description || 'Admin credit',
+        createdBy: adminUserId,
+        availableAt: availableAt,
+      });
+
+      // If instant, update balance immediately
+      if (availabilityOption === 'instant') {
+        const newBalance = (Number(targetAccount.balance) + Number(amount)).toFixed(2);
+        await storage.updateAccountBalance(accountId, newBalance);
+      }
+
+      res.json({ 
+        message: "Credit successful", 
+        transaction,
+        availableAt: availableAt.toISOString()
+      });
+    } catch (error: any) {
+      console.error("Error crediting account:", error);
+      res.status(500).json({ message: error.message || "Failed to credit account" });
     }
   });
 
