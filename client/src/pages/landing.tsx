@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, CreditCard, Globe, TrendingUp, Smartphone, Lock, DollarSign, Calculator, PiggyBank, Home, Car, Plane, Building2, Award, Users, Star, Check } from "lucide-react";
 import { ProfessionalFooter } from "@/components/professional-footer";
+import bankLogo from "@assets/bank-logo.jpg";
+import bgPattern from "@assets/stock_images/modern_banking_backg_a263cef9.jpg";
 
 export default function Landing() {
   const productCategories = [
@@ -17,22 +19,35 @@ export default function Landing() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 dark:from-slate-950 dark:via-blue-950/20 dark:to-slate-950 relative">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.02]" 
+    <div className="min-h-screen relative">
+      {/* Background wallpaper */}
+      <div 
+        className="fixed inset-0 z-0" 
         style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(0 0 0) 1px, transparent 0)`,
+          backgroundImage: `linear-gradient(to bottom, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.95)), url(${bgPattern})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      />
+      
+      {/* Overlay pattern */}
+      <div className="fixed inset-0 z-0 opacity-[0.03]" 
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(59 130 246) 1px, transparent 0)`,
           backgroundSize: '40px 40px'
         }}
       />
+      
+      <div className="relative z-10">{/* Content wrapper */}
       
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" data-testid="logo-icon" />
-              <span className="text-xl font-bold" data-testid="text-brand-name">The Peoples Finance</span>
+            <div className="flex items-center gap-3">
+              <img src={bankLogo} alt="Fundamental Financial Credit" className="h-10 w-10 object-contain" data-testid="logo-icon" />
+              <span className="text-xl font-bold" data-testid="text-brand-name">Fundamental Financial Credit</span>
             </div>
             <div className="flex items-center gap-4">
               <Button
@@ -313,7 +328,7 @@ export default function Landing() {
                 ))}
               </div>
               <blockquote className="text-xl md:text-2xl font-medium mb-6">
-                "Switching to The Peoples Finance was the best financial decision we made. 
+                "Switching to Fundamental Financial Credit was the best financial decision we made. 
                 We're saving $5,329 this year on our home loan, and the customer service is outstanding."
               </blockquote>
               <div className="flex items-center gap-4">
@@ -337,7 +352,7 @@ export default function Landing() {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-3xl font-bold" data-testid="text-features-title">Why Choose The Peoples Finance?</h2>
+            <h2 className="text-3xl font-bold" data-testid="text-features-title">Why Choose Fundamental Financial Credit?</h2>
             <p className="mt-4 text-muted-foreground" data-testid="text-features-description">
               Everything you need for modern banking in one secure platform
             </p>
@@ -487,6 +502,7 @@ export default function Landing() {
       </section>
 
       <ProfessionalFooter />
+      </div>{/* End content wrapper */}
     </div>
   );
 }

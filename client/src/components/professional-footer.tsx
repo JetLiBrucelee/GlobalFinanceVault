@@ -66,7 +66,7 @@ export function ProfessionalFooter() {
         
         <div className="text-xs text-muted-foreground leading-relaxed mb-6 max-w-5xl">
           <p className="mb-3">
-            For The Peoples Finance-issued products, conditions, fees and charges apply. These may change or we may introduce new ones in the future. Full details are available on request. Lending criteria apply to approved credit products. This information does not take your personal objectives, circumstances or needs into account. Consider its appropriateness to these factors before acting on it. Read the disclosure documents for your selected product or service, including the Terms and Conditions, before deciding. Target Market Determinations for the products and services described on this website are available only in Australia from The Peoples Finance Corporation ABN 33 007 457 141 AFSL and Australian credit licence 233714.
+            For Fundamental Financial Credit-issued products, conditions, fees and charges apply. These may change or we may introduce new ones in the future. Full details are available on request. Lending criteria apply to approved credit products. This information does not take your personal objectives, circumstances or needs into account. Consider its appropriateness to these factors before acting on it. Read the disclosure documents for your selected product or service, including the Terms and Conditions, before deciding. Target Market Determinations for the products and services described on this website are available only in Australia from Fundamental Financial Credit Corporation ABN 33 007 457 141 AFSL and Australian credit licence 233714.
           </p>
         </div>
       </div>
@@ -92,7 +92,7 @@ export function ProfessionalFooter() {
           <div className="container mx-auto px-4 md:px-6 lg:px-8 h-full flex items-center justify-center">
             <div className="bg-white/95 dark:bg-background/95 backdrop-blur-sm px-8 py-4 rounded-lg shadow-lg">
               <p className="text-xs text-center text-foreground/80 max-w-4xl">
-                The Peoples Finance acknowledges the Traditional Owners as the custodians of this land, recognising their connection to land, waters and community. We pay our respects to all peoples and their Elders past and present.
+                Fundamental Financial Credit acknowledges the Traditional Owners as the custodians of this land, recognising their connection to land, waters and community. We pay our respects to all peoples and their Elders past and present.
               </p>
             </div>
           </div>
@@ -102,7 +102,7 @@ export function ProfessionalFooter() {
       <div className="bg-muted/30 py-3">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <p className="text-xs text-center text-muted-foreground">
-            © 2024 The Peoples Finance. All rights reserved. | Serving customers in Australia, USA, and New Zealand
+            © 2024 Fundamental Financial Credit. All rights reserved. | Serving customers in Australia, USA, and New Zealand
           </p>
         </div>
       </div>
