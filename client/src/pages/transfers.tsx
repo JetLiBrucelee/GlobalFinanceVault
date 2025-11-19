@@ -9,7 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Loader2 } from "lucide-react";
+import { Loader2, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 import type { Account, User } from "@shared/schema";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,6 +52,14 @@ export default function Transfers() {
   }, [initialTab, isAdmin]);
 
   const primaryAccount = accounts?.[0];
+
+  // Fetch user's transactions to show pending/in-progress
+  const { data: userTransactions = [] } = useQuery<any[]>({
+    queryKey: ["/api/transactions"],
+  });
+
+  const pendingTransactions = userTransactions.filter((t: any) => t.status === 'pending');
+  const inProgressTransactions = userTransactions.filter((t: any) => t.status === 'in-progress');
 
   // Transfer form
   const [transferForm, setTransferForm] = useState({
@@ -474,6 +485,89 @@ export default function Transfers() {
           </>
         )}
       </Tabs>
+
+      {/* My Transactions Status */}
+      {(pendingTransactions.length > 0 || inProgressTransactions.length > 0) && (
+        <Card data-testid="card-transaction-status">
+          <CardHeader>
+            <CardTitle>My Transactions Status</CardTitle>
+            <CardDescription>
+              Track your pending and in-progress transfers
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {pendingTransactions.map((transaction: any, index: number) => (
+              <Card key={transaction.id} className="border-yellow-500/30" data-testid={`card-pending-${index}`}>
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <p className="font-medium">${parseFloat(transaction.amount).toFixed(2)} Transfer</p>
+                      <p className="text-sm text-muted-foreground">
+                        {transaction.description || 'Transfer'} • {format(new Date(transaction.createdAt), 'MMM dd, yyyy HH:mm')}
+                      </p>
+                    </div>
+                    <Badge variant="secondary">
+                      <AlertCircle className="w-3 h-3 mr-1" />
+                      Pending Approval
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Waiting for admin approval. You'll be notified when processing begins.
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+
+            {inProgressTransactions.map((transaction: any, index: number) => (
+              <Card key={transaction.id} className="border-blue-500/30" data-testid={`card-inprogress-${index}`}>
+                <CardContent className="pt-6 space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="font-medium">${parseFloat(transaction.amount).toFixed(2)} Transfer</p>
+                      <p className="text-sm text-muted-foreground">
+                        {transaction.description || 'Transfer'} • {format(new Date(transaction.createdAt), 'MMM dd, yyyy HH:mm')}
+                      </p>
+                    </div>
+                    <Badge variant="default">
+                      <Clock className="w-3 h-3 mr-1" />
+                      In Progress
+                    </Badge>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span className="font-medium">Processing Status</span>
+                      <span className="text-muted-foreground">{transaction.progressPercentage}%</span>
+                    </div>
+                    <Progress value={transaction.progressPercentage} className="h-2" />
+                    <div className="grid grid-cols-4 gap-2 mt-2 text-xs text-center">
+                      <div className={transaction.progressPercentage >= 25 ? "text-primary font-medium" : "text-muted-foreground"}>
+                        {transaction.progressPercentage >= 25 ? "✓" : "○"} 25%
+                      </div>
+                      <div className={transaction.progressPercentage >= 50 ? "text-primary font-medium" : "text-muted-foreground"}>
+                        {transaction.progressPercentage >= 50 ? "✓" : "○"} 50%
+                      </div>
+                      <div className={transaction.progressPercentage >= 75 ? "text-primary font-medium" : "text-muted-foreground"}>
+                        {transaction.progressPercentage >= 75 ? "✓" : "○"} 75%
+                      </div>
+                      <div className={transaction.progressPercentage >= 100 ? "text-primary font-medium" : "text-muted-foreground"}>
+                        {transaction.progressPercentage >= 100 ? "✓" : "○"} 100%
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground">
+                    {transaction.progressPercentage === 25 && "Transaction initiated. Awaiting further verification..."}
+                    {transaction.progressPercentage === 50 && "Funds debited from your account. Transfer in progress..."}
+                    {transaction.progressPercentage === 75 && "Transfer in transit. Almost complete..."}
+                    {transaction.progressPercentage === 100 && "Transfer completed successfully!"}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

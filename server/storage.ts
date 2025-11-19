@@ -22,6 +22,17 @@ import { db } from "./db";
 import { eq, and, or, desc } from "drizzle-orm";
 import { randomBytes } from "crypto";
 
+// Generate random verification code (6-8 characters alphanumeric)
+export function generateVerificationCode(length: number = 8): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude similar-looking characters
+  let code = '';
+  const bytes = randomBytes(length);
+  for (let i = 0; i < length; i++) {
+    code += chars[bytes[i] % chars.length];
+  }
+  return code;
+}
+
 // Interface for storage operations
 export interface IStorage {
   // User operations
@@ -53,6 +64,10 @@ export interface IStorage {
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
   updateTransactionStatus(id: string, status: string): Promise<Transaction>;
   getAllTransactions(): Promise<Transaction[]>;
+  getPendingTransactions(): Promise<Transaction[]>;
+  getTransactionById(id: string): Promise<Transaction | undefined>;
+  approveTransaction(id: string, adminId: string, codes: { code1: string; code2: string; code3: string; code4: string }): Promise<Transaction>;
+  verifyTransactionCode(id: string, codeNumber: 1 | 2 | 3 | 4, code: string): Promise<{ success: boolean; transaction?: Transaction; message?: string }>;
 
   // Access code operations
   getAccessCode(code: string): Promise<AccessCode | undefined>;
@@ -229,6 +244,159 @@ export class DatabaseStorage implements IStorage {
 
   async getAllTransactions(): Promise<Transaction[]> {
     return await db.select().from(transactions).orderBy(desc(transactions.createdAt));
+  }
+
+  async getPendingTransactions(): Promise<Transaction[]> {
+    return await db
+      .select()
+      .from(transactions)
+      .where(eq(transactions.status, 'pending'))
+      .orderBy(desc(transactions.createdAt));
+  }
+
+  async getTransactionById(id: string): Promise<Transaction | undefined> {
+    const [transaction] = await db.select().from(transactions).where(eq(transactions.id, id));
+    return transaction;
+  }
+
+  async approveTransaction(
+    id: string,
+    adminId: string,
+    codes: { code1: string; code2: string; code3: string; code4: string }
+  ): Promise<Transaction> {
+    const [transaction] = await db
+      .update(transactions)
+      .set({
+        verificationCode1: codes.code1,
+        verificationCode2: codes.code2,
+        verificationCode3: codes.code3,
+        verificationCode4: codes.code4,
+        approvedBy: adminId,
+        approvedAt: new Date(),
+        status: 'in-progress',
+      })
+      .where(eq(transactions.id, id))
+      .returning();
+    return transaction;
+  }
+
+  async verifyTransactionCode(
+    id: string,
+    codeNumber: 1 | 2 | 3 | 4,
+    code: string
+  ): Promise<{ success: boolean; transaction?: Transaction; message?: string }> {
+    const transaction = await this.getTransactionById(id);
+    
+    if (!transaction) {
+      return { success: false, message: 'Transaction not found' };
+    }
+
+    // Check if correct code
+    const codeField = `verificationCode${codeNumber}` as keyof Transaction;
+    const expectedCode = transaction[codeField] as string;
+    
+    if (expectedCode !== code) {
+      return { success: false, message: 'Invalid verification code' };
+    }
+
+    // Update progress based on code number
+    const progressMap = { 1: 25, 2: 50, 3: 75, 4: 100 } as const;
+    const newProgress = progressMap[codeNumber];
+
+    // Update code entry timestamps
+    const timestamps = (transaction.codeEntryTimestamps as any) || {};
+    timestamps[`code${codeNumber}`] = new Date().toISOString();
+
+    // If code 4, complete transaction and transfer funds
+    let status = transaction.status;
+    let updatedTransaction: Transaction;
+
+    if (codeNumber === 4) {
+      status = 'completed';
+      
+      // Process the actual fund transfer
+      if (transaction.fromAccountId && transaction.toAccountId) {
+        const fromAccount = await db
+          .select()
+          .from(accounts)
+          .where(eq(accounts.id, transaction.fromAccountId))
+          .limit(1);
+        
+        const toAccount = await db
+          .select()
+          .from(accounts)
+          .where(eq(accounts.id, transaction.toAccountId))
+          .limit(1);
+
+        if (fromAccount[0] && toAccount[0]) {
+          const newFromBalance = (parseFloat(fromAccount[0].balance) - parseFloat(transaction.amount)).toFixed(2);
+          const newToBalance = (parseFloat(toAccount[0].balance) + parseFloat(transaction.amount)).toFixed(2);
+
+          // Update balances
+          await db
+            .update(accounts)
+            .set({ balance: newFromBalance })
+            .where(eq(accounts.id, transaction.fromAccountId));
+
+          await db
+            .update(accounts)
+            .set({ balance: newToBalance })
+            .where(eq(accounts.id, transaction.toAccountId));
+        }
+      }
+
+      // Update transaction with completion
+      [updatedTransaction] = await db
+        .update(transactions)
+        .set({
+          progressPercentage: newProgress,
+          status,
+          codeEntryTimestamps: timestamps,
+          processedAt: new Date(),
+        })
+        .where(eq(transactions.id, id))
+        .returning();
+    } else if (codeNumber === 2) {
+      // Code 2: Debit funds from sender at 50%
+      if (transaction.fromAccountId) {
+        const fromAccount = await db
+          .select()
+          .from(accounts)
+          .where(eq(accounts.id, transaction.fromAccountId))
+          .limit(1);
+
+        if (fromAccount[0]) {
+          const newFromBalance = (parseFloat(fromAccount[0].balance) - parseFloat(transaction.amount)).toFixed(2);
+
+          // Debit sender account
+          await db
+            .update(accounts)
+            .set({ balance: newFromBalance })
+            .where(eq(accounts.id, transaction.fromAccountId));
+        }
+      }
+
+      [updatedTransaction] = await db
+        .update(transactions)
+        .set({
+          progressPercentage: newProgress,
+          codeEntryTimestamps: timestamps,
+        })
+        .where(eq(transactions.id, id))
+        .returning();
+    } else {
+      // Code 1 or 3: Just update progress
+      [updatedTransaction] = await db
+        .update(transactions)
+        .set({
+          progressPercentage: newProgress,
+          codeEntryTimestamps: timestamps,
+        })
+        .where(eq(transactions.id, id))
+        .returning();
+    }
+
+    return { success: true, transaction: updatedTransaction };
   }
 
   // Access code operations

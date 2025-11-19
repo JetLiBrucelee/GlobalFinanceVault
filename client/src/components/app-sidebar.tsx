@@ -56,6 +56,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
   const adminMenuItems = [
     { title: "Admin Dashboard", url: "/admin", icon: ShieldCheck, testId: "link-admin-dashboard", iconColor: "text-blue-500" },
     { title: "Manage Users", url: "/admin/users", icon: Users, testId: "link-admin-users", iconColor: "text-purple-500" },
+    { title: "Pending Transactions", url: "/admin/pending-transactions", icon: Shield, testId: "link-admin-pending", iconColor: "text-yellow-500" },
     { title: "Transactions", url: "/admin/transactions", icon: ArrowLeftRight, testId: "link-admin-transactions", iconColor: "text-green-500" },
     { title: "Access Codes", url: "/admin/access-codes", icon: Shield, testId: "link-admin-access-codes", iconColor: "text-orange-500" },
     { title: "Settings", url: "/settings", icon: Settings, testId: "link-settings", iconColor: "text-gray-500" },

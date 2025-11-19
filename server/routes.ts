@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode, generateNZBranchCode } from "./storage";
+import { storage, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode, generateNZBranchCode, generateVerificationCode } from "./storage";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 
 const REGIONS = ['AU', 'US', 'NZ'] as const;
@@ -800,13 +800,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/admin/transactions/:transactionId/approve', isAuthenticated, isAdmin, async (req, res) => {
+  // Get pending transactions
+  app.get('/api/admin/transactions/pending', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const pendingTransactions = await storage.getPendingTransactions();
+      res.json(pendingTransactions);
+    } catch (error) {
+      console.error("Error fetching pending transactions:", error);
+      res.status(500).json({ message: "Failed to fetch pending transactions" });
+    }
+  });
+
+  // Get in-progress transactions
+  app.get('/api/admin/transactions/in-progress', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const allTransactions = await storage.getAllTransactions();
+      const inProgressTransactions = allTransactions.filter(t => t.status === 'in-progress');
+      res.json(inProgressTransactions);
+    } catch (error) {
+      console.error("Error fetching in-progress transactions:", error);
+      res.status(500).json({ message: "Failed to fetch in-progress transactions" });
+    }
+  });
+
+  // Approve transaction - generates 4 verification codes
+  app.post('/api/admin/transactions/:transactionId/approve', isAuthenticated, isAdmin, async (req: any, res) => {
     try {
       const { transactionId } = req.params;
+      const adminUserId = req.user?.id;
       
       // Get transaction
-      const transactions = await storage.getAllTransactions();
-      const transaction = transactions.find(t => t.id === transactionId);
+      const transaction = await storage.getTransactionById(transactionId);
       
       if (!transaction) {
         return res.status(404).json({ message: "Transaction not found" });
@@ -816,33 +840,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Transaction is not pending" });
       }
 
-      // Update balances
-      if (transaction.fromAccountId) {
-        const fromAccount = await storage.getAccountByNumber(
-          (await storage.getAllAccounts()).find(a => a.id === transaction.fromAccountId)!.accountNumber
-        );
-        if (fromAccount) {
-          const newBalance = (Number(fromAccount.balance) - Number(transaction.amount)).toFixed(2);
-          await storage.updateAccountBalance(fromAccount.id, newBalance);
-        }
-      }
+      // Generate 4 random verification codes
+      const code1 = generateVerificationCode();
+      const code2 = generateVerificationCode();
+      const code3 = generateVerificationCode();
+      const code4 = generateVerificationCode();
 
-      if (transaction.toAccountId) {
-        const toAccount = await storage.getAccountByNumber(
-          (await storage.getAllAccounts()).find(a => a.id === transaction.toAccountId)!.accountNumber
-        );
-        if (toAccount) {
-          const newBalance = (Number(toAccount.balance) + Number(transaction.amount)).toFixed(2);
-          await storage.updateAccountBalance(toAccount.id, newBalance);
-        }
-      }
+      // Approve transaction with codes
+      const updatedTransaction = await storage.approveTransaction(transactionId, adminUserId, {
+        code1,
+        code2,
+        code3,
+        code4,
+      });
 
-      // Update transaction status
-      const updatedTransaction = await storage.updateTransactionStatus(transactionId, 'completed');
-      res.json(updatedTransaction);
+      res.json({
+        transaction: updatedTransaction,
+        verificationCodes: { code1, code2, code3, code4 },
+      });
     } catch (error) {
       console.error("Error approving transaction:", error);
       res.status(500).json({ message: "Failed to approve transaction" });
+    }
+  });
+
+  // Verify transaction code (codes 1-4)
+  app.post('/api/admin/transactions/:transactionId/verify-code', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { transactionId } = req.params;
+      const { codeNumber, code } = req.body;
+
+      if (!codeNumber || !code) {
+        return res.status(400).json({ message: "Code number and code are required" });
+      }
+
+      if (![1, 2, 3, 4].includes(codeNumber)) {
+        return res.status(400).json({ message: "Code number must be 1, 2, 3, or 4" });
+      }
+
+      const result = await storage.verifyTransactionCode(transactionId, codeNumber, code);
+
+      if (!result.success) {
+        return res.status(400).json({ message: result.message });
+      }
+
+      res.json({
+        success: true,
+        transaction: result.transaction,
+        message: `Code ${codeNumber} verified successfully. Progress: ${result.transaction?.progressPercentage}%`,
+      });
+    } catch (error) {
+      console.error("Error verifying code:", error);
+      res.status(500).json({ message: "Failed to verify code" });
     }
   });
 

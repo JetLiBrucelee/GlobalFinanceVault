@@ -97,11 +97,22 @@ export const transactions = pgTable("transactions", {
   toAccountId: varchar("to_account_id").references(() => accounts.id, { onDelete: 'set null' }),
   amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
   type: varchar("type", { length: 20 }).notNull(), // transfer, bill_pay, payid, deposit, withdrawal, admin_credit
-  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, approved, declined, completed
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, in-progress, completed, declined
   description: text("description"),
   reference: varchar("reference"),
   createdBy: varchar("created_by").references(() => users.id, { onDelete: 'set null' }), // For admin transactions
   availableAt: timestamp("available_at"), // When funds become available
+  
+  // Approval workflow fields
+  verificationCode1: varchar("verification_code_1", { length: 8 }),
+  verificationCode2: varchar("verification_code_2", { length: 8 }),
+  verificationCode3: varchar("verification_code_3", { length: 8 }),
+  verificationCode4: varchar("verification_code_4", { length: 8 }),
+  progressPercentage: integer("progress_percentage").default(0).notNull(), // 0, 25, 50, 75, 100
+  approvedBy: varchar("approved_by").references(() => users.id, { onDelete: 'set null' }), // Admin who approved
+  approvedAt: timestamp("approved_at"),
+  codeEntryTimestamps: jsonb("code_entry_timestamps"), // Track when each code was entered
+  
   createdAt: timestamp("created_at").defaultNow(),
   processedAt: timestamp("processed_at"),
 });

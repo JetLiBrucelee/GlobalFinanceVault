@@ -18,6 +18,7 @@ import Settings from "@/pages/settings";
 import AdminDashboard from "@/pages/admin/dashboard";
 import AdminUsers from "@/pages/admin/users";
 import AdminTransactions from "@/pages/admin/transactions";
+import AdminPendingTransactions from "@/pages/admin/pending-transactions";
 import AdminAccessCodes from "@/pages/admin/access-codes";
 import AdminLogin from "@/pages/admin/login";
 import NotFound from "@/pages/not-found";
@@ -96,6 +97,7 @@ function Router() {
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
       <Route path="/admin/transactions" component={AdminTransactions} />
+      <Route path="/admin/pending-transactions" component={AdminPendingTransactions} />
       <Route path="/admin/access-codes" component={AdminAccessCodes} />
       <Route component={NotFound} />
     </Switch>
