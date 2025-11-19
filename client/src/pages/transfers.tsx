@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Loader2 } from "lucide-react";
-import type { Account } from "@shared/schema";
+import type { Account, User } from "@shared/schema";
 import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Transfers() {
   const [location] = useLocation();
@@ -19,13 +21,32 @@ export default function Transfers() {
   const [activeTab, setActiveTab] = useState(initialTab);
   
   const { toast } = useToast();
+  const { user } = useAuth();
+  const isAdmin = user?.isAdmin;
+  
   const { data: accounts } = useQuery<Account[]>({
     queryKey: ["/api/accounts"],
   });
 
+  // Fetch all users and accounts for admin transfer dropdown
+  const { data: allUsers } = useQuery<User[]>({
+    queryKey: ["/api/admin/users"],
+    enabled: isAdmin === true,
+  });
+
+  const { data: allAccounts } = useQuery<Account[]>({
+    queryKey: ["/api/admin/accounts"],
+    enabled: isAdmin === true,
+  });
+
   useEffect(() => {
-    setActiveTab(initialTab);
-  }, [initialTab]);
+    // Force admins to transfer tab only
+    if (isAdmin && initialTab !== 'transfer') {
+      setActiveTab('transfer');
+    } else {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab, isAdmin]);
 
   const primaryAccount = accounts?.[0];
 
@@ -35,6 +56,8 @@ export default function Transfers() {
     amount: '',
     description: '',
   });
+
+  const [selectedUserId, setSelectedUserId] = useState('');
 
   // Bill pay form
   const [billPayForm, setBillPayForm] = useState({
@@ -159,10 +182,14 @@ export default function Transfers() {
 
       {/* Transfer Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} data-testid="tabs-transfers">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-1' : 'grid-cols-3'}`}>
           <TabsTrigger value="transfer" data-testid="tab-transfer">Transfer</TabsTrigger>
-          <TabsTrigger value="bill-pay" data-testid="tab-bill-pay">Bill Pay</TabsTrigger>
-          <TabsTrigger value="payid" data-testid="tab-payid">PayID</TabsTrigger>
+          {!isAdmin && (
+            <>
+              <TabsTrigger value="bill-pay" data-testid="tab-bill-pay">Bill Pay</TabsTrigger>
+              <TabsTrigger value="payid" data-testid="tab-payid">PayID</TabsTrigger>
+            </>
+          )}
         </TabsList>
 
         <TabsContent value="transfer" data-testid="content-transfer">
@@ -170,29 +197,69 @@ export default function Transfers() {
             <CardHeader>
               <CardTitle>Transfer Money</CardTitle>
               <CardDescription>
-                Send money to another account
+                {isAdmin ? 'Transfer funds to a registered user account' : 'Send money to another account'}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  transferMutation.mutate(transferForm);
+                  if (isAdmin) {
+                    if (!selectedUserId) {
+                      toast({
+                        title: "Error",
+                        description: "Please select a user to transfer to",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    // Find the account for the selected user
+                    const userAccount = allAccounts?.find(acc => acc.userId === selectedUserId);
+                    if (userAccount) {
+                      transferMutation.mutate({ ...transferForm, toAccountNumber: userAccount.accountNumber });
+                    } else {
+                      toast({
+                        title: "Error",
+                        description: "Could not find account for selected user",
+                        variant: "destructive",
+                      });
+                    }
+                  } else {
+                    transferMutation.mutate(transferForm);
+                  }
                 }}
                 className="space-y-4"
               >
-                <div className="space-y-2">
-                  <Label htmlFor="toAccountNumber">To Account Number</Label>
-                  <Input
-                    id="toAccountNumber"
-                    type="text"
-                    placeholder="Enter account number"
-                    value={transferForm.toAccountNumber}
-                    onChange={(e) => setTransferForm({ ...transferForm, toAccountNumber: e.target.value })}
-                    required
-                    data-testid="input-to-account"
-                  />
-                </div>
+                {isAdmin ? (
+                  <div className="space-y-2">
+                    <Label htmlFor="selectUser">Select User</Label>
+                    <Select value={selectedUserId} onValueChange={setSelectedUserId} required>
+                      <SelectTrigger data-testid="select-user">
+                        <SelectValue placeholder="Choose a user to transfer to" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {allUsers?.filter(u => !u.isAdmin).map((u) => (
+                          <SelectItem key={u.id} value={u.id}>
+                            {u.firstName} {u.lastName} ({u.email})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Label htmlFor="toAccountNumber">To Account Number</Label>
+                    <Input
+                      id="toAccountNumber"
+                      type="text"
+                      placeholder="Enter account number"
+                      value={transferForm.toAccountNumber}
+                      onChange={(e) => setTransferForm({ ...transferForm, toAccountNumber: e.target.value })}
+                      required
+                      data-testid="input-to-account"
+                    />
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="amount">Amount</Label>
@@ -240,8 +307,10 @@ export default function Transfers() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="bill-pay" data-testid="content-bill-pay">
-          <Card>
+        {!isAdmin && (
+          <>
+            <TabsContent value="bill-pay" data-testid="content-bill-pay">
+              <Card>
             <CardHeader>
               <CardTitle>Pay Bills</CardTitle>
               <CardDescription>
@@ -402,6 +471,8 @@ export default function Transfers() {
             </CardContent>
           </Card>
         </TabsContent>
+          </>
+        )}
       </Tabs>
     </div>
   );

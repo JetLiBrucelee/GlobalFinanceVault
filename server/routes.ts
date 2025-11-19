@@ -369,11 +369,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get recipient account
       const toAccount = await storage.getAccountByNumber(toAccountNumber);
+      
+      // Validate recipient account exists (for all users)
+      if (!toAccount) {
+        return res.status(400).json({ message: "Recipient account not found" });
+      }
+      
+      // For admins, additional validation that the recipient account belongs to a registered user
+      if (req.user.isAdmin) {
+        // Verify the account belongs to a registered user
+        const recipientUser = await storage.getUser(toAccount.userId);
+        if (!recipientUser) {
+          return res.status(403).json({ message: "Admins can only transfer to registered user accounts" });
+        }
+        
+        // Prevent admins from transferring to other admin accounts
+        if (recipientUser.isAdmin) {
+          return res.status(403).json({ message: "Admins cannot transfer to other admin accounts" });
+        }
+      }
 
       // Create transaction
       const transaction = await storage.createTransaction({
         fromAccountId: fromAccount.id,
-        toAccountId: toAccount?.id || null,
+        toAccountId: toAccount.id,
         amount: amount.toString(),
         type: "transfer",
         status: "pending",
@@ -390,6 +409,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/transactions/bill-pay', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
+      
+      // Prevent admins from using bill pay
+      if (req.user.isAdmin) {
+        return res.status(403).json({ message: "Admins cannot use bill pay feature" });
+      }
+      
       const { billerCode, referenceNumber, amount, description } = req.body;
 
       if (!billerCode || !referenceNumber || !amount) {
@@ -427,6 +452,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/transactions/payid', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
+      
+      // Prevent admins from using PayID
+      if (req.user.isAdmin) {
+        return res.status(403).json({ message: "Admins cannot use PayID feature" });
+      }
+      
       const { payId, amount, description } = req.body;
 
       if (!payId || !amount) {
