@@ -101,21 +101,23 @@ export default function Transfers() {
   });
 
   const transferMutation = useMutation({
-    mutationFn: async (data: typeof transferForm) => {
+    mutationFn: async (data: typeof transferForm & { transferMethod?: string }) => {
       // Build transfer details based on method
       let transferDetails: any = {};
+      const method = data.transferMethod || 'internal';
       
-      if (transferMethod === 'external') {
+      if (method === 'external') {
         transferDetails = {
-          routingNumber: data.routingNumber,
-          bsb: data.bsb,
+          routingNumber: data.routingNumber || undefined,
+          bsb: data.bsb || undefined,
+          swiftCode: data.swiftCode || undefined, // For NZ domestic transfers
           beneficiaryName: data.beneficiaryName,
           beneficiaryAddress: data.beneficiaryAddress,
         };
-      } else if (transferMethod === 'wire') {
+      } else if (method === 'wire') {
         transferDetails = {
           swiftCode: data.swiftCode,
-          iban: data.iban,
+          iban: data.iban || undefined,
           beneficiaryBankName: data.beneficiaryBankName,
           beneficiaryBankAddress: data.beneficiaryBankAddress,
           intermediaryBankName: data.intermediaryBankName || undefined,
@@ -128,8 +130,8 @@ export default function Transfers() {
         toAccountNumber: data.toAccountNumber,
         amount: data.amount,
         description: data.description,
-        transferMethod,
-        transferDetails,
+        transferMethod: method,
+        transferDetails: Object.keys(transferDetails).length > 0 ? transferDetails : undefined,
       });
     },
     onSuccess: () => {
@@ -284,7 +286,7 @@ export default function Transfers() {
                     // Find the account for the selected user
                     const userAccount = allAccounts?.find(acc => acc.userId === selectedUserId);
                     if (userAccount) {
-                      transferMutation.mutate({ ...transferForm, toAccountNumber: userAccount.accountNumber });
+                      transferMutation.mutate({ ...transferForm, toAccountNumber: userAccount.accountNumber, transferMethod: 'internal' });
                     } else {
                       toast({
                         title: "Error",
@@ -293,7 +295,7 @@ export default function Transfers() {
                       });
                     }
                   } else {
-                    transferMutation.mutate(transferForm);
+                    transferMutation.mutate({ ...transferForm, transferMethod });
                   }
                 }}
                 className="space-y-4"
@@ -376,6 +378,19 @@ export default function Transfers() {
                             placeholder="XXXXXXXXX"
                             value={transferForm.routingNumber}
                             onChange={(e) => setTransferForm({ ...transferForm, routingNumber: e.target.value })}
+                            required
+                          />
+                        </div>
+                      )}
+                      {primaryAccount?.region === 'NZ' && (
+                        <div className="space-y-2">
+                          <Label htmlFor="swiftCode">Bank SWIFT Code</Label>
+                          <Input
+                            id="swiftCode"
+                            type="text"
+                            placeholder="AAAANZZZ"
+                            value={transferForm.swiftCode}
+                            onChange={(e) => setTransferForm({ ...transferForm, swiftCode: e.target.value.toUpperCase() })}
                             required
                           />
                         </div>
