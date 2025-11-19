@@ -446,34 +446,87 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Customer Testimonial */}
-      <section className="py-16 md:py-20 bg-gradient-to-b from-blue-50/30 to-background dark:from-blue-950/10">
+      {/* Customer Testimonials */}
+      <section className="py-12 md:py-16 bg-gradient-to-b from-blue-50/30 to-background dark:from-blue-950/10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <Card className="max-w-4xl mx-auto border-2" data-testid="testimonial-card">
-            <CardContent className="p-8 md:p-12">
-              <div className="flex gap-2 mb-4">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="h-5 w-5 fill-primary text-primary" />
-                ))}
-              </div>
-              <blockquote className="text-xl md:text-2xl font-medium mb-6">
-                "Switching to Fundamental Financial Credit was the best financial decision we made. 
-                We're saving $5,329 this year on our home loan, and the customer service is outstanding."
-              </blockquote>
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Users className="h-6 w-6 text-primary" />
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold mb-2">Trusted by Thousands of Customers</h2>
+            <p className="text-sm text-muted-foreground">See what our customers have to say</p>
+          </div>
+          
+          <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-3 max-w-6xl mx-auto">
+            <Card data-testid="testimonial-card-1">
+              <CardContent className="p-5">
+                <div className="flex gap-1 mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} className="h-4 w-4 fill-primary text-primary" />
+                  ))}
                 </div>
-                <div>
-                  <p className="font-semibold">The Williams Family</p>
-                  <p className="text-sm text-muted-foreground">Home Loan Customers Since 2023</p>
+                <p className="text-sm mb-4">
+                  "Switching to Fundamental Financial Credit was the best decision. We're saving $5,329 this year on our home loan!"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Users className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">The Williams Family</p>
+                    <p className="text-xs text-muted-foreground">Home Loan Customer</p>
+                  </div>
                 </div>
-              </div>
-              <Button className="mt-6" onClick={() => setLocation('/open-account')} data-testid="testimonial-cta">
-                Start Saving Today
-              </Button>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="testimonial-card-2">
+              <CardContent className="p-5">
+                <div className="flex gap-1 mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} className="h-4 w-4 fill-primary text-primary" />
+                  ))}
+                </div>
+                <p className="text-sm mb-4">
+                  "The mobile app is fantastic! I can deposit checks instantly and manage everything from my phone. Best banking experience ever."
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Users className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">Sarah Martinez</p>
+                    <p className="text-xs text-muted-foreground">Business Account</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card data-testid="testimonial-card-3">
+              <CardContent className="p-5">
+                <div className="flex gap-1 mb-3">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} className="h-4 w-4 fill-primary text-primary" />
+                  ))}
+                </div>
+                <p className="text-sm mb-4">
+                  "International transfers are so easy now! I send money to my family overseas with low fees and great exchange rates."
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Users className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">James Chen</p>
+                    <p className="text-xs text-muted-foreground">Savings Customer</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center mt-8">
+            <Button onClick={() => setLocation('/open-account')} data-testid="testimonial-cta">
+              Start Your Journey Today
+            </Button>
+          </div>
         </div>
       </section>
 
