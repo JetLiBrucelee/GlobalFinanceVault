@@ -1,8 +1,27 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { db } from "./db";
+import { users } from "@shared/schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 const app = express();
+
+async function initializeDatabase() {
+  try {
+    const adminResult = await db.select().from(users).where(eq(users.username, "Admin@fundamentalfinancial.com")).limit(1);
+    
+    if (adminResult.length === 0) {
+      log("Admin user not found. Running database seed...");
+      const { execSync } = await import("child_process");
+      execSync("npx tsx server/seed.ts", { stdio: "inherit" });
+      log("Database seeded successfully");
+    }
+  } catch (error) {
+    log("Database initialization check failed - this is normal on first run");
+  }
+}
 
 declare module 'http' {
   interface IncomingMessage {
@@ -47,6 +66,8 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  await initializeDatabase();
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
