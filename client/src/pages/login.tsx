@@ -51,9 +51,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 p-12 text-white flex-col justify-between relative overflow-hidden" 
+      <div className="hidden md:flex md:w-1/2 p-12 text-white flex-col justify-between relative overflow-hidden" 
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url(${loginBg})`,
           backgroundSize: 'cover',
@@ -78,7 +78,7 @@ export default function Login() {
               Secure Banking<br />
               At Your Fingertips
             </h1>
-            <p className="text-blue-100 text-lg max-w-md">
+            <p className="text-white/90 text-lg max-w-md">
               Access your accounts securely from anywhere in the world. Managing your finances has never been easier.
             </p>
           </div>
@@ -88,15 +88,15 @@ export default function Login() {
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
               <div className="text-3xl font-bold">256-bit</div>
-              <div className="text-sm text-blue-200">Encryption</div>
+              <div className="text-sm text-white/80">Encryption</div>
             </div>
             <div>
               <div className="text-3xl font-bold">24/7</div>
-              <div className="text-sm text-blue-200">Support</div>
+              <div className="text-sm text-white/80">Support</div>
             </div>
             <div>
               <div className="text-3xl font-bold">FDIC</div>
-              <div className="text-sm text-blue-200">Insured</div>
+              <div className="text-sm text-white/80">Insured</div>
             </div>
           </div>
         </div>
