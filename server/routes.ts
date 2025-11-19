@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode } from "./storage";
+import { storage, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode, generateNZBranchCode } from "./storage";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 
 const REGIONS = ['AU', 'US', 'NZ'] as const;
@@ -159,17 +159,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         city,
         postalCode,
         accountType,
-        region,
         initialDeposit
       } = req.body;
 
       // Basic validation
-      if (!firstName || !lastName || !email || !accountType || !region) {
+      if (!firstName || !lastName || !email || !accountType) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      // Create user with Replit
+      // Generate username from email or name
+      const username = email.split('@')[0] + Math.floor(Math.random() * 1000);
+      // Generate random password
+      const bcrypt = (await import('bcryptjs')).default;
+      const randomPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+      
+      // Create user
       const user = await storage.upsertUser({
+        username,
+        password: hashedPassword,
         email,
         firstName,
         lastName,
@@ -178,14 +186,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isLocked: false,
       });
 
+      // Randomly assign region from AU, US, NZ
+      const region = REGIONS[Math.floor(Math.random() * REGIONS.length)];
+      
       // Generate account details based on region
       const accountNumber = generateAccountNumber();
-      let bsb = null, routingNumber = null, swiftCode = null;
+      let bsb = null, routingNumber = null, swiftCode = null, branchCode = null;
       
       if (region === 'AU') {
         bsb = generateBSB();
       } else if (region === 'US') {
         routingNumber = generateRoutingNumber();
+      } else if (region === 'NZ') {
+        branchCode = generateNZBranchCode();
       }
       swiftCode = generateSwiftCode();
 
@@ -199,6 +212,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bsb,
         routingNumber,
         swiftCode,
+        branchCode,
         region,
         balance: depositAmount,
         accountType,

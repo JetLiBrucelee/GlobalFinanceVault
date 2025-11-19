@@ -144,6 +144,13 @@ export default function OpenAccount() {
                 </div>
               )}
               
+              {accountDetails.branchCode && (
+                <div>
+                  <p className="text-sm text-muted-foreground">Branch Code (New Zealand)</p>
+                  <p className="text-lg font-mono font-bold">{accountDetails.branchCode}</p>
+                </div>
+              )}
+              
               {accountDetails.swiftCode && (
                 <div>
                   <p className="text-sm text-muted-foreground">SWIFT Code</p>

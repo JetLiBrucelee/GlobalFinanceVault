@@ -304,3 +304,8 @@ export function generateAccessCode(): string {
   }
   return code;
 }
+
+export function generateNZBranchCode(): string {
+  // Generate a random 6-digit New Zealand branch code
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}

@@ -8,6 +8,7 @@ import { Shield, Loader2, Eye, EyeOff, Lock, User } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import bankLogo from "@assets/bank-logo.jpg";
+import loginBg from "@assets/login-background.jpg";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -52,9 +53,14 @@ export default function Login() {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 p-12 text-white flex-col justify-between relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 p-12 text-white flex-col justify-between relative overflow-hidden" 
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url(${loginBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}>
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10" 
+        <div className="absolute inset-0 opacity-5" 
           style={{
             backgroundImage: `linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)`,
             backgroundSize: '40px 40px'

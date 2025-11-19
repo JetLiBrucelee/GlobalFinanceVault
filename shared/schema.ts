@@ -51,6 +51,7 @@ export const accounts = pgTable("accounts", {
   bsb: varchar("bsb", { length: 6 }),
   routingNumber: varchar("routing_number", { length: 9 }),
   swiftCode: varchar("swift_code", { length: 11 }),
+  branchCode: varchar("branch_code", { length: 6 }),
   region: varchar("region", { length: 2 }).notNull(), // AU, US, NZ
   balance: decimal("balance", { precision: 16, scale: 2 }).default("0.00").notNull(),
   accountType: varchar("account_type", { length: 20 }).default("checking").notNull(),
