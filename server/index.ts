@@ -92,11 +92,30 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
+  const host = "0.0.0.0";
+  
   server.listen({
     port,
-    host: "0.0.0.0",
+    host,
     reusePort: true,
   }, () => {
-    log(`serving on port ${port}`);
+    log(`✓ Server successfully started`);
+    log(`✓ Listening on ${host}:${port}`);
+    log(`✓ Environment: ${app.get("env")}`);
   });
-})();
+
+  server.on('error', (error: any) => {
+    if (error.code === 'EADDRINUSE') {
+      log(`✗ Error: Port ${port} is already in use`);
+    } else if (error.code === 'EACCES') {
+      log(`✗ Error: Permission denied to bind to ${host}:${port}`);
+    } else {
+      log(`✗ Server error: ${error.message}`);
+    }
+    process.exit(1);
+  });
+})().catch((error) => {
+  log(`✗ Fatal error during startup: ${error.message}`);
+  console.error(error);
+  process.exit(1);
+});

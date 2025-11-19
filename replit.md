@@ -20,6 +20,7 @@ Preferred communication style: Simple, everyday language.
 - **Authentication**: Session-based authentication using `express-session` and PostgreSQL storage. Replit Auth (OpenID Connect) for user authentication via Passport.js with `openid-client` strategy. New users require access code verification.
 - **API**: RESTful API with `/api` prefix, JSON format, route protection (`isAuthenticated`, `isAdmin`), and comprehensive error handling.
 - **Business Logic**: Abstracted storage layer, utility functions for generating financial identifiers (account numbers, SWIFT codes, card details), and region-specific account number generation.
+- **Deployment**: Configured for Replit Autoscale deployment. Server binds to `0.0.0.0:5000` with enhanced error handling and startup logging. Production build uses Vite for frontend and ESBuild for backend bundling.
 
 ### Data Storage Solutions
 - **Database**: PostgreSQL via Neon serverless, using Drizzle ORM for type-safe operations and schema management. Schema-first approach with migrations.
