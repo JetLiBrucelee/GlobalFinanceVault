@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Users, CreditCard, TrendingUp, ShieldCheck, UserPlus, Settings, FileText, ArrowLeftRight } from "lucide-react";
 import { Link } from "wouter";
 import type { User, Account, Transaction, AccessCode } from "@shared/schema";
+import adminBg from "@assets/stock_images/online_banking_servi_775ecb2d.jpg";
 
 export default function AdminDashboard() {
   const { data: users, isLoading: usersLoading } = useQuery<User[]>({
@@ -70,11 +71,20 @@ export default function AdminDashboard() {
     .reduce((sum, t) => sum + Number(t.amount), 0) || 0;
 
   return (
-    <div className="space-y-8">
+    <div 
+      className="space-y-8 min-h-screen p-8 -m-8" 
+      style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url(${adminBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold" data-testid="text-page-title">Dashboard</h1>
-        <p className="text-muted-foreground" data-testid="text-page-description">
+        <h1 className="text-3xl font-bold text-white" data-testid="text-page-title">Dashboard</h1>
+        <p className="text-gray-300" data-testid="text-page-description">
           Welcome back! Here's your account overview
         </p>
       </div>
@@ -91,7 +101,7 @@ export default function AdminDashboard() {
               <Skeleton className="h-8 w-32" />
             ) : (
               <>
-                <div className="text-2xl font-bold" data-testid="text-balance">
+                <div className="text-2xl font-bold break-words" data-testid="text-balance">
                   {formatCurrency(adminAccount?.balance || 0, false)}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1" data-testid="text-account-number">

@@ -89,12 +89,16 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
         {user?.isAdmin && (
           <SidebarGroup>
-            <SidebarGroupLabel>Administration</SidebarGroupLabel>
+            <SidebarGroupLabel className="text-primary font-semibold">Administration</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {adminMenuItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={location === item.url}>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={location === item.url}
+                      className={location === item.url ? "bg-primary/15 text-primary font-medium" : ""}
+                    >
                       <Link href={item.url} data-testid={item.testId}>
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
