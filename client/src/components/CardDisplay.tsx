@@ -58,7 +58,8 @@ function getCardBrandGradient(brand: string, cardType: string) {
       case 'visa':
         return 'bg-gradient-to-br from-[#1A1F71] via-[#0F3460] to-[#16213E]';
       case 'mastercard':
-        return 'bg-gradient-to-br from-[#EB001B] via-[#F79E1B] to-[#FF6B00]';
+        // Dark background like real Mastercard cards
+        return 'bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1419]';
       case 'amex':
       case 'american express':
         return 'bg-gradient-to-br from-[#006FCF] via-[#00A2E5] to-[#0077C8]';
@@ -73,7 +74,8 @@ function getCardBrandGradient(brand: string, cardType: string) {
       case 'visa':
         return 'bg-gradient-to-br from-[#2E3192] via-[#1A237E] to-[#0D47A1]';
       case 'mastercard':
-        return 'bg-gradient-to-br from-[#212121] via-[#424242] to-[#616161]';
+        // Very dark background for Mastercard debit (almost black)
+        return 'bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1419]';
       case 'amex':
       case 'american express':
         return 'bg-gradient-to-br from-[#00838F] via-[#00ACC1] to-[#0097A7]';
