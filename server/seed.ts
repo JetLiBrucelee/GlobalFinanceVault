@@ -1,13 +1,20 @@
 import { db } from "./db";
 import { users, accessCodes, accounts } from "@shared/schema";
 import { generateAccessCode, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode } from "./storage";
+import bcrypt from "bcryptjs";
 
 async function seed() {
   console.log("🌱 Seeding database...");
 
   try {
+    // Hash passwords
+    const adminPassword = await bcrypt.hash("Admin@123", 10);
+    const userPassword = await bcrypt.hash("User@123", 10);
+
     // Create admin user
     const [adminUser] = await db.insert(users).values({
+      username: "admin",
+      password: adminPassword,
       email: "admin@fundamentalfinancial.com",
       firstName: "System",
       lastName: "Administrator",
@@ -15,9 +22,10 @@ async function seed() {
       isBlocked: false,
       isLocked: false,
     }).onConflictDoUpdate({
-      target: users.email,
+      target: users.username,
       set: {
         isAdmin: true,
+        password: adminPassword, // Update password in case it changed
       }
     }).returning();
 
@@ -33,8 +41,38 @@ async function seed() {
       balance: "400000000000.00", // $400 billion
       accountType: "business",
     }).onConflictDoNothing();
+
+    // Create a demo user
+    const [demoUser] = await db.insert(users).values({
+      username: "user",
+      password: userPassword,
+      email: "user@fundamentalfinancial.com",
+      firstName: "Demo",
+      lastName: "User",
+      isAdmin: false,
+      isBlocked: false,
+      isLocked: false,
+    }).onConflictDoUpdate({
+      target: users.username,
+      set: {
+        password: userPassword, // Update password in case it changed
+      }
+    }).returning();
+
+    // Create user account with $10,000 balance
+    const userAccountNumber = generateAccountNumber();
+    await db.insert(accounts).values({
+      userId: demoUser.id,
+      accountNumber: userAccountNumber,
+      bsb: generateBSB(),
+      routingNumber: generateRoutingNumber(),
+      swiftCode: generateSwiftCode(),
+      region: "AU",
+      balance: "10000.00",
+      accountType: "checking",
+    }).onConflictDoNothing();
     
-    // Create access codes
+    // Create access codes for account opening
     const code1 = generateAccessCode();
     const code2 = generateAccessCode();
     const adminCode = "ADMIN001"; // Special code for admin
@@ -64,18 +102,32 @@ async function seed() {
     ]).onConflictDoNothing();
 
     console.log("✅ Seed complete!");
-    console.log("👤 Admin Account Created:");
-    console.log(`   Email: admin@fundamentalfinancial.com`);
+    console.log("\n═══════════════════════════════════════════");
+    console.log("👤 ADMIN LOGIN CREDENTIALS:");
+    console.log("═══════════════════════════════════════════");
+    console.log(`   Username: admin`);
+    console.log(`   Password: Admin@123`);
     console.log(`   Account Number: ${adminAccountNumber}`);
     console.log(`   Balance: $400,000,000,000.00`);
-    console.log("\n📝 Access codes created:");
-    console.log(`   User Code 1: ${code1}`);
-    console.log(`   User Code 2: ${code2}`);
-    console.log(`   Admin Code: ${adminCode} (use this to create the first admin)`);
+    console.log("═══════════════════════════════════════════\n");
+    
+    console.log("═══════════════════════════════════════════");
+    console.log("👥 DEMO USER LOGIN CREDENTIALS:");
+    console.log("═══════════════════════════════════════════");
+    console.log(`   Username: user`);
+    console.log(`   Password: User@123`);
+    console.log(`   Account Number: ${userAccountNumber}`);
+    console.log(`   Balance: $10,000.00`);
+    console.log("═══════════════════════════════════════════\n");
+
+    console.log("📝 Access codes for new account opening:");
+    console.log(`   Code 1: ${code1}`);
+    console.log(`   Code 2: ${code2}`);
+    console.log(`   Admin Code: ${adminCode}`);
     console.log("\n📌 Instructions:");
-    console.log("   1. Open the app and log in with Replit Auth using admin@fundamentalfinancial.com");
-    console.log("   2. Admin can credit user accounts from the admin dashboard");
-    console.log("   3. Users can open accounts at /open-account");
+    console.log("   1. Open the app and log in with the credentials above");
+    console.log("   2. Admin can manage users and credit accounts from the admin dashboard");
+    console.log("   3. New users can open accounts at /open-account");
     
     process.exit(0);
   } catch (error) {

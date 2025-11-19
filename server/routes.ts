@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode } from "./storage";
-import { setupAuth, isAuthenticated, isAdmin } from "./replitAuth";
+import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 
 const REGIONS = ['AU', 'US', 'NZ'] as const;
 
@@ -13,16 +13,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // AUTH ROUTES
   // ===================
   
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  app.get('/api/auth/user', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
+      // Wait for passport to deserialize the user
+      if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
       }
 
-      res.json(user);
+      const user = req.user;
+      res.json({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        isAdmin: user.isAdmin,
+        isBlocked: user.isBlocked,
+        isLocked: user.isLocked,
+      });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
@@ -32,7 +40,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/auth/verify-access-code', isAuthenticated, async (req: any, res) => {
     try {
       const { code } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
 
       if (!code) {
         return res.status(400).json({ message: "Access code is required" });
@@ -129,7 +137,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/accounts', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const accounts = await storage.getAccountsByUserId(userId);
       res.json(accounts);
     } catch (error) {
@@ -236,7 +244,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/cards', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const accounts = await storage.getAccountsByUserId(userId);
       
       let allCards: any[] = [];
@@ -258,7 +266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/transactions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const accounts = await storage.getAccountsByUserId(userId);
       
       let allTransactions: any[] = [];
@@ -281,7 +289,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/transactions/transfer', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { toAccountNumber, amount, description } = req.body;
 
       if (!toAccountNumber || !amount) {
@@ -323,7 +331,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/transactions/bill-pay', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { billerCode, referenceNumber, amount, description } = req.body;
 
       if (!billerCode || !referenceNumber || !amount) {
@@ -360,7 +368,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/transactions/payid', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { payId, amount, description } = req.body;
 
       if (!payId || !amount) {
@@ -491,7 +499,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin/credit-account', isAuthenticated, isAdmin, async (req: any, res) => {
     try {
       const { accountId, amount, description, availabilityOption } = req.body;
-      const adminUserId = req.user.claims.sub;
+      const adminUserId = req.user.id;
 
       if (!accountId || !amount || amount <= 0) {
         return res.status(400).json({ message: "Invalid account ID or amount" });

@@ -96,7 +96,10 @@ export default function AccessCode() {
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => window.location.href = '/api/logout'}
+                onClick={async () => {
+                  await apiRequest("POST", "/api/logout", {});
+                  window.location.href = '/login';
+                }}
                 data-testid="button-logout"
               >
                 Log Out

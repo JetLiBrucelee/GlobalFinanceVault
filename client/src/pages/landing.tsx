@@ -87,7 +87,7 @@ export default function Landing() {
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
-                onClick={() => window.location.href = '/api/login'}
+                onClick={() => setLocation('/login')}
                 data-testid="button-login"
               >
                 Log In
@@ -98,8 +98,7 @@ export default function Landing() {
               >
                 Open Account
               </Button>
-            </div>
-          </div>
+            </div>          </div>
         </div>
       </header>
 
@@ -130,7 +129,7 @@ export default function Landing() {
               <Button
                 size="lg"
                 className="text-base px-8"
-                onClick={() => window.location.href = '/api/login'}
+                onClick={() => setLocation('/open-account')}
                 data-testid="button-hero-open-account"
               >
                 Open Your Account
@@ -139,7 +138,7 @@ export default function Landing() {
                 size="lg"
                 variant="outline"
                 className="text-base px-8"
-                onClick={() => window.location.href = '/api/login'}
+                onClick={() => setLocation('/login')}
                 data-testid="button-hero-login"
               >
                 Log In
@@ -213,7 +212,7 @@ export default function Landing() {
                     <span>24/7 mobile banking</span>
                   </li>
                 </ul>
-                <Button className="w-full" onClick={() => window.location.href = '/api/login'} data-testid="promo-checking-cta">
+                <Button className="w-full" onClick={() => setLocation('/open-account')} data-testid="promo-checking-cta">
                   Open Account
                 </Button>
               </CardContent>
@@ -241,7 +240,7 @@ export default function Landing() {
                     <span>Easy transfers</span>
                   </li>
                 </ul>
-                <Button className="w-full" variant="outline" onClick={() => window.location.href = '/api/login'} data-testid="promo-savings-cta">
+                <Button className="w-full" variant="outline" onClick={() => setLocation('/open-account')} data-testid="promo-savings-cta">
                   Learn More
                 </Button>
               </CardContent>
@@ -269,7 +268,7 @@ export default function Landing() {
                     <span>Instant approval</span>
                   </li>
                 </ul>
-                <Button className="w-full" variant="outline" onClick={() => window.location.href = '/api/login'} data-testid="promo-credit-cta">
+                <Button className="w-full" variant="outline" onClick={() => setLocation('/open-account')} data-testid="promo-credit-cta">
                   Apply Now
                 </Button>
               </CardContent>
@@ -375,7 +374,7 @@ export default function Landing() {
                   <p className="text-sm text-muted-foreground">Home Loan Customers Since 2023</p>
                 </div>
               </div>
-              <Button className="mt-6" onClick={() => window.location.href = '/api/login'} data-testid="testimonial-cta">
+              <Button className="mt-6" onClick={() => setLocation('/open-account')} data-testid="testimonial-cta">
                 Start Saving Today
               </Button>
             </CardContent>
@@ -525,7 +524,7 @@ export default function Landing() {
                   size="lg"
                   variant="secondary"
                   className="mt-8"
-                  onClick={() => window.location.href = '/api/login'}
+                  onClick={() => setLocation('/open-account')}
                   data-testid="button-cta-open-account"
                 >
                   Open Your Account Now

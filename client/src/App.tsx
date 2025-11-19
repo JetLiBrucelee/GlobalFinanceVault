@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { ProfessionalFooter } from "@/components/professional-footer";
 import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/landing";
+import Login from "@/pages/login";
 import AccessCode from "@/pages/access-code";
 import Dashboard from "@/pages/dashboard";
 import Cards from "@/pages/cards";
@@ -49,6 +50,7 @@ function Router() {
     return (
       <Switch>
         <Route path="/" component={Landing} />
+        <Route path="/login" component={Login} />
         <Route path="/open-account" component={OpenAccount} />
         <Route path="/transfers" component={Transfers} />
         <Route path="/bill-pay" component={BillPay} />
@@ -57,7 +59,6 @@ function Router() {
         <Route path="/loans" component={Loans} />
         <Route path="/credit-cards" component={CreditCards} />
         <Route path="/support" component={Support} />
-        <Route path="/admin/login" component={AdminLogin} />
         <Route component={Landing} />
       </Switch>
     );
