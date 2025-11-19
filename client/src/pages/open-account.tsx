@@ -390,11 +390,11 @@ export default function OpenAccount() {
                     city={form.watch("city")}
                     state={form.watch("state")}
                     addressLine1={form.watch("address")}
-                    onCountryChange={(value) => form.setValue("country", value)}
-                    onPostalCodeChange={(value) => form.setValue("postalCode", value)}
-                    onCityChange={(value) => form.setValue("city", value)}
-                    onStateChange={(value) => form.setValue("state", value)}
-                    onAddressLine1Change={(value) => form.setValue("address", value)}
+                    onCountryChange={(value) => form.setValue("country", value, { shouldValidate: true, shouldDirty: true })}
+                    onPostalCodeChange={(value) => form.setValue("postalCode", value, { shouldValidate: true, shouldDirty: true })}
+                    onCityChange={(value) => form.setValue("city", value, { shouldValidate: true, shouldDirty: true })}
+                    onStateChange={(value) => form.setValue("state", value, { shouldValidate: true, shouldDirty: true })}
+                    onAddressLine1Change={(value) => form.setValue("address", value, { shouldValidate: true, shouldDirty: true })}
                     showAddress
                     showCountry
                   />

@@ -85,8 +85,13 @@ export function AddressInput({
 
         const data: PostalCodeResponse = await response.json();
 
+        console.log("Postal code lookup result:", data);
+
         if (data.places && data.places.length > 0) {
           const place = data.places[0];
+          
+          console.log("Setting city to:", place["place name"]);
+          console.log("Setting state to:", place["state abbreviation"] || place.state);
           
           // Auto-fill city and state
           onCityChange(place["place name"]);
@@ -108,7 +113,7 @@ export function AddressInput({
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [postalCode, country]);
+  }, [postalCode, country, onCityChange, onStateChange]);
 
   return (
     <div className="space-y-4">
