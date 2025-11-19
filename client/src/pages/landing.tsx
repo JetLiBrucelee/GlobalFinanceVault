@@ -1,24 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, CreditCard, Globe, TrendingUp, Smartphone, Lock, DollarSign, Calculator, PiggyBank, Home, Car, Plane, Building2, Award, Users, Star, Check, Search } from "lucide-react";
+import { Shield, Globe, Lock, TrendingUp, Smartphone, Award, Users, DollarSign, Star, Check, Search } from "lucide-react";
 import { ProfessionalFooter } from "@/components/professional-footer";
 import { useLocation } from "wouter";
 import bankLogo from "@assets/bank-logo.jpg";
 import bgPattern from "@assets/banking-background.jpg";
+import airplaneIcon from "@assets/stock_images/modern_airplane_icon_8e2d11fa.jpg";
+import creditCardIcon from "@assets/stock_images/credit_card_icon_pro_7f6470ae.jpg";
+import encryptionIcon from "@assets/stock_images/encryption_lock_secu_84c0a261.jpg";
+import globeIcon from "@assets/stock_images/globe_world_map_icon_192cc559.jpg";
+import savingsIcon from "@assets/stock_images/piggy_bank_savings_i_9ebb3eee.jpg";
+import homeIcon from "@assets/stock_images/house_home_icon_prof_2d47bc72.jpg";
+import carIcon from "@assets/stock_images/car_automobile_icon__9cb3592a.jpg";
+import calculatorIcon from "@assets/stock_images/calculator_icon_prof_ae404510.jpg";
+import businessIcon from "@assets/stock_images/business_building_of_c45a8446.jpg";
+import investmentIcon from "@assets/stock_images/upward_trend_investm_6766776b.jpg";
+import shieldIcon from "@assets/stock_images/shield_protection_ic_eccd5f76.jpg";
+import supportIcon from "@assets/stock_images/customer_support_peo_db4faf8a.jpg";
+import insuranceIcon from "@assets/stock_images/insurance_badge_cert_1b88efed.jpg";
+import mobileIcon from "@assets/stock_images/smartphone_mobile_ph_47e5f6a2.jpg";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
   
   const productCategories = [
-    { icon: CreditCard, label: "Credit Cards", href: "#cards" },
-    { icon: PiggyBank, label: "Savings", href: "#savings" },
-    { icon: Home, label: "Home Loans", href: "#home-loans" },
-    { icon: Car, label: "Auto Loans", href: "#auto" },
-    { icon: Plane, label: "Travel", href: "#travel" },
-    { icon: TrendingUp, label: "Investments", href: "#investments" },
-    { icon: Building2, label: "Business", href: "#business" },
-    { icon: Calculator, label: "Calculators", href: "#tools" },
+    { icon: creditCardIcon, label: "Credit Cards", href: "/cards" },
+    { icon: savingsIcon, label: "Savings", href: "/savings" },
+    { icon: homeIcon, label: "Home Loans", href: "/home-loans" },
+    { icon: carIcon, label: "Auto Loans", href: "/auto-loans" },
+    { icon: airplaneIcon, label: "Travel", href: "/travel" },
+    { icon: investmentIcon, label: "Investments", href: "/investments" },
+    { icon: businessIcon, label: "Business", href: "/business" },
+    { icon: calculatorIcon, label: "Calculators", href: "/calculators" },
   ];
   
   const navLinks = [
@@ -103,7 +117,7 @@ export default function Landing() {
       </header>
 
       {/* Hero Section with Premium Background */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
+      <section className="relative py-12 md:py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-purple-500/5 to-blue-600/5" />
         <div className="absolute inset-0" 
           style={{
@@ -113,22 +127,22 @@ export default function Landing() {
         />
         <div className="container relative mx-auto px-4 md:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <Badge variant="secondary" className="mb-4" data-testid="badge-promo">
+            <Badge variant="secondary" className="mb-4 text-xs md:text-sm" data-testid="badge-promo">
               <DollarSign className="h-3 w-3 mr-1" />
               Earn $300 bonus with new checking account
             </Badge>
-            <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl" data-testid="text-hero-title">
+            <h1 className="text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl xl:text-6xl" data-testid="text-hero-title">
               Banking Made Simple,
               <span className="block text-primary mt-2">Secure, & Global</span>
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground" data-testid="text-hero-description">
+            <p className="mt-4 md:mt-6 text-sm md:text-base lg:text-lg text-muted-foreground px-4" data-testid="text-hero-description">
               Experience modern banking across Australia, USA, and New Zealand. 
               Manage your money with confidence, security, and ease.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <div className="mt-6 md:mt-8 flex flex-col sm:flex-row justify-center gap-3 md:gap-4 px-4">
               <Button
                 size="lg"
-                className="text-base px-8"
+                className="text-sm md:text-base px-6 md:px-8 w-full sm:w-auto"
                 onClick={() => setLocation('/open-account')}
                 data-testid="button-hero-open-account"
               >
@@ -137,7 +151,7 @@ export default function Landing() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-base px-8"
+                className="text-sm md:text-base px-6 md:px-8 w-full sm:w-auto"
                 onClick={() => setLocation('/login')}
                 data-testid="button-hero-login"
               >
@@ -146,18 +160,18 @@ export default function Landing() {
             </div>
             
             {/* Trust indicators */}
-            <div className="mt-12 flex flex-wrap justify-center gap-8 text-sm text-muted-foreground">
+            <div className="mt-8 md:mt-12 flex flex-wrap justify-center gap-4 md:gap-8 text-xs md:text-sm text-muted-foreground px-4">
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-primary" />
-                Bank-grade security
+                <Shield className="h-3 w-3 md:h-4 md:w-4 text-primary flex-shrink-0" />
+                <span className="whitespace-nowrap">Bank-grade security</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award className="h-4 w-4 text-primary" />
-                Award-winning service
+                <Award className="h-3 w-3 md:h-4 md:w-4 text-primary flex-shrink-0" />
+                <span className="whitespace-nowrap">Award-winning service</span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-primary" />
-                Trusted by millions
+                <Users className="h-3 w-3 md:h-4 md:w-4 text-primary flex-shrink-0" />
+                <span className="whitespace-nowrap">Trusted by millions</span>
               </div>
             </div>
           </div>
@@ -165,22 +179,22 @@ export default function Landing() {
       </section>
 
       {/* Product Categories Carousel */}
-      <section className="py-12 border-y bg-background/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <h2 className="text-center text-sm font-semibold text-muted-foreground mb-6">EXPLORE OUR PRODUCTS</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+      <section className="py-8 md:py-12 border-y bg-background/50 backdrop-blur-sm">
+        <div className="container mx-auto px-3 md:px-6 lg:px-8">
+          <h2 className="text-center text-xs md:text-sm font-semibold text-muted-foreground mb-4 md:mb-6">EXPLORE OUR PRODUCTS</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 md:gap-4">
             {productCategories.map((category, index) => (
-              <a
+              <button
                 key={index}
-                href={category.href}
-                className="flex flex-col items-center gap-3 p-4 rounded-lg hover-elevate transition-all group"
+                onClick={() => setLocation(category.href)}
+                className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-lg hover-elevate transition-all group"
                 data-testid={`category-${category.label.toLowerCase().replace(' ', '-')}`}
               >
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <category.icon className="h-6 w-6 text-primary" />
+                <div className="h-14 w-14 md:h-16 md:w-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors p-3 md:p-4">
+                  <img src={category.icon} alt={category.label} className="w-full h-full object-contain" />
                 </div>
-                <span className="text-sm font-medium text-center">{category.label}</span>
-              </a>
+                <span className="text-xs md:text-sm font-medium text-center leading-tight">{category.label}</span>
+              </button>
             ))}
           </div>
         </div>
@@ -278,52 +292,52 @@ export default function Landing() {
       </section>
 
       {/* Security & Trust Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-12 md:py-20 bg-background">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-3xl font-bold">Big on Security & Trust</h2>
-            <p className="mt-4 text-muted-foreground">
+          <div className="mx-auto mb-8 md:mb-12 max-w-2xl text-center">
+            <h2 className="text-2xl md:text-3xl font-bold">Big on Security & Trust</h2>
+            <p className="mt-3 md:mt-4 text-sm md:text-base text-muted-foreground">
               Your money and personal information are protected with industry-leading security
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 md:gap-8 grid-cols-2 lg:grid-cols-4">
             <div className="text-center" data-testid="trust-security">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <Shield className="h-8 w-8 text-primary" />
+              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 p-4">
+                <img src={shieldIcon} alt="Security" className="w-full h-full object-contain" />
               </div>
-              <h3 className="font-semibold mb-2">24/7 Fraud Monitoring</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-sm md:text-base font-semibold mb-2">24/7 Fraud Monitoring</h3>
+              <p className="text-xs md:text-sm text-muted-foreground px-2">
                 Advanced AI monitors your account around the clock for suspicious activity
               </p>
             </div>
 
             <div className="text-center" data-testid="trust-encryption">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <Lock className="h-8 w-8 text-primary" />
+              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 p-4">
+                <img src={encryptionIcon} alt="Encryption" className="w-full h-full object-contain" />
               </div>
-              <h3 className="font-semibold mb-2">256-bit Encryption</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-sm md:text-base font-semibold mb-2">256-bit Encryption</h3>
+              <p className="text-xs md:text-sm text-muted-foreground px-2">
                 Military-grade encryption protects all your transactions and data
               </p>
             </div>
 
             <div className="text-center" data-testid="trust-insurance">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <Award className="h-8 w-8 text-primary" />
+              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 p-4">
+                <img src={insuranceIcon} alt="Insurance" className="w-full h-full object-contain" />
               </div>
-              <h3 className="font-semibold mb-2">FDIC Insured</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-sm md:text-base font-semibold mb-2">FDIC Insured</h3>
+              <p className="text-xs md:text-sm text-muted-foreground px-2">
                 Your deposits are insured up to $250,000 by federal regulators
               </p>
             </div>
 
             <div className="text-center" data-testid="trust-support">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <Users className="h-8 w-8 text-primary" />
+              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 p-4">
+                <img src={supportIcon} alt="Support" className="w-full h-full object-contain" />
               </div>
-              <h3 className="font-semibold mb-2">Expert Support</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="text-sm md:text-base font-semibold mb-2">Expert Support</h3>
+              <p className="text-xs md:text-sm text-muted-foreground px-2">
                 Real people available 24/7 to help with any questions or concerns
               </p>
             </div>
@@ -383,71 +397,83 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-20">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-3xl font-bold" data-testid="text-features-title">Why Choose Fundamental Financial Credit?</h2>
-            <p className="mt-4 text-muted-foreground" data-testid="text-features-description">
+          <div className="mx-auto mb-8 md:mb-12 max-w-2xl text-center">
+            <h2 className="text-2xl md:text-3xl font-bold" data-testid="text-features-title">Why Choose Fundamental Financial Credit?</h2>
+            <p className="mt-3 md:mt-4 text-sm md:text-base text-muted-foreground" data-testid="text-features-description">
               Everything you need for modern banking in one secure platform
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <Card data-testid="card-feature-global">
-              <CardContent className="p-6">
-                <Globe className="h-12 w-12 text-primary" />
-                <h3 className="mt-4 text-xl font-bold">Global Banking</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+              <CardContent className="p-5 md:p-6">
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
+                  <img src={globeIcon} alt="Global Banking" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Global Banking</h3>
+                <p className="mt-2 text-xs md:text-sm text-muted-foreground">
                   Operate seamlessly across Australia, USA, and New Zealand with local account details
                 </p>
               </CardContent>
             </Card>
 
             <Card data-testid="card-feature-cards">
-              <CardContent className="p-6">
-                <CreditCard className="h-12 w-12 text-primary" />
-                <h3 className="mt-4 text-xl font-bold">Instant Virtual Cards</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+              <CardContent className="p-5 md:p-6">
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
+                  <img src={creditCardIcon} alt="Virtual Cards" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Instant Virtual Cards</h3>
+                <p className="mt-2 text-xs md:text-sm text-muted-foreground">
                   Get debit and credit cards instantly with your account. Manage, freeze, or replace anytime
                 </p>
               </CardContent>
             </Card>
 
             <Card data-testid="card-feature-secure">
-              <CardContent className="p-6">
-                <Lock className="h-12 w-12 text-primary" />
-                <h3 className="mt-4 text-xl font-bold">Bank-Grade Security</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+              <CardContent className="p-5 md:p-6">
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
+                  <img src={encryptionIcon} alt="Security" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Bank-Grade Security</h3>
+                <p className="mt-2 text-xs md:text-sm text-muted-foreground">
                   Multi-layer security with access codes, encryption, and real-time fraud monitoring
                 </p>
               </CardContent>
             </Card>
 
             <Card data-testid="card-feature-transfers">
-              <CardContent className="p-6">
-                <TrendingUp className="h-12 w-12 text-primary" />
-                <h3 className="mt-4 text-xl font-bold">Instant Transfers</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+              <CardContent className="p-5 md:p-6">
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
+                  <img src={investmentIcon} alt="Transfers" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Instant Transfers</h3>
+                <p className="mt-2 text-xs md:text-sm text-muted-foreground">
                   Send money instantly with transfers, PayID, and bill payments available 24/7
                 </p>
               </CardContent>
             </Card>
 
             <Card data-testid="card-feature-mobile">
-              <CardContent className="p-6">
-                <Smartphone className="h-12 w-12 text-primary" />
-                <h3 className="mt-4 text-xl font-bold">Mobile First</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+              <CardContent className="p-5 md:p-6">
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
+                  <img src={mobileIcon} alt="Mobile First" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Mobile First</h3>
+                <p className="mt-2 text-xs md:text-sm text-muted-foreground">
                   Full-featured banking on any device. Responsive design works perfectly everywhere
                 </p>
               </CardContent>
             </Card>
 
             <Card data-testid="card-feature-support">
-              <CardContent className="p-6">
-                <Shield className="h-12 w-12 text-primary" />
-                <h3 className="mt-4 text-xl font-bold">Protected Accounts</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
+              <CardContent className="p-5 md:p-6">
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
+                  <img src={shieldIcon} alt="Protected Accounts" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Protected Accounts</h3>
+                <p className="mt-2 text-xs md:text-sm text-muted-foreground">
                   Your deposits are protected with comprehensive insurance and regulatory compliance
                 </p>
               </CardContent>
@@ -457,51 +483,75 @@ export default function Landing() {
       </section>
 
       {/* Tools & Calculators Section */}
-      <section className="py-16 md:py-20 bg-gradient-to-b from-background to-blue-50/20 dark:to-blue-950/10">
+      <section className="py-12 md:py-16 bg-gradient-to-b from-background to-blue-50/20 dark:to-blue-950/10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-3xl font-bold">Financial Tools & Calculators</h2>
-            <p className="mt-4 text-muted-foreground">
+          <div className="mx-auto mb-8 md:mb-12 max-w-2xl text-center">
+            <h2 className="text-2xl md:text-3xl font-bold">Financial Tools & Calculators</h2>
+            <p className="mt-3 md:mt-4 text-sm md:text-base text-muted-foreground">
               Make informed decisions with our free financial planning tools
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="hover-elevate cursor-pointer" data-testid="tool-mortgage">
-              <CardContent className="p-6 text-center">
-                <Home className="h-10 w-10 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Mortgage Calculator</h3>
-                <p className="text-sm text-muted-foreground">
+          <div className="grid gap-4 md:gap-6 grid-cols-2 lg:grid-cols-4">
+            <Card 
+              className="hover-elevate cursor-pointer" 
+              data-testid="tool-mortgage"
+              onClick={() => setLocation('/calculators')}
+            >
+              <CardContent className="p-4 md:p-6 text-center">
+                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center p-3">
+                  <img src={homeIcon} alt="Mortgage Calculator" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-sm md:text-base font-semibold mb-2">Mortgage Calculator</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">
                   Estimate your monthly payments
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="hover-elevate cursor-pointer" data-testid="tool-savings">
-              <CardContent className="p-6 text-center">
-                <PiggyBank className="h-10 w-10 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Savings Calculator</h3>
-                <p className="text-sm text-muted-foreground">
+            <Card 
+              className="hover-elevate cursor-pointer" 
+              data-testid="tool-savings"
+              onClick={() => setLocation('/calculators')}
+            >
+              <CardContent className="p-4 md:p-6 text-center">
+                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center p-3">
+                  <img src={savingsIcon} alt="Savings Calculator" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-sm md:text-base font-semibold mb-2">Savings Calculator</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">
                   Plan your savings goals
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="hover-elevate cursor-pointer" data-testid="tool-loan">
-              <CardContent className="p-6 text-center">
-                <Calculator className="h-10 w-10 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Loan Calculator</h3>
-                <p className="text-sm text-muted-foreground">
+            <Card 
+              className="hover-elevate cursor-pointer" 
+              data-testid="tool-loan"
+              onClick={() => setLocation('/calculators')}
+            >
+              <CardContent className="p-4 md:p-6 text-center">
+                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center p-3">
+                  <img src={calculatorIcon} alt="Loan Calculator" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-sm md:text-base font-semibold mb-2">Loan Calculator</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">
                   Calculate loan payments
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="hover-elevate cursor-pointer" data-testid="tool-investment">
-              <CardContent className="p-6 text-center">
-                <TrendingUp className="h-10 w-10 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Investment Calculator</h3>
-                <p className="text-sm text-muted-foreground">
+            <Card 
+              className="hover-elevate cursor-pointer" 
+              data-testid="tool-investment"
+              onClick={() => setLocation('/calculators')}
+            >
+              <CardContent className="p-4 md:p-6 text-center">
+                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center p-3">
+                  <img src={investmentIcon} alt="Investment Calculator" className="w-full h-full object-contain" />
+                </div>
+                <h3 className="text-sm md:text-base font-semibold mb-2">Investment Calculator</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">
                   Project investment growth
                 </p>
               </CardContent>
