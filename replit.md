@@ -1,7 +1,13 @@
 # Fundamental Financial Credit - Banking Application
 
 ## Overview
-Fundamental Financial Credit is a modern, multi-region online banking platform for Australia, USA, and New Zealand. It offers comprehensive banking services including account management, card services, transfers (domestic and international), bill payments, PayID integration, and administrative controls. The platform prioritizes security and a professional user experience, mimicking established financial institutions. Key capabilities include secure access code systems, advanced card brand detection and design, versatile transfer methods, personalized user dashboards, and professional banking features like security alerts, regional contact information, regulatory compliance badges, and mobile app promotion.
+Fundamental Financial Credit is a modern, multi-region online banking platform for Australia, USA, and New Zealand. It offers comprehensive banking services including account management, card services, transfers (domestic and international), bill payments, PayID integration, and administrative controls. The platform prioritizes security and a professional user experience, mimicking established financial institutions. Key capabilities include:
+- Secure access code systems
+- Advanced card brand detection and design
+- Versatile transfer methods
+- Personalized user dashboards
+- Professional banking features (security alerts, regional contact information, regulatory compliance badges, mobile app promotion)
+- **Smart address autocomplete** with automatic city/state lookup via postal code for AU, US, and NZ regions
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -13,7 +19,13 @@ Preferred communication style: Simple, everyday language.
 - **UI/UX**: shadcn/ui (New York variant) with Radix UI primitives, Tailwind CSS for styling, Inter font family. Design is inspired by leading financial platforms with custom theming, responsive design, and light/dark mode support. Features professional card UI with brand-specific gradients and logos, 3D realistic icons for landing page elements, and a banking background image for authenticated views.
 - **State Management**: TanStack Query (React Query v5) for server state and caching.
 - **Routing**: Wouter for client-side routing.
-- **Smart Address Input**: Reusable AddressInput component with automatic city/state lookup via Zippopotam.us API. Supports AU, US, and NZ postal codes with real-time validation and auto-fill.
+- **Smart Address Input**: Reusable `AddressInput` component with automatic city/state lookup via Zippopotam.us free API (no API key required). Features:
+  - Real-time postal code validation
+  - Auto-fills city and state within 500ms
+  - Supports AU, US, and NZ postal codes
+  - Debounced API calls for efficiency
+  - Error handling for invalid codes
+  - Integrated in: Admin user management, user registration, and profile settings
 - **User Flow**: Unauthenticated users see a landing page; authenticated users without accounts go through access code verification; authenticated users with accounts access full features; admin users have additional management routes.
 
 ### Backend Architecture

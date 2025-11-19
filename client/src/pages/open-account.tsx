@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { CreditCard, PiggyBank, Building2, ArrowLeft, CheckCircle2 } from "lucide-react";
 import bgPattern from "@assets/banking-background.jpg";
+import { AddressInput } from "@/components/address-input";
 
 const accountOpeningSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -22,7 +23,9 @@ const accountOpeningSchema = z.object({
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   address: z.string().min(5, "Address must be at least 5 characters"),
   city: z.string().min(2, "City is required"),
+  state: z.string().min(2, "State is required"),
   postalCode: z.string().min(4, "Postal code is required"),
+  country: z.string().min(2, "Country is required"),
   accountType: z.enum(["checking", "savings", "business"]),
   initialDeposit: z.string().min(1, "Initial deposit is required").default("0"),
   username: z.string().min(4, "Username must be at least 4 characters"),
@@ -49,6 +52,11 @@ export default function OpenAccount() {
       username: "",
       password: "",
       confirmPassword: "",
+      country: "Australia",
+      state: "",
+      city: "",
+      postalCode: "",
+      address: "",
     },
   });
 
@@ -376,49 +384,20 @@ export default function OpenAccount() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Address</FormLabel>
-                        <FormControl>
-                          <Input {...field} data-testid="input-address" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                  <AddressInput
+                    country={form.watch("country")}
+                    postalCode={form.watch("postalCode")}
+                    city={form.watch("city")}
+                    state={form.watch("state")}
+                    addressLine1={form.watch("address")}
+                    onCountryChange={(value) => form.setValue("country", value)}
+                    onPostalCodeChange={(value) => form.setValue("postalCode", value)}
+                    onCityChange={(value) => form.setValue("city", value)}
+                    onStateChange={(value) => form.setValue("state", value)}
+                    onAddressLine1Change={(value) => form.setValue("address", value)}
+                    showAddress
+                    showCountry
                   />
-
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>City</FormLabel>
-                          <FormControl>
-                            <Input {...field} data-testid="input-city" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="postalCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Postal Code</FormLabel>
-                          <FormControl>
-                            <Input {...field} data-testid="input-postal" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
 
                   <FormField
                     control={form.control}

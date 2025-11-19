@@ -9,6 +9,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AddressInput } from "@/components/address-input";
 
 import dogAvatar from "@assets/stock_images/cute_cartoon_dog_ava_f554a6f2.jpg";
 import catAvatar from "@assets/stock_images/cute_cartoon_cat_ava_1ac2277f.jpg";
@@ -63,6 +64,13 @@ export default function Settings() {
   const [showAvatarDialog, setShowAvatarDialog] = useState(false);
   const [firstName, setFirstName] = useState(user?.firstName || '');
   const [lastName, setLastName] = useState(user?.lastName || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const [addressLine1, setAddressLine1] = useState(user?.addressLine1 || '');
+  const [addressLine2, setAddressLine2] = useState(user?.addressLine2 || '');
+  const [city, setCity] = useState(user?.city || '');
+  const [state, setState] = useState(user?.state || '');
+  const [postalCode, setPostalCode] = useState(user?.postalCode || '');
+  const [country, setCountry] = useState(user?.country || 'Australia');
 
   const updateAvatarMutation = useMutation({
     mutationFn: async (avatar: string) => {
@@ -86,7 +94,17 @@ export default function Settings() {
   });
 
   const updateProfileMutation = useMutation({
-    mutationFn: async (data: { firstName: string; lastName: string }) => {
+    mutationFn: async (data: { 
+      firstName: string; 
+      lastName: string;
+      phone?: string;
+      addressLine1?: string;
+      addressLine2?: string;
+      city?: string;
+      state?: string;
+      postalCode?: string;
+      country?: string;
+    }) => {
       return await apiRequest("PATCH", '/api/user/profile', data);
     },
     onSuccess: () => {
@@ -119,7 +137,17 @@ export default function Settings() {
       });
       return;
     }
-    updateProfileMutation.mutate({ firstName: firstName.trim(), lastName: lastName.trim() });
+    updateProfileMutation.mutate({ 
+      firstName: firstName.trim(), 
+      lastName: lastName.trim(),
+      phone: phone.trim() || undefined,
+      addressLine1: addressLine1.trim() || undefined,
+      addressLine2: addressLine2.trim() || undefined,
+      city: city.trim() || undefined,
+      state: state.trim() || undefined,
+      postalCode: postalCode.trim() || undefined,
+      country: country.trim() || undefined,
+    });
   };
 
   return (
@@ -187,9 +215,37 @@ export default function Settings() {
                 />
               </div>
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number (Optional)</Label>
+              <Input
+                id="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Enter phone number"
+                data-testid="input-phone"
+              />
+            </div>
+
+            <AddressInput
+              country={country}
+              postalCode={postalCode}
+              city={city}
+              state={state}
+              addressLine1={addressLine1}
+              addressLine2={addressLine2}
+              onCountryChange={setCountry}
+              onPostalCodeChange={setPostalCode}
+              onCityChange={setCity}
+              onStateChange={setState}
+              onAddressLine1Change={setAddressLine1}
+              onAddressLine2Change={setAddressLine2}
+              showAddress
+              showCountry
+            />
+
             <Button
               onClick={handleProfileUpdate}
-              disabled={updateProfileMutation.isPending || (firstName === user?.firstName && lastName === user?.lastName)}
+              disabled={updateProfileMutation.isPending}
               data-testid="button-save-profile"
             >
               {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
