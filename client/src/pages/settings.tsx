@@ -12,17 +12,17 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 
 import dogAvatar from "@assets/stock_images/cute_cartoon_dog_ava_f554a6f2.jpg";
 import catAvatar from "@assets/stock_images/cute_cartoon_cat_ava_1ac2277f.jpg";
-import birdAvatar from "@assets/stock_images/cute_cartoon_bird_av_8d9e30a4.jpg";
-import lionAvatar from "@assets/stock_images/cute_cartoon_lion_av_6338142e.jpg";
+import birdAvatar from "@assets/stock_images/colorful_parrot_bird_b2ee6c60.jpg";
+import lionAvatar from "@assets/stock_images/majestic_male_lion_f_96255fb6.jpg";
 import bearAvatar from "@assets/stock_images/cute_cartoon_bear_av_40b41f20.jpg";
-import cowAvatar from "@assets/stock_images/cute_cartoon_cow_ava_1cc8911c.jpg";
+import cowAvatar from "@assets/stock_images/brown_and_white_cow__0d8da049.jpg";
 import rabbitAvatar from "@assets/stock_images/cute_cartoon_rabbit__9c34f387.jpg";
 import pandaAvatar from "@assets/stock_images/cute_cartoon_panda_a_863bd583.jpg";
 import foxAvatar from "@assets/stock_images/cute_cartoon_fox_ava_7f79586d.jpg";
-import tigerAvatar from "@assets/stock_images/cute_cartoon_tiger_a_ddb3c42a.jpg";
+import tigerAvatar from "@assets/stock_images/orange_tiger_face_po_078de77a.jpg";
 import penguinAvatar from "@assets/stock_images/cute_cartoon_penguin_0157b1f2.jpg";
 import koalaAvatar from "@assets/stock_images/cute_cartoon_koala_a_927f9c54.jpg";
-import elephantAvatar from "@assets/stock_images/cute_cartoon_elephan_923250d1.jpg";
+import elephantAvatar from "@assets/stock_images/gray_elephant_face_c_63f27bd2.jpg";
 
 const avatarImages: Record<string, string> = {
   dog: dogAvatar,
