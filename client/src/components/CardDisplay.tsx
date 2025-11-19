@@ -139,8 +139,8 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
         <div className="flex items-start justify-between">
           <div>
             <div className="flex flex-col gap-0.5">
-              <h2 className="text-xl font-bold tracking-tight">The Peoples</h2>
-              <h2 className="text-xl font-bold tracking-tight -mt-1">Finance</h2>
+              <h2 className="text-lg font-bold tracking-tight">Fundamental</h2>
+              <h2 className="text-lg font-bold tracking-tight -mt-1">Financial Credit</h2>
             </div>
             <p className="text-[10px] text-white/50 uppercase tracking-wider mt-2">
               {card.cardType === 'credit' ? 'Credit Card' : 'Debit Card'}
