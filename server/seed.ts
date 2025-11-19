@@ -2,6 +2,7 @@ import { db } from "./db";
 import { users, accessCodes, accounts } from "@shared/schema";
 import { generateAccessCode, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode } from "./storage";
 import bcrypt from "bcryptjs";
+import { eq } from "drizzle-orm";
 
 async function seed() {
   console.log("🌱 Seeding database...");
@@ -10,26 +11,38 @@ async function seed() {
     // PERMANENT ADMIN CREDENTIALS - DO NOT CHANGE
     const adminPassword = await bcrypt.hash("Admin2000!!", 10);
 
-    // Create admin user with permanent credentials
-    const [adminUser] = await db.insert(users).values({
-      username: "Admin@fundamentalfinancial.com",
-      password: adminPassword,
-      email: "Admin@fundamentalfinancial.com",
-      firstName: "System",
-      lastName: "Administrator",
-      isAdmin: true,
-      isBlocked: false,
-      isLocked: false,
-    }).onConflictDoUpdate({
-      target: users.username,
-      set: {
-        isAdmin: true,
+    // Check if admin already exists to preserve their profile name changes
+    const existingAdminResult = await db.select().from(users).where(eq(users.username, "Admin@fundamentalfinancial.com")).limit(1);
+    const existingAdmin = existingAdminResult[0];
+    
+    let adminUser;
+    if (existingAdmin) {
+      // Admin exists - update only password, email, and admin status (preserve their name changes)
+      const [updated] = await db
+        .update(users)
+        .set({
+          password: adminPassword,
+          email: "Admin@fundamentalfinancial.com",
+          isAdmin: true,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, existingAdmin.id))
+        .returning();
+      adminUser = updated;
+    } else {
+      // Admin doesn't exist - create with default names
+      const [created] = await db.insert(users).values({
+        username: "Admin@fundamentalfinancial.com",
         password: adminPassword,
         email: "Admin@fundamentalfinancial.com",
         firstName: "System",
         lastName: "Administrator",
-      }
-    }).returning();
+        isAdmin: true,
+        isBlocked: false,
+        isLocked: false,
+      }).returning();
+      adminUser = created;
+    }
 
     // Create admin account with FIXED account number "1" and $400 billion balance
     const adminAccountNumber = "1";

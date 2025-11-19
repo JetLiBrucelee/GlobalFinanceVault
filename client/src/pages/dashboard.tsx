@@ -77,7 +77,7 @@ export default function Dashboard() {
             {accountsLoading ? (
               <Skeleton className="h-8 w-32" />
             ) : (
-              <div className="text-2xl font-bold" data-testid="text-balance">
+              <div className="text-2xl font-bold break-words" data-testid="text-balance" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                 {formatCurrency(primaryAccount?.balance || 0, true)}
               </div>
             )}
