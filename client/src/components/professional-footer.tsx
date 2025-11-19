@@ -1,5 +1,7 @@
-import { Facebook, Twitter, Youtube, Linkedin, Instagram } from "lucide-react";
+import { Facebook, Twitter, Youtube, Linkedin, Instagram, Phone, Mail, MapPin } from "lucide-react";
 import { useLocation } from "wouter";
+import fdicBadge from "@assets/stock_images/fdic_member_logo_off_bf098804.jpg";
+import equalHousingBadge from "@assets/stock_images/equal_housing_lender_248b048d.jpg";
 
 export function ProfessionalFooter() {
   const [, setLocation] = useLocation();
@@ -67,9 +69,100 @@ export function ProfessionalFooter() {
           </a>
         </div>
         
+        {/* Regional Contact Information */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 pb-8 border-b">
+          <div>
+            <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              Australia
+            </h4>
+            <div className="space-y-2 text-xs text-muted-foreground">
+              <p className="flex items-center gap-2">
+                <Phone className="h-3 w-3" />
+                1800 FUNDCRED (1800 386 327)
+              </p>
+              <p className="flex items-center gap-2">
+                <Mail className="h-3 w-3" />
+                support@fundcredit.com.au
+              </p>
+              <p className="mt-3 font-medium text-foreground">Routing Information:</p>
+              <p>BSB: 062-000 to 062-999</p>
+              <p>SWIFT: FUNDAUSX</p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              United States
+            </h4>
+            <div className="space-y-2 text-xs text-muted-foreground">
+              <p className="flex items-center gap-2">
+                <Phone className="h-3 w-3" />
+                1-800-FUND-USA (1-800-386-3872)
+              </p>
+              <p className="flex items-center gap-2">
+                <Mail className="h-3 w-3" />
+                support@fundcredit.com
+              </p>
+              <p className="mt-3 font-medium text-foreground">Routing Information:</p>
+              <p>Routing Number: 021000021</p>
+              <p>SWIFT: FUNDUSNYX</p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              New Zealand
+            </h4>
+            <div className="space-y-2 text-xs text-muted-foreground">
+              <p className="flex items-center gap-2">
+                <Phone className="h-3 w-3" />
+                0800 FUNDCRED (0800 386 327)
+              </p>
+              <p className="flex items-center gap-2">
+                <Mail className="h-3 w-3" />
+                support@fundcredit.co.nz
+              </p>
+              <p className="mt-3 font-medium text-foreground">Routing Information:</p>
+              <p>Bank Code: 03-0000 to 03-9999</p>
+              <p>SWIFT: FUNDNZAX</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Regulatory Badges and Interest Rates */}
+        <div className="mb-8 pb-8 border-b">
+          <div className="flex flex-wrap items-center gap-6 mb-6">
+            <img src={fdicBadge} alt="FDIC Member" className="h-12 object-contain" />
+            <img src={equalHousingBadge} alt="Equal Housing Lender" className="h-12 object-contain" />
+            <div className="flex-1 min-w-[250px]">
+              <p className="text-xs font-semibold mb-1">Current Interest Rates (as of Nov 19, 2024)</p>
+              <div className="text-xs text-muted-foreground space-y-0.5">
+                <p>Savings Account: 4.50% APY</p>
+                <p>1-Year CD: 5.25% APY</p>
+                <p>Home Loan: From 6.75% APR*</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground italic">
+            *APY = Annual Percentage Yield. APR = Annual Percentage Rate. Rates subject to change. Minimum balance requirements may apply. 
+            Early withdrawal penalties apply to CDs. Home loan rates vary based on credit score, loan term, and down payment.
+          </p>
+        </div>
+
         <div className="text-xs text-muted-foreground leading-relaxed mb-6 max-w-5xl">
           <p className="mb-3">
+            <strong className="text-foreground">Member FDIC.</strong> Deposits are insured up to $250,000 per depositor, per insured bank, for each account ownership category. 
+            Equal Housing Lender. All loans subject to credit approval.
+          </p>
+          <p className="mb-3">
             For Fundamental Financial Credit-issued products, conditions, fees and charges apply. These may change or we may introduce new ones in the future. Full details are available on request. Lending criteria apply to approved credit products. This information does not take your personal objectives, circumstances or needs into account. Consider its appropriateness to these factors before acting on it. Read the disclosure documents for your selected product or service, including the Terms and Conditions, before deciding. Target Market Determinations for the products and services described on this website are available only in Australia from Fundamental Financial Credit Corporation ABN 33 007 457 141 AFSL and Australian credit licence 233714.
+          </p>
+          <p className="text-xs">
+            Fundamental Financial Credit operates under banking licenses in Australia (APRA), United States (FDIC), and New Zealand (RBNZ). 
+            Investment products are not FDIC insured, are not deposits or obligations of the bank, and may lose value.
           </p>
         </div>
       </div>

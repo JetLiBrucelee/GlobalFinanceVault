@@ -477,6 +477,118 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Mobile App Section */}
+      <section className="py-16 md:py-20 bg-gradient-to-b from-primary/5 to-background">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div>
+              <Badge className="mb-4">Available Now</Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Bank On The Go With Our Award-Winning Mobile App
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Manage your accounts, pay bills, transfer money, and deposit checks from anywhere. 
+                Our app features biometric login, real-time notifications, and instant card controls for your security and convenience.
+              </p>
+              
+              <div className="space-y-4 mb-8">
+                <div className="flex gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Check className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">Instant Money Transfers</h4>
+                    <p className="text-xs text-muted-foreground">Send money to anyone instantly with their email or phone number</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Check className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">Mobile Check Deposit</h4>
+                    <p className="text-xs text-muted-foreground">Deposit checks by taking a photo - funds available same day</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Check className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">Biometric Security</h4>
+                    <p className="text-xs text-muted-foreground">Face ID and fingerprint login for enhanced protection</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  variant="outline" 
+                  className="h-auto py-3 px-6 bg-black hover:bg-black/90 text-white border-black"
+                  onClick={() => window.open('https://apps.apple.com', '_blank')}
+                >
+                  <div className="flex items-center gap-3">
+                    <svg className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                    </svg>
+                    <div className="text-left">
+                      <div className="text-[10px] leading-tight">Download on the</div>
+                      <div className="text-sm font-semibold leading-tight">App Store</div>
+                    </div>
+                  </div>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-auto py-3 px-6"
+                  onClick={() => window.open('https://play.google.com', '_blank')}
+                >
+                  <div className="flex items-center gap-3">
+                    <svg className="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/>
+                    </svg>
+                    <div className="text-left">
+                      <div className="text-[10px] leading-tight">GET IT ON</div>
+                      <div className="text-sm font-semibold leading-tight">Google Play</div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+
+              <p className="text-xs text-muted-foreground mt-4">
+                ⭐️ Rated 4.8/5 stars with over 2.5 million downloads
+              </p>
+            </div>
+
+            <div className="relative">
+              <div className="bg-gradient-to-br from-primary/20 to-primary/5 rounded-3xl p-8 md:p-12">
+                <div className="aspect-[9/16] max-w-[280px] mx-auto bg-black rounded-[3rem] shadow-2xl p-3">
+                  <div className="bg-white dark:bg-gray-900 h-full rounded-[2.5rem] overflow-hidden relative">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-black rounded-b-2xl"></div>
+                    <div className="pt-10 px-4 h-full flex flex-col">
+                      <div className="flex justify-between items-center mb-6">
+                        <span className="text-2xl font-bold">$25,847</span>
+                        <div className="h-10 w-10 rounded-full bg-primary/10"></div>
+                      </div>
+                      <div className="space-y-3 flex-1">
+                        <div className="bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl p-4 text-white">
+                          <p className="text-xs opacity-80">Checking Account</p>
+                          <p className="text-lg font-bold">$12,430</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-green-500 to-green-700 rounded-xl p-4 text-white">
+                          <p className="text-xs opacity-80">Savings Account</p>
+                          <p className="text-lg font-bold">$13,417</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
