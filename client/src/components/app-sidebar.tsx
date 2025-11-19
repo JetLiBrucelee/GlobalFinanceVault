@@ -37,6 +37,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
     { title: "Manage Users", url: "/admin/users", icon: Users, testId: "link-admin-users" },
     { title: "Transactions", url: "/admin/transactions", icon: ArrowLeftRight, testId: "link-admin-transactions" },
     { title: "Access Codes", url: "/admin/access-codes", icon: Shield, testId: "link-admin-access-codes" },
+    { title: "Settings", url: "/settings", icon: Settings, testId: "link-settings" },
   ];
 
   return (
@@ -44,28 +45,33 @@ export function AppSidebar({ user }: AppSidebarProps) {
       <SidebarHeader className="p-6">
         <div className="flex items-center gap-2">
           <Shield className="h-8 w-8 text-sidebar-primary" data-testid="logo-icon" />
-          <span className="text-lg font-bold" data-testid="text-brand-name">The Peoples Finance</span>
+          <div className="flex flex-col">
+            <span className="text-lg font-bold leading-tight" data-testid="text-brand-name">Fundamental</span>
+            <span className="text-sm font-semibold text-muted-foreground leading-tight">Financial Credit</span>
+          </div>
         </div>
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Banking</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {userMenuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.url}>
-                    <Link href={item.url} data-testid={item.testId}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {!user?.isAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Banking</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {userMenuItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={location === item.url}>
+                      <Link href={item.url} data-testid={item.testId}>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         {user?.isAdmin && (
           <SidebarGroup>

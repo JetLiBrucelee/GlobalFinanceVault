@@ -19,11 +19,24 @@ export default function Dashboard() {
   const primaryAccount = accounts?.[0];
   const recentTransactions = transactions?.slice(0, 5) || [];
 
-  const formatCurrency = (amount: string | number) => {
+  const formatCurrency = (amount: string | number, abbreviated = false) => {
+    const value = Number(amount);
+    
+    if (abbreviated && value >= 1_000_000_000) {
+      const billions = value / 1_000_000_000;
+      return `$${billions.toFixed(billions >= 100 ? 0 : 1)}B`;
+    } else if (abbreviated && value >= 1_000_000) {
+      const millions = value / 1_000_000;
+      return `$${millions.toFixed(millions >= 100 ? 0 : 1)}M`;
+    } else if (abbreviated && value >= 1_000) {
+      const thousands = value / 1_000;
+      return `$${thousands.toFixed(thousands >= 100 ? 0 : 1)}K`;
+    }
+    
     return new Intl.NumberFormat('en-AU', {
       style: 'currency',
       currency: 'AUD',
-    }).format(Number(amount));
+    }).format(value);
   };
 
   const getStatusBadge = (status: string) => {
@@ -65,7 +78,7 @@ export default function Dashboard() {
               <Skeleton className="h-8 w-32" />
             ) : (
               <div className="text-2xl font-bold" data-testid="text-balance">
-                {formatCurrency(primaryAccount?.balance || 0)}
+                {formatCurrency(primaryAccount?.balance || 0, true)}
               </div>
             )}
             <p className="text-xs text-muted-foreground mt-1" data-testid="text-account-number">
