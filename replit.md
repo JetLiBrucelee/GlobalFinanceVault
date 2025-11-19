@@ -71,6 +71,7 @@ Preferred communication style: Simple, everyday language.
 - Inter font family for typography with specific weights for headings, body text, and financial data
 - Custom CSS variables for theming with light/dark mode support
 - Responsive design with mobile-first breakpoints (768px mobile threshold)
+- Banking background image (`banking-background.jpg`) applied globally to authenticated views with fixed positioning and backdrop blur effects for readability
 
 **State Management**
 - TanStack Query (React Query v5) for server state management and caching

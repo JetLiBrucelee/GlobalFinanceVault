@@ -29,6 +29,7 @@ import Loans from "@/pages/loans";
 import CreditCards from "@/pages/credit-cards";
 import Support from "@/pages/support";
 import OpenAccount from "@/pages/open-account";
+import backgroundImage from "@assets/banking-background.jpg";
 
 function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -116,10 +117,16 @@ function AppContent() {
     <TooltipProvider>
       {!isLoading && isAuthenticated ? (
         <SidebarProvider style={style as React.CSSProperties}>
-          <div className="flex h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50 dark:from-slate-950 dark:via-blue-950/10 dark:to-slate-950">
+          <div 
+            className="flex h-screen w-full bg-cover bg-center bg-no-repeat bg-fixed"
+            style={{ 
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundColor: '#f8fafc'
+            }}
+          >
             <AppSidebar user={user} />
             <div className="flex flex-col flex-1 overflow-hidden">
-              <header className="flex items-center justify-between gap-4 p-4 border-b bg-background/80 backdrop-blur-sm">
+              <header className="flex items-center justify-between gap-4 p-4 border-b bg-background/90 backdrop-blur-md">
                 <SidebarTrigger data-testid="button-sidebar-toggle" />
               </header>
               <main className="flex-1 overflow-y-auto">
