@@ -51,9 +51,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-row">
       {/* Left Side - Branding */}
-      <div className="hidden md:flex md:w-1/2 p-12 text-white flex-col justify-between relative overflow-hidden" 
+      <div className="flex w-1/2 p-12 text-white flex-col justify-between relative overflow-hidden" 
         style={{
           backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url(${loginBg})`,
           backgroundSize: 'cover',
@@ -103,11 +103,11 @@ export default function Login() {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50 dark:from-slate-950 dark:via-blue-950/10 dark:to-slate-950">
+      <div className="w-1/2 flex items-center justify-center p-8 bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50 dark:from-slate-950 dark:via-blue-950/10 dark:to-slate-950">
         <Card className="w-full max-w-md shadow-2xl border-2" data-testid="card-login">
           <CardHeader className="space-y-2 text-center pb-8">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <Shield className="h-8 w-8 text-primary" data-testid="icon-shield" />
+            <div className="mx-auto mb-4">
+              <img src={bankLogo} alt="Fundamental Financial Credit" className="h-16 w-16 object-contain rounded-full" />
             </div>
             <CardTitle className="text-2xl font-bold" data-testid="text-title">
               Sign In to Your Account
