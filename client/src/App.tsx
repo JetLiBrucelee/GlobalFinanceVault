@@ -85,9 +85,10 @@ function Router() {
   }
 
   // User is authenticated and has an account - show full app
+  // Admins should see admin dashboard at root, regular users see user dashboard
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
+      <Route path="/" component={user?.isAdmin ? AdminDashboard : Dashboard} />
       <Route path="/cards" component={Cards} />
       <Route path="/transfers" component={Transfers} />
       <Route path="/statements" component={Statements} />

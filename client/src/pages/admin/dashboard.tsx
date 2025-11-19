@@ -92,7 +92,7 @@ export default function AdminDashboard() {
             ) : (
               <>
                 <div className="text-2xl font-bold" data-testid="text-balance">
-                  {formatCurrency(adminAccount?.balance || 0, true)}
+                  {formatCurrency(adminAccount?.balance || 0, false)}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1" data-testid="text-account-number">
                   {adminAccount?.accountNumber ? `****${adminAccount.accountNumber.slice(-4)}` : '****'}

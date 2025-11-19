@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { User } from "@shared/schema";
 import { SiPandas } from "react-icons/si";
+import bankLogo from "@assets/bank-logo.jpg";
 
 const avatarIcons: Record<string, any> = {
   dog: Dog,
@@ -57,7 +58,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
     <Sidebar data-testid="sidebar-main">
       <SidebarHeader className="p-6">
         <div className="flex items-center gap-2">
-          <img src="/attached_assets/bank-logo.jpg" alt="Logo" className="h-8 w-8 rounded" data-testid="logo-icon" />
+          <img src={bankLogo} alt="Logo" className="h-8 w-8 rounded" data-testid="logo-icon" />
           <div className="flex flex-col">
             <span className="text-lg font-bold leading-tight" data-testid="text-brand-name">Fundamental</span>
             <span className="text-sm font-semibold text-muted-foreground leading-tight">Financial Credit</span>
