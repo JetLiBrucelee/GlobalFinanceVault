@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Save, Edit2, X, CheckCircle } from "lucide-react";
 import type { User, Account, Transaction } from "@shared/schema";
+import { AddressInput } from "@/components/address-input";
 
 interface UserDetails {
   user: User;
@@ -220,65 +221,22 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
                           </div>
                         </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="addressLine1">Address Line 1</Label>
-                          <Input
-                            id="addressLine1"
-                            value={profileForm.addressLine1 || ""}
-                            onChange={(e) => setProfileForm({ ...profileForm, addressLine1: e.target.value })}
-                            data-testid="input-address-line1"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="addressLine2">Address Line 2</Label>
-                          <Input
-                            id="addressLine2"
-                            value={profileForm.addressLine2 || ""}
-                            onChange={(e) => setProfileForm({ ...profileForm, addressLine2: e.target.value })}
-                            data-testid="input-address-line2"
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="city">City</Label>
-                            <Input
-                              id="city"
-                              value={profileForm.city || ""}
-                              onChange={(e) => setProfileForm({ ...profileForm, city: e.target.value })}
-                              data-testid="input-city"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="state">State/Province</Label>
-                            <Input
-                              id="state"
-                              value={profileForm.state || ""}
-                              onChange={(e) => setProfileForm({ ...profileForm, state: e.target.value })}
-                              data-testid="input-state"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="postalCode">Postal Code</Label>
-                            <Input
-                              id="postalCode"
-                              value={profileForm.postalCode || ""}
-                              onChange={(e) => setProfileForm({ ...profileForm, postalCode: e.target.value })}
-                              data-testid="input-postal-code"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="country">Country</Label>
-                          <Input
-                            id="country"
-                            value={profileForm.country || ""}
-                            onChange={(e) => setProfileForm({ ...profileForm, country: e.target.value })}
-                            data-testid="input-country"
-                          />
-                        </div>
+                        <AddressInput
+                          country={profileForm.country || ""}
+                          postalCode={profileForm.postalCode || ""}
+                          city={profileForm.city || ""}
+                          state={profileForm.state || ""}
+                          addressLine1={profileForm.addressLine1 || ""}
+                          addressLine2={profileForm.addressLine2 || ""}
+                          onCountryChange={(value) => setProfileForm({ ...profileForm, country: value })}
+                          onPostalCodeChange={(value) => setProfileForm({ ...profileForm, postalCode: value })}
+                          onCityChange={(value) => setProfileForm({ ...profileForm, city: value })}
+                          onStateChange={(value) => setProfileForm({ ...profileForm, state: value })}
+                          onAddressLine1Change={(value) => setProfileForm({ ...profileForm, addressLine1: value })}
+                          onAddressLine2Change={(value) => setProfileForm({ ...profileForm, addressLine2: value })}
+                          showAddress
+                          showCountry
+                        />
 
                         <div className="flex gap-2">
                           <Button onClick={handleSaveProfile} disabled={updateUserMutation.isPending} data-testid="button-save-profile">

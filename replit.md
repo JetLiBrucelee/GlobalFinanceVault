@@ -13,6 +13,7 @@ Preferred communication style: Simple, everyday language.
 - **UI/UX**: shadcn/ui (New York variant) with Radix UI primitives, Tailwind CSS for styling, Inter font family. Design is inspired by leading financial platforms with custom theming, responsive design, and light/dark mode support. Features professional card UI with brand-specific gradients and logos, 3D realistic icons for landing page elements, and a banking background image for authenticated views.
 - **State Management**: TanStack Query (React Query v5) for server state and caching.
 - **Routing**: Wouter for client-side routing.
+- **Smart Address Input**: Reusable AddressInput component with automatic city/state lookup via Zippopotam.us API. Supports AU, US, and NZ postal codes with real-time validation and auto-fill.
 - **User Flow**: Unauthenticated users see a landing page; authenticated users without accounts go through access code verification; authenticated users with accounts access full features; admin users have additional management routes.
 
 ### Backend Architecture
