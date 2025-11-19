@@ -62,10 +62,24 @@ export default function Transfers() {
   const inProgressTransactions = userTransactions.filter((t: any) => t.status === 'in-progress');
 
   // Transfer form
+  const [transferMethod, setTransferMethod] = useState<'internal' | 'external' | 'wire'>('internal');
   const [transferForm, setTransferForm] = useState({
     toAccountNumber: '',
     amount: '',
     description: '',
+    // External transfer fields
+    routingNumber: '',
+    bsb: '',
+    beneficiaryName: '',
+    beneficiaryAddress: '',
+    // Wire transfer fields
+    swiftCode: '',
+    iban: '',
+    beneficiaryBankName: '',
+    beneficiaryBankAddress: '',
+    intermediaryBankName: '',
+    intermediaryBankSwift: '',
+    transferPurpose: '',
   });
 
   const [selectedUserId, setSelectedUserId] = useState('');
@@ -88,14 +102,57 @@ export default function Transfers() {
 
   const transferMutation = useMutation({
     mutationFn: async (data: typeof transferForm) => {
-      return await apiRequest("POST", "/api/transactions/transfer", data);
+      // Build transfer details based on method
+      let transferDetails: any = {};
+      
+      if (transferMethod === 'external') {
+        transferDetails = {
+          routingNumber: data.routingNumber,
+          bsb: data.bsb,
+          beneficiaryName: data.beneficiaryName,
+          beneficiaryAddress: data.beneficiaryAddress,
+        };
+      } else if (transferMethod === 'wire') {
+        transferDetails = {
+          swiftCode: data.swiftCode,
+          iban: data.iban,
+          beneficiaryBankName: data.beneficiaryBankName,
+          beneficiaryBankAddress: data.beneficiaryBankAddress,
+          intermediaryBankName: data.intermediaryBankName || undefined,
+          intermediaryBankSwift: data.intermediaryBankSwift || undefined,
+          transferPurpose: data.transferPurpose,
+        };
+      }
+      
+      return await apiRequest("POST", "/api/transactions/transfer", {
+        toAccountNumber: data.toAccountNumber,
+        amount: data.amount,
+        description: data.description,
+        transferMethod,
+        transferDetails,
+      });
     },
     onSuccess: () => {
       toast({
         title: "Transfer Initiated",
         description: "Your transfer is pending approval",
       });
-      setTransferForm({ toAccountNumber: '', amount: '', description: '' });
+      setTransferForm({
+        toAccountNumber: '',
+        amount: '',
+        description: '',
+        routingNumber: '',
+        bsb: '',
+        beneficiaryName: '',
+        beneficiaryAddress: '',
+        swiftCode: '',
+        iban: '',
+        beneficiaryBankName: '',
+        beneficiaryBankAddress: '',
+        intermediaryBankName: '',
+        intermediaryBankSwift: '',
+        transferPurpose: '',
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/transactions"] });
       queryClient.invalidateQueries({ queryKey: ["/api/accounts"] });
     },
@@ -241,6 +298,25 @@ export default function Transfers() {
                 }}
                 className="space-y-4"
               >
+                {/* Transfer Method Selection (non-admin only) */}
+                {!isAdmin && (
+                  <div className="space-y-3">
+                    <Label>Transfer Method</Label>
+                    <Tabs value={transferMethod} onValueChange={(v) => setTransferMethod(v as any)} className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="internal">Internal</TabsTrigger>
+                        <TabsTrigger value="external">External</TabsTrigger>
+                        <TabsTrigger value="wire">Wire</TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+                    <p className="text-xs text-muted-foreground">
+                      {transferMethod === 'internal' && 'Transfer to another account within The Peoples Finance'}
+                      {transferMethod === 'external' && 'Transfer to an external bank account (domestic)'}
+                      {transferMethod === 'wire' && 'International wire transfer to any bank worldwide'}
+                    </p>
+                  </div>
+                )}
+
                 {isAdmin ? (
                   <div className="space-y-2">
                     <Label htmlFor="selectUser">Select User</Label>
@@ -259,17 +335,169 @@ export default function Transfers() {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    <Label htmlFor="toAccountNumber">To Account Number</Label>
+                    <Label htmlFor="toAccountNumber">
+                      {transferMethod === 'internal' ? 'To Account Number' : 'Beneficiary Account Number'}
+                    </Label>
                     <Input
                       id="toAccountNumber"
                       type="text"
-                      placeholder="Enter account number"
+                      placeholder={transferMethod === 'wire' ? 'Enter IBAN or account number' : 'Enter account number'}
                       value={transferForm.toAccountNumber}
                       onChange={(e) => setTransferForm({ ...transferForm, toAccountNumber: e.target.value })}
                       required
                       data-testid="input-to-account"
                     />
                   </div>
+                )}
+                
+                {/* External Transfer Fields */}
+                {!isAdmin && transferMethod === 'external' && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      {primaryAccount?.region === 'AU' && (
+                        <div className="space-y-2">
+                          <Label htmlFor="bsb">BSB</Label>
+                          <Input
+                            id="bsb"
+                            type="text"
+                            placeholder="XXX-XXX"
+                            value={transferForm.bsb}
+                            onChange={(e) => setTransferForm({ ...transferForm, bsb: e.target.value })}
+                            required
+                          />
+                        </div>
+                      )}
+                      {primaryAccount?.region === 'US' && (
+                        <div className="space-y-2">
+                          <Label htmlFor="routingNumber">Routing Number</Label>
+                          <Input
+                            id="routingNumber"
+                            type="text"
+                            placeholder="XXXXXXXXX"
+                            value={transferForm.routingNumber}
+                            onChange={(e) => setTransferForm({ ...transferForm, routingNumber: e.target.value })}
+                            required
+                          />
+                        </div>
+                      )}
+                      <div className="space-y-2">
+                        <Label htmlFor="beneficiaryName">Beneficiary Name</Label>
+                        <Input
+                          id="beneficiaryName"
+                          type="text"
+                          placeholder="Full name"
+                          value={transferForm.beneficiaryName}
+                          onChange={(e) => setTransferForm({ ...transferForm, beneficiaryName: e.target.value })}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="beneficiaryAddress">Beneficiary Address</Label>
+                      <Textarea
+                        id="beneficiaryAddress"
+                        placeholder="Street address, city, state, postal code"
+                        value={transferForm.beneficiaryAddress}
+                        onChange={(e) => setTransferForm({ ...transferForm, beneficiaryAddress: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </>
+                )}
+                
+                {/* Wire Transfer Fields */}
+                {!isAdmin && transferMethod === 'wire' && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="swiftCode">SWIFT/BIC Code</Label>
+                        <Input
+                          id="swiftCode"
+                          type="text"
+                          placeholder="AAAABBCCXXX"
+                          value={transferForm.swiftCode}
+                          onChange={(e) => setTransferForm({ ...transferForm, swiftCode: e.target.value.toUpperCase() })}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="iban">IBAN (if applicable)</Label>
+                        <Input
+                          id="iban"
+                          type="text"
+                          placeholder="GBXXXXXXXXXXXXXXXXXX"
+                          value={transferForm.iban}
+                          onChange={(e) => setTransferForm({ ...transferForm, iban: e.target.value.toUpperCase() })}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="beneficiaryBankName">Beneficiary Bank Name</Label>
+                        <Input
+                          id="beneficiaryBankName"
+                          type="text"
+                          placeholder="Bank name"
+                          value={transferForm.beneficiaryBankName}
+                          onChange={(e) => setTransferForm({ ...transferForm, beneficiaryBankName: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="beneficiaryAddress">Beneficiary Address</Label>
+                        <Input
+                          id="beneficiaryAddress"
+                          type="text"
+                          placeholder="City, Country"
+                          value={transferForm.beneficiaryAddress}
+                          onChange={(e) => setTransferForm({ ...transferForm, beneficiaryAddress: e.target.value })}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="beneficiaryBankAddress">Beneficiary Bank Address</Label>
+                      <Textarea
+                        id="beneficiaryBankAddress"
+                        placeholder="Bank street address, city, country"
+                        value={transferForm.beneficiaryBankAddress}
+                        onChange={(e) => setTransferForm({ ...transferForm, beneficiaryBankAddress: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="intermediaryBankName">Intermediary Bank (Optional)</Label>
+                        <Input
+                          id="intermediaryBankName"
+                          type="text"
+                          placeholder="Bank name"
+                          value={transferForm.intermediaryBankName}
+                          onChange={(e) => setTransferForm({ ...transferForm, intermediaryBankName: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="intermediaryBankSwift">Intermediary SWIFT (Optional)</Label>
+                        <Input
+                          id="intermediaryBankSwift"
+                          type="text"
+                          placeholder="AAAABBCCXXX"
+                          value={transferForm.intermediaryBankSwift}
+                          onChange={(e) => setTransferForm({ ...transferForm, intermediaryBankSwift: e.target.value.toUpperCase() })}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="transferPurpose">Transfer Purpose</Label>
+                      <Textarea
+                        id="transferPurpose"
+                        placeholder="Purpose of this international transfer"
+                        value={transferForm.transferPurpose}
+                        onChange={(e) => setTransferForm({ ...transferForm, transferPurpose: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </>
                 )}
 
                 <div className="space-y-2">

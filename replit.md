@@ -8,6 +8,46 @@ The Peoples Finance is a modern, multi-region online banking platform serving cu
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (November 2025)
+
+### Access Code System Update
+- **Format Change**: Access codes changed from 8-character alphanumeric to 12-digit numeric for better usability
+- **Security Enhancement**: All access codes and transaction verification codes now use cryptographically secure random number generation (crypto.randomBytes)
+- **Admin Code**: Special admin access code is `000000000001` (12 zeros followed by 1)
+- **Database Cleanup**: Old 8-character codes removed from database to maintain consistency
+
+### Card Brand Detection & Design
+- **BIN Detection**: Implemented industry-standard BIN (Bank Identification Number) prefix detection to automatically identify card brands
+  - Visa: Starts with 4
+  - Mastercard: Starts with 51-55 or 2221-2720
+  - American Express: Starts with 34 or 37
+  - Discover: Starts with 6011, 622126-622925, 644-649, or 65
+- **Card Generation**: Card numbers now generated with specific brand prefixes for realistic card distribution
+- **Database Field**: Added `cardBrand` field to cards table to persist brand information
+- **Realistic Card UI**: Complete redesign of card display with:
+  - Brand-specific color gradients (Visa blue, Mastercard red/orange, Amex blue, etc.)
+  - Chip graphic overlay for authentic card appearance
+  - Brand logos (SVG-based for Visa, Mastercard, Amex, Discover)
+  - Proper number formatting (4-4-4-4 for most cards, 4-6-5 for American Express)
+  - Enhanced typography and styling matching real banking cards
+  - Region indicators for multi-region accounts
+
+### Transfer Methods Enhancement
+- **Method Types**: Support for three transfer types:
+  - **Internal**: Standard account-to-account transfers within the platform
+  - **External/Domestic**: Transfers to external banks requiring routing number (US), BSB (AU), or branch code (NZ)
+  - **Wire/International**: International transfers requiring SWIFT/BIC codes, IBAN, and beneficiary bank details
+- **Transfer Details Storage**: JSONB field in transactions table stores method-specific details:
+  - External transfers: routing number, BSB, beneficiary name, beneficiary address
+  - Wire transfers: SWIFT/BIC code, IBAN, beneficiary bank name, beneficiary bank address, intermediary bank details (optional), transfer purpose
+- **Database Schema**: Added `transferMethod` and `transferDetails` fields to transactions table
+
+### User Dashboard Improvements
+- **Personalized Greetings**: Dashboard now displays user's actual name instead of generic "Welcome back!"
+  - Example: "Welcome back, Don Pablo Administrative!" for admin users
+  - Example: "Welcome back, [FirstName] [LastName]!" for regular users
+- **Admin Bypass**: Admin users (like Don Pablo Administrative) bypass access code verification on login
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -75,9 +115,9 @@ Preferred communication style: Simple, everyday language.
 - `sessions`: Express session storage (required for Replit Auth)
 - `users`: User profiles with email, names, profile images, admin/blocked/locked status
 - `accounts`: Bank accounts with region-specific identifiers (account number, BSB, routing number, SWIFT code), balances, and currency
-- `cards`: Credit/debit cards linked to accounts with card numbers, CVV, expiry, and status
-- `transactions`: Financial transactions with from/to accounts, amounts, types (transfer/bill/payid), status tracking, and descriptions
-- `accessCodes`: Single-use activation codes with expiration and user assignment
+- `cards`: Credit/debit cards linked to accounts with card numbers, CVV, expiry, cardBrand (visa/mastercard/amex/discover), and status
+- `transactions`: Financial transactions with from/to accounts, amounts, types (transfer/bill/payid), transferMethod (internal/external/wire), transferDetails (JSONB for method-specific data), status tracking, and descriptions
+- `accessCodes`: Single-use 12-digit numeric activation codes with expiration and user assignment (cryptographically secure generation)
 - `payIds`: PayID aliases (email/phone/ABN) linked to accounts for instant payments
 
 **Data Relationships**
