@@ -83,7 +83,7 @@ export function ProfessionalFooter() {
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="h-3 w-3" />
-                support@fundcredit.com.au
+                support@fundamentalfinancialcredit.com
               </p>
               <p className="mt-3 font-medium text-foreground">Routing Information:</p>
               <p>BSB: 062-001</p>
@@ -103,7 +103,7 @@ export function ProfessionalFooter() {
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="h-3 w-3" />
-                support@fundcredit.com
+                support@fundamentalfinancialcredit.com
               </p>
               <p className="mt-3 font-medium text-foreground">Routing Information:</p>
               <p>Routing Number: 021000021</p>
@@ -123,7 +123,7 @@ export function ProfessionalFooter() {
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="h-3 w-3" />
-                support@fundcredit.co.nz
+                support@fundamentalfinancialcredit.com
               </p>
               <p className="mt-3 font-medium text-foreground">Routing Information:</p>
               <p>Bank Code: 03-0001</p>

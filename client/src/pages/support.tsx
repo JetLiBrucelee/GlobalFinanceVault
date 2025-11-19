@@ -40,7 +40,7 @@ export default function Support() {
                 <CardContent className="p-6 text-center">
                   <Mail className="h-8 w-8 mx-auto mb-3 text-primary" />
                   <h3 className="font-semibold mb-2">Email</h3>
-                  <p className="text-sm text-muted-foreground">support@ffc.com</p>
+                  <p className="text-sm text-muted-foreground">support@fundamentalfinancialcredit.com</p>
                 </CardContent>
               </Card>
               
