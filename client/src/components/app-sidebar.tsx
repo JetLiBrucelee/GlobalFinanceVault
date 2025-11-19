@@ -46,19 +46,19 @@ export function AppSidebar({ user }: AppSidebarProps) {
   const avatarImage = user?.avatar ? avatarImages[user.avatar] || avatarImages.cat : avatarImages.cat;
 
   const userMenuItems = [
-    { title: "Dashboard", url: "/", icon: Home, testId: "link-dashboard" },
-    { title: "My Cards", url: "/cards", icon: CreditCard, testId: "link-cards" },
-    { title: "Transfers", url: "/transfers", icon: ArrowLeftRight, testId: "link-transfers" },
-    { title: "Statements", url: "/statements", icon: FileText, testId: "link-statements" },
-    { title: "Settings", url: "/settings", icon: Settings, testId: "link-settings" },
+    { title: "Dashboard", url: "/", icon: Home, testId: "link-dashboard", iconColor: "text-blue-500" },
+    { title: "My Cards", url: "/cards", icon: CreditCard, testId: "link-cards", iconColor: "text-purple-500" },
+    { title: "Transfers", url: "/transfers", icon: ArrowLeftRight, testId: "link-transfers", iconColor: "text-green-500" },
+    { title: "Statements", url: "/statements", icon: FileText, testId: "link-statements", iconColor: "text-orange-500" },
+    { title: "Settings", url: "/settings", icon: Settings, testId: "link-settings", iconColor: "text-gray-500" },
   ];
 
   const adminMenuItems = [
-    { title: "Admin Dashboard", url: "/admin", icon: ShieldCheck, testId: "link-admin-dashboard" },
-    { title: "Manage Users", url: "/admin/users", icon: Users, testId: "link-admin-users" },
-    { title: "Transactions", url: "/admin/transactions", icon: ArrowLeftRight, testId: "link-admin-transactions" },
-    { title: "Access Codes", url: "/admin/access-codes", icon: Shield, testId: "link-admin-access-codes" },
-    { title: "Settings", url: "/settings", icon: Settings, testId: "link-settings" },
+    { title: "Admin Dashboard", url: "/admin", icon: ShieldCheck, testId: "link-admin-dashboard", iconColor: "text-blue-500" },
+    { title: "Manage Users", url: "/admin/users", icon: Users, testId: "link-admin-users", iconColor: "text-purple-500" },
+    { title: "Transactions", url: "/admin/transactions", icon: ArrowLeftRight, testId: "link-admin-transactions", iconColor: "text-green-500" },
+    { title: "Access Codes", url: "/admin/access-codes", icon: Shield, testId: "link-admin-access-codes", iconColor: "text-orange-500" },
+    { title: "Settings", url: "/settings", icon: Settings, testId: "link-settings", iconColor: "text-gray-500" },
   ];
 
   return (
@@ -83,7 +83,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={location === item.url}>
                       <Link href={item.url} data-testid={item.testId}>
-                        <item.icon className="h-4 w-4" />
+                        <item.icon className={`h-4 w-4 ${item.iconColor}`} />
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -107,7 +107,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
                       className={location === item.url ? "bg-primary/15 text-primary font-medium" : ""}
                     >
                       <Link href={item.url} data-testid={item.testId}>
-                        <item.icon className="h-4 w-4" />
+                        <item.icon className={`h-4 w-4 ${item.iconColor}`} />
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
