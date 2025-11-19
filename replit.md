@@ -1,8 +1,8 @@
-# The Peoples Finance - Banking Application
+# Fundamental Financial Credit - Banking Application
 
 ## Overview
 
-The Peoples Finance is a modern, multi-region online banking platform serving customers across Australia, USA, and New Zealand. The application provides comprehensive banking features including account management, card services, transfers (domestic and international), bill payments, PayID integration, and administrative controls. Built with a focus on security, trust, and professional user experience, it mirrors the design patterns of established financial institutions.
+Fundamental Financial Credit is a modern, multi-region online banking platform serving customers across Australia, USA, and New Zealand. The application provides comprehensive banking features including account management, card services, transfers (domestic and international), bill payments, PayID integration, and administrative controls. Built with a focus on security, trust, and professional user experience, it mirrors the design patterns of established financial institutions.
 
 ## User Preferences
 
@@ -27,12 +27,17 @@ Preferred communication style: Simple, everyday language.
 - **Professional Card UI**: Complete redesign matching professional banking card aesthetics (inspired by bibank reference):
   - **Bank Logo**: "Fundamental Financial Credit" wordmark positioned at top-left (industry standard)
   - **Brand Logos**: Visa/Mastercard/Amex/Discover logos positioned at bottom-right (professional banking standard)
-  - **Color Gradients**: Brand-specific gradients (Visa blue, Mastercard red/orange, Amex blue, etc.)
+  - **Color Gradients**: Brand-specific gradients matching real bank cards:
+    - **Visa**: Blue gradient (`from-[#2E3192] via-[#1A237E] to-[#0D47A1]` for debit, darker blue for credit)
+    - **Mastercard**: Dark navy/black gradient (`from-[#1a1a2e] via-[#16213e] to-[#0f1419]`) for both debit and credit
+    - **Amex**: Blue gradient (lighter blue for credit, teal for debit)
+    - **Discover**: Orange gradient
   - **Chip Graphic**: Subtle gold chip overlay for authentic card appearance
   - **Typography**: Prominent card number with refined hierarchy for cardholder/expiry/CVV details
   - **Card Type**: Subtle DEBIT/CREDIT indicator below bank logo
   - **Region Indicator**: Discrete region display (Australia/United States/New Zealand)
   - **Number Formatting**: 4-4-4-4 for most cards, 4-6-5 for American Express
+- **Card Brand Distribution**: Database contains mix of Visa credit cards (BIN 4xxx) and Mastercard debit cards (BIN 5xxx) for realistic banking experience
 
 ### Transfer Methods Enhancement
 - **Method Types**: Support for three transfer types:
