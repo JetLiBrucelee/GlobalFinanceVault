@@ -17,7 +17,8 @@ async function seed() {
     
     let adminUser;
     if (existingAdmin) {
-      // Admin exists - update only password, email, and admin status (preserve their name changes)
+      // Admin exists - ONLY update password, email, and admin status
+      // PRESERVE: firstName, lastName, avatar (user's custom changes)
       const [updated] = await db
         .update(users)
         .set({
@@ -29,19 +30,23 @@ async function seed() {
         .where(eq(users.id, existingAdmin.id))
         .returning();
       adminUser = updated;
+      console.log(`✓ Admin user found - preserved custom name: ${adminUser.firstName} ${adminUser.lastName}, avatar: ${adminUser.avatar}`);
     } else {
-      // Admin doesn't exist - create with default names
+      // Admin doesn't exist - create with default values
       const [created] = await db.insert(users).values({
         username: "Admin@fundamentalfinancial.com",
         password: adminPassword,
         email: "Admin@fundamentalfinancial.com",
         firstName: "System",
         lastName: "Administrator",
+        avatar: "cat",
         isAdmin: true,
         isBlocked: false,
         isLocked: false,
+        isApproved: true,
       }).returning();
       adminUser = created;
+      console.log(`✓ Admin user created with default profile`);
     }
 
     // Create admin account with FIXED account number "1" and $400 billion balance

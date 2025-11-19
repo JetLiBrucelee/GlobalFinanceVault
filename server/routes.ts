@@ -513,6 +513,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/admin/users/:userId/details', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const accounts = await storage.getAccountsByUserId(userId);
+      const recentTransactions = await storage.getRecentTransactionsByUserId(userId, 5);
+      
+      // Return only safe, non-sensitive user fields
+      res.json({
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          avatar: user.avatar,
+          isAdmin: user.isAdmin,
+          isBlocked: user.isBlocked,
+          isLocked: user.isLocked,
+          isApproved: user.isApproved,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+        accounts,
+        recentTransactions
+      });
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      res.status(500).json({ message: "Failed to fetch user details" });
+    }
+  });
+
   app.post('/api/admin/users/:userId/block', isAuthenticated, isAdmin, async (req, res) => {
     try {
       const { userId } = req.params;

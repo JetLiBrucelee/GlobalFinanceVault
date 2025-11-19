@@ -26,6 +26,7 @@ import { randomBytes } from "crypto";
 export interface IStorage {
   // User operations
   getUser(id: string): Promise<User | undefined>;
+  getUserById(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
@@ -48,6 +49,7 @@ export interface IStorage {
 
   // Transaction operations
   getTransactionsByAccountId(accountId: string): Promise<Transaction[]>;
+  getRecentTransactionsByUserId(userId: string, limit: number): Promise<Transaction[]>;
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
   updateTransactionStatus(id: string, status: string): Promise<Transaction>;
   getAllTransactions(): Promise<Transaction[]>;
@@ -66,6 +68,11 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
@@ -179,6 +186,31 @@ export class DatabaseStorage implements IStorage {
         )
       )
       .orderBy(desc(transactions.createdAt));
+  }
+
+  async getRecentTransactionsByUserId(userId: string, limit: number): Promise<Transaction[]> {
+    // Get all accounts for this user
+    const userAccounts = await this.getAccountsByUserId(userId);
+    const accountIds = userAccounts.map(acc => acc.id);
+    
+    if (accountIds.length === 0) {
+      return [];
+    }
+    
+    // Get transactions for all user accounts
+    const result = await db
+      .select()
+      .from(transactions)
+      .where(
+        or(
+          ...accountIds.map(id => eq(transactions.fromAccountId, id)),
+          ...accountIds.map(id => eq(transactions.toAccountId, id))
+        )
+      )
+      .orderBy(desc(transactions.createdAt))
+      .limit(limit);
+    
+    return result;
   }
 
   async createTransaction(transactionData: InsertTransaction): Promise<Transaction> {
