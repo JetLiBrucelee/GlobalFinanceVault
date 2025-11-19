@@ -123,6 +123,16 @@ export async function setupAuth(app: Express) {
     });
   });
 
+  // GET logout endpoint for browser redirects
+  app.get("/api/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.redirect("/");
+    });
+  });
+
 }
 
 export const isAuthenticated: RequestHandler = (req, res, next) => {
