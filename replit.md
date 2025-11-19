@@ -56,25 +56,25 @@ Preferred communication style: Simple, everyday language.
 - **Admin Bypass**: Admin users (like Don Pablo Administrative) bypass access code verification on login
 
 ### Landing Page 3D Icons
-- **3D Realistic Icons**: All landing page icons replaced with high-quality 3D glossy realistic stock images - every icon is unique (26 total unique icons)
-  - **Product Categories** (8): Payment card, piggy bank, house, car, passport, stock chart, briefcase, abacus
-  - **Security Section** (4): Security camera, padlock, insurance document, customer headset
-  - **Features Section** (6): Globe, contactless card, padlock, money transfer, smartphone, safe vault
-  - **Tools & Calculators** (4): House, piggy bank, money bag, money tree
-- **Icon Uniqueness**: Each feature now has its own distinct icon - no duplicates across sections
-  - Travel = Passport (not airplane)
+- **3D Realistic Icons**: All landing page icons replaced with high-quality 3D glossy realistic stock images - every icon is VERY VISUALLY DISTINCT (26 total unique icons)
+  - **Product Categories** (8): Payment card, piggy bank, house, car, suitcase luggage, stock market chart, office desk, mathematical symbols
+  - **Security Section** (4): CCTV surveillance camera, padlock, badge certificate, phone call center agent
+  - **Features Section** (6): Globe, NFC tap-to-pay card, padlock, exchange arrows, smartphone, safe vault
+  - **Tools & Calculators** (4): House, piggy bank, coins stack, plant pot growth
+- **Icon Uniqueness**: Each feature has its own COMPLETELY DISTINCT icon - different shapes, styles, and visual appearance - no duplicates anywhere
+  - Travel = Suitcase luggage (not passport)
   - Credit Cards = Payment card with chip
-  - Business = Briefcase (not building)
-  - Calculators = Abacus (not generic calculator)
-  - Investments = Stock market chart (not arrow)
-  - 24/7 Fraud Monitoring = Security camera (not shield)
-  - FDIC Insured = Insurance document (not trophy)
-  - Expert Support = Customer headset (not people)
-  - Instant Virtual Cards = Contactless card (not credit card)
-  - Instant Transfers = Money transfer icon (not arrow)
-  - Protected Accounts = Safe vault (not shield)
-  - Investment Calculator = Money tree (not arrow)
-  - Loan Calculator = Money bag (not generic calculator)
+  - Business = Office desk workspace (not briefcase)
+  - Calculators = Mathematical symbols +/- (not abacus)
+  - Investments = Stock market chart bars
+  - 24/7 Fraud Monitoring = CCTV surveillance camera (very distinct from shield)
+  - FDIC Insured = Badge certificate seal (very distinct from trophy)
+  - Expert Support = Phone call center agent (very distinct from headset)
+  - Instant Virtual Cards = NFC tap-to-pay wireless card (very distinct from regular card)
+  - Instant Transfers = Exchange/swap arrows (very distinct from money transfer)
+  - Protected Accounts = Safe vault
+  - Investment Calculator = Plant pot with sprout (very distinct from money tree)
+  - Loan Calculator = Coins stack (very distinct from money bag)
 - **Icon Styling**: White/gray circular backgrounds with shadow, object-contain sizing, hover scale animations on product categories
 - **Assets Location**: All 3D icons stored in `attached_assets/stock_images/3d_realistic_*.jpg`
 - **Mobile Responsive**: Icons scale appropriately on mobile devices with proper padding and spacing

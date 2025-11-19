@@ -33,6 +33,16 @@ import moneyTransferIcon3D from "@assets/stock_images/3d_realistic_money_t_69851
 import safeVaultIcon3D from "@assets/stock_images/3d_realistic_safe_va_17bb651d.jpg";
 import moneyTreeIcon3D from "@assets/stock_images/3d_realistic_growth__d4dfa5a9.jpg";
 import moneyBagIcon3D from "@assets/stock_images/3d_realistic_loan_mo_9815e2c4.jpg";
+import suitcaseIcon3D from "@assets/stock_images/3d_realistic_suitcas_74589a3e.jpg";
+import officeDeskIcon3D from "@assets/stock_images/3d_realistic_office__95d48710.jpg";
+import mathSymbolsIcon3D from "@assets/stock_images/3d_realistic_mathema_26916e9c.jpg";
+import cctvCameraIcon3D from "@assets/stock_images/3d_realistic_cctv_su_40e70d53.jpg";
+import badgeCertIcon3D from "@assets/stock_images/3d_realistic_badge_c_7501f3e4.jpg";
+import phoneAgentIcon3D from "@assets/stock_images/3d_realistic_phone_c_acae91e0.jpg";
+import nfcTapCardIcon3D from "@assets/stock_images/3d_realistic_nfc_tap_101bc453.jpg";
+import exchangeArrowsIcon3D from "@assets/stock_images/3d_realistic_arrows__40c060e5.jpg";
+import coinsStackIcon3D from "@assets/stock_images/3d_realistic_coins_s_38701241.jpg";
+import plantGrowthIcon3D from "@assets/stock_images/3d_realistic_plant_p_1007f9cd.jpg";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
@@ -42,10 +52,10 @@ export default function Landing() {
     { icon: piggyBankIcon3D, label: "Savings", href: "/savings" },
     { icon: houseIcon3D, label: "Home Loans", href: "/home-loans" },
     { icon: carIcon3D, label: "Auto Loans", href: "/auto-loans" },
-    { icon: passportIcon3D, label: "Travel", href: "/travel" },
+    { icon: suitcaseIcon3D, label: "Travel", href: "/travel" },
     { icon: stockMarketIcon3D, label: "Investments", href: "/investments" },
-    { icon: briefcaseIcon3D, label: "Business", href: "/business" },
-    { icon: abacusIcon3D, label: "Calculators", href: "/calculators" },
+    { icon: officeDeskIcon3D, label: "Business", href: "/business" },
+    { icon: mathSymbolsIcon3D, label: "Calculators", href: "/calculators" },
   ];
   
   const navLinks = [
@@ -317,7 +327,7 @@ export default function Landing() {
           <div className="grid gap-6 md:gap-8 grid-cols-2 lg:grid-cols-4">
             <div className="text-center" data-testid="trust-security">
               <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/80 dark:bg-gray-800/80 shadow-sm p-3">
-                <img src={securityCameraIcon3D} alt="Security" className="w-full h-full object-contain" />
+                <img src={cctvCameraIcon3D} alt="Security" className="w-full h-full object-contain" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">24/7 Fraud Monitoring</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -337,7 +347,7 @@ export default function Landing() {
 
             <div className="text-center" data-testid="trust-insurance">
               <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/80 dark:bg-gray-800/80 shadow-sm p-3">
-                <img src={insuranceIcon3D} alt="Insurance" className="w-full h-full object-contain" />
+                <img src={badgeCertIcon3D} alt="Insurance" className="w-full h-full object-contain" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">FDIC Insured</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -347,7 +357,7 @@ export default function Landing() {
 
             <div className="text-center" data-testid="trust-support">
               <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/80 dark:bg-gray-800/80 shadow-sm p-3">
-                <img src={headsetIcon3D} alt="Support" className="w-full h-full object-contain" />
+                <img src={phoneAgentIcon3D} alt="Support" className="w-full h-full object-contain" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">Expert Support</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -435,7 +445,7 @@ export default function Landing() {
             <Card data-testid="card-feature-cards">
               <CardContent className="p-5 md:p-6">
                 <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-white/80 dark:bg-gray-800/80 flex items-center justify-center mb-4 shadow-sm p-3">
-                  <img src={contactlessCardIcon3D} alt="Virtual Cards" className="w-full h-full object-contain" />
+                  <img src={nfcTapCardIcon3D} alt="Virtual Cards" className="w-full h-full object-contain" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Instant Virtual Cards</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -459,7 +469,7 @@ export default function Landing() {
             <Card data-testid="card-feature-transfers">
               <CardContent className="p-5 md:p-6">
                 <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-white/80 dark:bg-gray-800/80 flex items-center justify-center mb-4 shadow-sm p-3">
-                  <img src={moneyTransferIcon3D} alt="Transfers" className="w-full h-full object-contain" />
+                  <img src={exchangeArrowsIcon3D} alt="Transfers" className="w-full h-full object-contain" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Instant Transfers</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -545,7 +555,7 @@ export default function Landing() {
             >
               <CardContent className="p-4 md:p-6 text-center">
                 <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-white/80 dark:bg-gray-800/80 flex items-center justify-center shadow-sm p-2">
-                  <img src={moneyBagIcon3D} alt="Loan" className="w-full h-full object-contain" />
+                  <img src={coinsStackIcon3D} alt="Loan" className="w-full h-full object-contain" />
                 </div>
                 <h3 className="text-sm md:text-base font-semibold mb-2">Loan Calculator</h3>
                 <p className="text-xs md:text-sm text-muted-foreground">
@@ -561,7 +571,7 @@ export default function Landing() {
             >
               <CardContent className="p-4 md:p-6 text-center">
                 <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-white/80 dark:bg-gray-800/80 flex items-center justify-center shadow-sm p-2">
-                  <img src={moneyTreeIcon3D} alt="Investment" className="w-full h-full object-contain" />
+                  <img src={plantGrowthIcon3D} alt="Investment" className="w-full h-full object-contain" />
                 </div>
                 <h3 className="text-sm md:text-base font-semibold mb-2">Investment Calculator</h3>
                 <p className="text-xs md:text-sm text-muted-foreground">
