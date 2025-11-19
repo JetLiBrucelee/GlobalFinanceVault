@@ -109,7 +109,7 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
 
   return (
     <Card
-      className={`${getCardBrandGradient(card.cardBrand, card.cardType)} text-white border-0 overflow-hidden relative`}
+      className={`${getCardBrandGradient(card.cardBrand, card.cardType)} text-white border-0 overflow-hidden relative max-w-md`}
       data-testid={`card-${index}`}
     >
       {/* Card chip graphic */}
