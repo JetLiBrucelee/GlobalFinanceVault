@@ -15,10 +15,10 @@ export default function AccessCode() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!code || code.length !== 8) {
+    if (!code || code.length !== 12) {
       toast({
         title: "Invalid Code",
-        description: "Please enter a valid 8-character access code",
+        description: "Please enter a valid 12-digit access code",
         variant: "destructive",
       });
       return;
@@ -53,7 +53,7 @@ export default function AccessCode() {
           </div>
           <CardTitle className="text-2xl" data-testid="text-title">Access Code Required</CardTitle>
           <CardDescription data-testid="text-description">
-            Please enter the 8-character access code provided by your administrator to activate your account
+            Please enter the 12-digit access code provided by your administrator to activate your account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -63,10 +63,10 @@ export default function AccessCode() {
               <Input
                 id="code"
                 type="text"
-                placeholder="XXXXXXXX"
+                placeholder="123456789012"
                 value={code}
-                onChange={(e) => setCode(e.target.value.toUpperCase())}
-                maxLength={8}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                maxLength={12}
                 className="text-center text-2xl tracking-widest font-mono"
                 disabled={isSubmitting}
                 data-testid="input-access-code"
@@ -79,7 +79,7 @@ export default function AccessCode() {
             <Button
               type="submit"
               className="w-full"
-              disabled={isSubmitting || code.length !== 8}
+              disabled={isSubmitting || code.length !== 12}
               data-testid="button-verify"
             >
               {isSubmitting ? (

@@ -22,13 +22,12 @@ import { db } from "./db";
 import { eq, and, or, desc } from "drizzle-orm";
 import { randomBytes } from "crypto";
 
-// Generate random verification code (6-8 characters alphanumeric)
-export function generateVerificationCode(length: number = 8): string {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude similar-looking characters
+// Generate random verification code (12-digit numeric code)
+export function generateVerificationCode(length: number = 12): string {
   let code = '';
   const bytes = randomBytes(length);
   for (let i = 0; i < length; i++) {
-    code += chars[bytes[i] % chars.length];
+    code += (bytes[i] % 10).toString();
   }
   return code;
 }
@@ -516,11 +515,11 @@ export function generateCardExpiry(): { month: string; year: string } {
 }
 
 export function generateAccessCode(): string {
-  // Generate a random 8-character alphanumeric access code
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  // Generate a random 12-digit numeric access code using cryptographically secure randomBytes
   let code = '';
-  for (let i = 0; i < 8; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
+  const bytes = randomBytes(12);
+  for (let i = 0; i < 12; i++) {
+    code += (bytes[i] % 10).toString();
   }
   return code;
 }

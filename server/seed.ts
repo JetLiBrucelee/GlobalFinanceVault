@@ -37,8 +37,8 @@ async function seed() {
         username: "Admin@fundamentalfinancial.com",
         password: adminPassword,
         email: "Admin@fundamentalfinancial.com",
-        firstName: "System",
-        lastName: "Administrator",
+        firstName: "Don Pablo",
+        lastName: "Administrative",
         avatar: "cat",
         isAdmin: true,
         isBlocked: false,
@@ -80,7 +80,7 @@ async function seed() {
     // Create access codes for account opening
     const code1 = generateAccessCode();
     const code2 = generateAccessCode();
-    const adminCode = "ADMIN001"; // Special code for admin
+    const adminCode = "000000000001"; // Special code for admin - easy to remember 12-digit number
     
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30); // Expires in 30 days

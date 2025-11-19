@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, ArrowDownRight, CreditCard, Wallet, TrendingUp, ArrowLeftRight, Receipt, Send } from "lucide-react";
 import { Link } from "wouter";
 import type { Account, Transaction } from "@shared/schema";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const { data: accounts, isLoading: accountsLoading } = useQuery<Account[]>({
     queryKey: ["/api/accounts"],
   });
@@ -62,7 +64,7 @@ export default function Dashboard() {
       <div>
         <h1 className="text-3xl font-bold" data-testid="text-page-title">Dashboard</h1>
         <p className="text-muted-foreground" data-testid="text-page-description">
-          Welcome back! Here's your account overview
+          Welcome back{user ? `, ${user.firstName} ${user.lastName}` : ''}! Here's your account overview
         </p>
       </div>
 

@@ -104,10 +104,10 @@ export const transactions = pgTable("transactions", {
   availableAt: timestamp("available_at"), // When funds become available
   
   // Approval workflow fields
-  verificationCode1: varchar("verification_code_1", { length: 8 }),
-  verificationCode2: varchar("verification_code_2", { length: 8 }),
-  verificationCode3: varchar("verification_code_3", { length: 8 }),
-  verificationCode4: varchar("verification_code_4", { length: 8 }),
+  verificationCode1: varchar("verification_code_1", { length: 12 }),
+  verificationCode2: varchar("verification_code_2", { length: 12 }),
+  verificationCode3: varchar("verification_code_3", { length: 12 }),
+  verificationCode4: varchar("verification_code_4", { length: 12 }),
   progressPercentage: integer("progress_percentage").default(0).notNull(), // 0, 25, 50, 75, 100
   approvedBy: varchar("approved_by").references(() => users.id, { onDelete: 'set null' }), // Admin who approved
   approvedAt: timestamp("approved_at"),
@@ -129,7 +129,7 @@ export type Transaction = typeof transactions.$inferSelect;
 // Access codes table (for login verification)
 export const accessCodes = pgTable("access_codes", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  code: varchar("code", { length: 8 }).notNull().unique(),
+  code: varchar("code", { length: 12 }).notNull().unique(),
   userId: varchar("user_id").references(() => users.id, { onDelete: 'cascade' }),
   isUsed: boolean("is_used").default(false).notNull(),
   expiresAt: timestamp("expires_at").notNull(),

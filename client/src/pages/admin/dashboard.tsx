@@ -85,7 +85,7 @@ export default function AdminDashboard() {
       <div>
         <h1 className="text-3xl font-bold text-white" data-testid="text-page-title">Dashboard</h1>
         <p className="text-gray-300" data-testid="text-page-description">
-          Welcome back! Here's your account overview
+          Welcome back{users && users.find(u => u.isAdmin) ? `, ${users.find(u => u.isAdmin)?.firstName} ${users.find(u => u.isAdmin)?.lastName}` : ''}! Here's your account overview
         </p>
       </div>
 

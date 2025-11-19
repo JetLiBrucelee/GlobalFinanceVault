@@ -66,8 +66,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Mark access code as used
       await storage.markAccessCodeUsed(accessCode.id);
 
-      // If the code is ADMIN001, make the user an admin
-      if (code === 'ADMIN001') {
+      // If the code is 000000000001, make the user an admin
+      if (code === '000000000001') {
         await storage.updateUserStatus(userId, { isAdmin: true });
       }
 
