@@ -19,7 +19,7 @@ import {
   type InsertPayId,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, or, desc } from "drizzle-orm";
+import { eq, and, or, desc, sql } from "drizzle-orm";
 import { randomBytes } from "crypto";
 import { detectCardBrand, generateCardNumberWithBrand, type CardBrand } from "./utils/cardBrands";
 
@@ -93,7 +93,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
+    const [user] = await db.select().from(users).where(sql`LOWER(${users.username}) = LOWER(${username})`);
     return user;
   }
 
