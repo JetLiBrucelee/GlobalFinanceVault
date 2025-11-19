@@ -3,22 +3,33 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Cat, Dog, Bird } from "lucide-react";
+import { Cat, Dog, Bird, BadgePlus, Beef, Rabbit } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { SiPandas } from "react-icons/si";
 
-const avatarIcons: Record<string, typeof Cat> = {
-  cat: Cat,
+const avatarIcons: Record<string, any> = {
   dog: Dog,
-  duck: Bird,
+  cat: Cat,
+  bird: Bird,
+  lion: BadgePlus,
+  bear: Beef,
+  cow: Beef,
+  rabbit: Rabbit,
+  panda: SiPandas,
 };
 
 const avatarNames: Record<string, string> = {
-  cat: "Cat",
   dog: "Dog",
-  duck: "Duck",
+  cat: "Cat",
+  bird: "Bird",
+  lion: "Lion",
+  bear: "Bear",
+  cow: "Cow",
+  rabbit: "Rabbit",
+  panda: "Panda",
 };
 
 export default function Settings() {

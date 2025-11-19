@@ -42,35 +42,7 @@ async function seed() {
       accountType: "business",
     }).onConflictDoNothing();
 
-    // Create a demo user
-    const [demoUser] = await db.insert(users).values({
-      username: "user",
-      password: userPassword,
-      email: "user@fundamentalfinancial.com",
-      firstName: "Demo",
-      lastName: "User",
-      isAdmin: false,
-      isBlocked: false,
-      isLocked: false,
-    }).onConflictDoUpdate({
-      target: users.username,
-      set: {
-        password: userPassword, // Update password in case it changed
-      }
-    }).returning();
-
-    // Create user account with $10,000 balance
-    const userAccountNumber = generateAccountNumber();
-    await db.insert(accounts).values({
-      userId: demoUser.id,
-      accountNumber: userAccountNumber,
-      bsb: generateBSB(),
-      routingNumber: generateRoutingNumber(),
-      swiftCode: generateSwiftCode(),
-      region: "AU",
-      balance: "10000.00",
-      accountType: "checking",
-    }).onConflictDoNothing();
+    // Demo user removed - users will be created via account registration
     
     // Create access codes for account opening
     const code1 = generateAccessCode();
@@ -110,22 +82,13 @@ async function seed() {
     console.log(`   Account Number: ${adminAccountNumber}`);
     console.log(`   Balance: $400,000,000,000.00`);
     console.log("═══════════════════════════════════════════\n");
-    
-    console.log("═══════════════════════════════════════════");
-    console.log("👥 DEMO USER LOGIN CREDENTIALS:");
-    console.log("═══════════════════════════════════════════");
-    console.log(`   Username: user`);
-    console.log(`   Password: User@123`);
-    console.log(`   Account Number: ${userAccountNumber}`);
-    console.log(`   Balance: $10,000.00`);
-    console.log("═══════════════════════════════════════════\n");
 
     console.log("📝 Access codes for new account opening:");
     console.log(`   Code 1: ${code1}`);
     console.log(`   Code 2: ${code2}`);
     console.log(`   Admin Code: ${adminCode}`);
     console.log("\n📌 Instructions:");
-    console.log("   1. Open the app and log in with the credentials above");
+    console.log("   1. Open the app and log in with admin credentials");
     console.log("   2. Admin can manage users and credit accounts from the admin dashboard");
     console.log("   3. New users can open accounts at /open-account");
     

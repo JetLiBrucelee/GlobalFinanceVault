@@ -1,4 +1,4 @@
-import { Home, CreditCard, ArrowLeftRight, FileText, Settings, LogOut, ShieldCheck, Users, Cat, Dog, Bird } from "lucide-react";
+import { Home, CreditCard, ArrowLeftRight, FileText, Settings, LogOut, ShieldCheck, Users, Cat, Dog, Bird, BadgePlus, Beef, Rabbit } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,11 +16,17 @@ import { Shield } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { User } from "@shared/schema";
+import { SiPandas } from "react-icons/si";
 
-const avatarIcons: Record<string, typeof Cat> = {
-  cat: Cat,
+const avatarIcons: Record<string, any> = {
   dog: Dog,
-  duck: Bird,
+  cat: Cat,
+  bird: Bird,
+  lion: BadgePlus,
+  bear: Beef,
+  cow: Beef,
+  rabbit: Rabbit,
+  panda: SiPandas,
 };
 
 interface AppSidebarProps {
@@ -51,7 +57,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
     <Sidebar data-testid="sidebar-main">
       <SidebarHeader className="p-6">
         <div className="flex items-center gap-2">
-          <Shield className="h-8 w-8 text-sidebar-primary" data-testid="logo-icon" />
+          <img src="/attached_assets/bank-logo.jpg" alt="Logo" className="h-8 w-8 rounded" data-testid="logo-icon" />
           <div className="flex flex-col">
             <span className="text-lg font-bold leading-tight" data-testid="text-brand-name">Fundamental</span>
             <span className="text-sm font-semibold text-muted-foreground leading-tight">Financial Credit</span>

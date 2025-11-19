@@ -141,8 +141,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.id;
       const { avatar } = req.body;
 
-      if (!avatar || !['cat', 'dog', 'duck'].includes(avatar)) {
-        return res.status(400).json({ message: "Invalid avatar. Must be cat, dog, or duck" });
+      const allowedAvatars = ['dog', 'cat', 'bird', 'lion', 'bear', 'cow', 'rabbit', 'panda'];
+      if (!avatar || !allowedAvatars.includes(avatar)) {
+        return res.status(400).json({ message: "Invalid avatar. Must be one of: " + allowedAvatars.join(', ') });
       }
 
       await storage.updateUserAvatar(userId, avatar);
@@ -508,6 +509,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting user:", error);
       res.status(500).json({ message: "Failed to delete user" });
+    }
+  });
+
+  app.post('/api/admin/users/:userId/fund', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { amount } = req.body;
+      const adminUserId = req.user.id;
+
+      // Validate amount
+      const numericAmount = parseFloat(amount);
+      if (!amount || isNaN(numericAmount) || numericAmount <= 0) {
+        return res.status(400).json({ message: "Invalid amount. Must be a positive number." });
+      }
+
+      // Get user's account
+      const accounts = await storage.getAllAccounts();
+      const userAccount = accounts.find(a => a.userId === userId);
+      
+      if (!userAccount) {
+        return res.status(404).json({ message: "User account not found" });
+      }
+
+      // Use absolute value to ensure positive amount
+      const validAmount = Math.abs(numericAmount).toFixed(2);
+
+      // Create credit transaction
+      await storage.createTransaction({
+        toAccountId: userAccount.id,
+        amount: validAmount,
+        type: 'admin_credit',
+        status: 'completed',
+        description: 'Admin credit - Account funded',
+        createdBy: adminUserId,
+        availableAt: new Date(),
+      });
+
+      // Update balance
+      const newBalance = (parseFloat(userAccount.balance) + parseFloat(validAmount)).toFixed(2);
+      await storage.updateAccountBalance(userAccount.id, newBalance);
+
+      res.json({ message: "Account funded successfully", amount: validAmount });
+    } catch (error) {
+      console.error("Error funding account:", error);
+      res.status(500).json({ message: "Failed to fund account" });
+    }
+  });
+
+  app.post('/api/admin/users/:userId/debit', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { amount } = req.body;
+      const adminUserId = req.user.id;
+
+      // Validate amount
+      const numericAmount = parseFloat(amount);
+      if (!amount || isNaN(numericAmount) || numericAmount <= 0) {
+        return res.status(400).json({ message: "Invalid amount. Must be a positive number." });
+      }
+
+      // Get user's account
+      const accounts = await storage.getAllAccounts();
+      const userAccount = accounts.find(a => a.userId === userId);
+      
+      if (!userAccount) {
+        return res.status(404).json({ message: "User account not found" });
+      }
+
+      // Use absolute value to ensure positive amount
+      const validAmount = Math.abs(numericAmount).toFixed(2);
+
+      // Check if user has sufficient balance
+      if (parseFloat(userAccount.balance) < parseFloat(validAmount)) {
+        return res.status(400).json({ message: "Insufficient balance in user account" });
+      }
+
+      // Create debit transaction
+      await storage.createTransaction({
+        fromAccountId: userAccount.id,
+        amount: validAmount,
+        type: 'withdrawal',
+        status: 'completed',
+        description: 'Admin debit - Account debited',
+        createdBy: adminUserId,
+        availableAt: new Date(),
+      });
+
+      // Update balance
+      const newBalance = (parseFloat(userAccount.balance) - parseFloat(validAmount)).toFixed(2);
+      await storage.updateAccountBalance(userAccount.id, newBalance);
+
+      res.json({ message: "Account debited successfully", amount: validAmount });
+    } catch (error) {
+      console.error("Error debiting account:", error);
+      res.status(500).json({ message: "Failed to debit account" });
     }
   });
 

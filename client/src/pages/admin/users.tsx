@@ -23,10 +23,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Lock, Unlock, Ban, Trash2 } from "lucide-react";
+import { MoreVertical, Lock, Unlock, Ban, Trash2, DollarSign, Plus, Minus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { User } from "@shared/schema";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function AdminUsers() {
   const { toast } = useToast();
@@ -35,6 +45,14 @@ export default function AdminUsers() {
     action: 'block' | 'lock' | 'delete' | null;
     user: User | null;
   }>({ open: false, action: null, user: null });
+  
+  const [fundDialog, setFundDialog] = useState<{
+    open: boolean;
+    type: 'fund' | 'debit' | null;
+    user: User | null;
+  }>({ open: false, type: null, user: null });
+  
+  const [amount, setAmount] = useState('');
 
   const { data: users, isLoading } = useQuery<User[]>({
     queryKey: ["/api/admin/users"],
@@ -143,6 +161,69 @@ export default function AdminUsers() {
     },
   });
 
+  const fundAccountMutation = useMutation({
+    mutationFn: async ({ userId, amount }: { userId: string; amount: string }) => {
+      return await apiRequest("POST", `/api/admin/users/${userId}/fund`, { amount });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Account Funded",
+        description: `Successfully added funds to the account`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/accounts"] });
+      setFundDialog({ open: false, type: null, user: null });
+      setAmount('');
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Operation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const debitAccountMutation = useMutation({
+    mutationFn: async ({ userId, amount }: { userId: string; amount: string }) => {
+      return await apiRequest("POST", `/api/admin/users/${userId}/debit`, { amount });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Account Debited",
+        description: `Successfully debited funds from the account`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/accounts"] });
+      setFundDialog({ open: false, type: null, user: null });
+      setAmount('');
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Operation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleFundDebit = () => {
+    if (!fundDialog.user || !amount || parseFloat(amount) <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid amount greater than 0",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (fundDialog.type === 'fund') {
+      fundAccountMutation.mutate({ userId: fundDialog.user.id, amount });
+    } else if (fundDialog.type === 'debit') {
+      debitAccountMutation.mutate({ userId: fundDialog.user.id, amount });
+    }
+  };
+
   const handleAction = () => {
     if (!actionDialog.user) return;
 
@@ -239,6 +320,21 @@ export default function AdminUsers() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => setFundDialog({ open: true, type: 'fund', user })}
+                              data-testid={`action-fund-${index}`}
+                            >
+                              <Plus className="mr-2 h-4 w-4" />
+                              Fund Account
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => setFundDialog({ open: true, type: 'debit', user })}
+                              data-testid={`action-debit-${index}`}
+                            >
+                              <Minus className="mr-2 h-4 w-4" />
+                              Debit Account
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
                             {user.isBlocked ? (
                               <DropdownMenuItem
                                 onClick={() => unblockUserMutation.mutate(user.id)}
@@ -328,6 +424,57 @@ export default function AdminUsers() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Fund/Debit Dialog */}
+      <Dialog open={fundDialog.open} onOpenChange={(open) => setFundDialog({ ...fundDialog, open })}>
+        <DialogContent data-testid="dialog-fund-debit">
+          <DialogHeader>
+            <DialogTitle>
+              {fundDialog.type === 'fund' ? 'Fund Account' : 'Debit Account'}
+            </DialogTitle>
+            <DialogDescription>
+              {fundDialog.type === 'fund' 
+                ? `Add funds to ${fundDialog.user?.firstName} ${fundDialog.user?.lastName}'s account`
+                : `Debit funds from ${fundDialog.user?.firstName} ${fundDialog.user?.lastName}'s account`
+              }
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="amount">Amount (AUD)</Label>
+              <Input
+                id="amount"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                data-testid="input-amount"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setFundDialog({ open: false, type: null, user: null });
+                setAmount('');
+              }}
+              data-testid="button-cancel-fund"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleFundDebit}
+              disabled={fundAccountMutation.isPending || debitAccountMutation.isPending}
+              data-testid="button-confirm-fund"
+            >
+              {fundDialog.type === 'fund' ? 'Fund Account' : 'Debit Account'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

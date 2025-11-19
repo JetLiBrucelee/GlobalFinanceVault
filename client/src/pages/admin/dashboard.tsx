@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users, CreditCard, TrendingUp, ShieldCheck } from "lucide-react";
+import { Users, CreditCard, TrendingUp, ShieldCheck, UserPlus, Settings, FileText, ArrowLeftRight } from "lucide-react";
+import { Link } from "wouter";
 import type { User, Account, Transaction, AccessCode } from "@shared/schema";
 
 export default function AdminDashboard() {
@@ -21,25 +22,198 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/access-codes"],
   });
 
-  const formatCurrency = (amount: string | number) => {
+  const adminAccount = accounts?.find(acc => acc.userId === users?.find(u => u.isAdmin)?.id);
+
+  const formatCurrency = (amount: string | number, abbreviated = false) => {
+    const value = Number(amount);
+    
+    if (abbreviated && value >= 1_000_000_000) {
+      const billions = value / 1_000_000_000;
+      return `$${billions.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}B`;
+    } else if (abbreviated && value >= 1_000_000) {
+      const millions = value / 1_000_000;
+      return `$${millions.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}M`;
+    } else if (abbreviated && value >= 1_000) {
+      const thousands = value / 1_000;
+      return `$${thousands.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}K`;
+    }
+    
     return new Intl.NumberFormat('en-AU', {
       style: 'currency',
       currency: 'AUD',
-    }).format(Number(amount));
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
   };
 
   const totalBalance = accounts?.reduce((sum, acc) => sum + Number(acc.balance), 0) || 0;
   const pendingTransactions = transactions?.filter(t => t.status === 'pending').length || 0;
   const activeAccessCodes = accessCodes?.filter(c => !c.isUsed && new Date(c.expiresAt) > new Date()).length || 0;
 
+  // Calculate monthly income and expenses for admin account
+  const thisMonth = new Date();
+  thisMonth.setDate(1);
+  const monthlyIncome = transactions
+    ?.filter(t => 
+      t.toAccountId === adminAccount?.id && 
+      t.status === 'completed' &&
+      new Date(t.createdAt!) >= thisMonth
+    )
+    .reduce((sum, t) => sum + Number(t.amount), 0) || 0;
+
+  const monthlyExpenses = transactions
+    ?.filter(t => 
+      t.fromAccountId === adminAccount?.id && 
+      t.status === 'completed' &&
+      new Date(t.createdAt!) >= thisMonth
+    )
+    .reduce((sum, t) => sum + Number(t.amount), 0) || 0;
+
   return (
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold" data-testid="text-page-title">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold" data-testid="text-page-title">Dashboard</h1>
         <p className="text-muted-foreground" data-testid="text-page-description">
-          System overview and statistics
+          Welcome back! Here's your account overview
         </p>
+      </div>
+
+      {/* Account Balance Cards */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <Card data-testid="card-balance">
+          <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Available Balance</CardTitle>
+            <CreditCard className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {accountsLoading ? (
+              <Skeleton className="h-8 w-32" />
+            ) : (
+              <>
+                <div className="text-2xl font-bold" data-testid="text-balance">
+                  {formatCurrency(adminAccount?.balance || 0, true)}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1" data-testid="text-account-number">
+                  {adminAccount?.accountNumber ? `****${adminAccount.accountNumber.slice(-4)}` : '****'}
+                </p>
+              </>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card data-testid="card-total-income">
+          <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Income</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {transactionsLoading ? (
+              <Skeleton className="h-8 w-32" />
+            ) : (
+              <div className="text-2xl font-bold" data-testid="text-total-income">
+                {formatCurrency(monthlyIncome)}
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground mt-1">This month</p>
+          </CardContent>
+        </Card>
+
+        <Card data-testid="card-total-expenses">
+          <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {transactionsLoading ? (
+              <Skeleton className="h-8 w-32" />
+            ) : (
+              <div className="text-2xl font-bold" data-testid="text-total-expenses">
+                {formatCurrency(monthlyExpenses)}
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground mt-1">This month</p>
+          </CardContent>
+        </Card>
+
+        <Card data-testid="card-pending-transactions">
+          <CardHeader className="flex flex-row items-center justify-between gap-1 space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending</CardTitle>
+            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            {transactionsLoading ? (
+              <Skeleton className="h-8 w-32" />
+            ) : (
+              <div className="text-2xl font-bold" data-testid="text-pending-count">
+                {pendingTransactions}
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground mt-1">Awaiting approval</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Actions - Admin Specific */}
+      <div>
+        <h2 className="text-xl font-bold mb-4" data-testid="text-quick-actions-title">Quick Actions</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Link href="/transfers">
+            <Card className="hover-elevate active-elevate-2 cursor-pointer" data-testid="card-action-transfer">
+              <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <ArrowLeftRight className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Transfer Money</h3>
+                  <p className="text-xs text-muted-foreground">Send to another account</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/users">
+            <Card className="hover-elevate active-elevate-2 cursor-pointer" data-testid="card-action-manage-users">
+              <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Manage Users</h3>
+                  <p className="text-xs text-muted-foreground">View and edit users</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/transactions">
+            <Card className="hover-elevate active-elevate-2 cursor-pointer" data-testid="card-action-transactions">
+              <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <FileText className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Transactions</h3>
+                  <p className="text-xs text-muted-foreground">Review all transactions</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/access-codes">
+            <Card className="hover-elevate active-elevate-2 cursor-pointer" data-testid="card-action-access-codes">
+              <CardContent className="p-6 flex flex-col items-center text-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <ShieldCheck className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Access Codes</h3>
+                  <p className="text-xs text-muted-foreground">Manage access codes</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
       </div>
 
       {/* Stats Grid */}
