@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode, generateNZBranchCode, generateVerificationCode } from "./storage";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
-import { detectCardBrand } from "./utils/cardBrands";
+import { detectCardBrand, generateCardNumberWithBrand } from "./utils/cardBrands";
 
 const REGIONS = ['AU', 'US', 'NZ'] as const;
 
@@ -101,9 +101,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(userId);
       const cardholderName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim().toUpperCase();
 
-      // Create debit card
+      // Create debit card (Mastercard)
       const debitExpiry = generateCardExpiry();
-      const debitCardNumber = generateCardNumber();
+      const debitCardNumber = generateCardNumberWithBrand('mastercard');
       await storage.createCard({
         accountId: account.id,
         cardNumber: debitCardNumber,
@@ -116,9 +116,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isActive: true,
       });
 
-      // Create credit card
+      // Create credit card (Visa)
       const creditExpiry = generateCardExpiry();
-      const creditCardNumber = generateCardNumber();
+      const creditCardNumber = generateCardNumberWithBrand('visa');
       await storage.createCard({
         accountId: account.id,
         cardNumber: creditCardNumber,
@@ -269,12 +269,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           accountType,
         });
 
-        // Create debit card for this account
+        // Create debit card for this account (Mastercard)
         const debitExpiry = generateCardExpiry();
+        const debitCardNumber = generateCardNumberWithBrand('mastercard');
         await storage.createCard({
           accountId: account.id,
-          cardNumber: generateCardNumber(),
+          cardNumber: debitCardNumber,
           cardType: "debit",
+          cardBrand: detectCardBrand(debitCardNumber),
           cvv: generateCVV(),
           expiryMonth: debitExpiry.month,
           expiryYear: debitExpiry.year,
@@ -282,12 +284,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           isActive: true,
         });
 
-        // Create credit card for this account
+        // Create credit card for this account (Visa)
         const creditExpiry = generateCardExpiry();
+        const creditCardNumber = generateCardNumberWithBrand('visa');
         await storage.createCard({
           accountId: account.id,
-          cardNumber: generateCardNumber(),
+          cardNumber: creditCardNumber,
           cardType: "credit",
+          cardBrand: detectCardBrand(creditCardNumber),
           cvv: generateCVV(),
           expiryMonth: creditExpiry.month,
           expiryYear: creditExpiry.year,
