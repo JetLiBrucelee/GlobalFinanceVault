@@ -56,11 +56,25 @@ Preferred communication style: Simple, everyday language.
 - **Admin Bypass**: Admin users (like Don Pablo Administrative) bypass access code verification on login
 
 ### Landing Page 3D Icons
-- **3D Realistic Icons**: All landing page icons replaced with high-quality 3D glossy realistic stock images (22 total icons)
-  - **Product Categories** (8): Credit card, piggy bank, house, car, airplane, building, calculator, upward arrow
-  - **Security Section** (4): Shield, lock, trophy/award, people/support
-  - **Features Section** (6): Globe, credit card, lock, upward arrow, smartphone, shield
-  - **Tools & Calculators** (4): House, piggy bank, calculator, upward arrow
+- **3D Realistic Icons**: All landing page icons replaced with high-quality 3D glossy realistic stock images - every icon is unique (26 total unique icons)
+  - **Product Categories** (8): Payment card, piggy bank, house, car, passport, stock chart, briefcase, abacus
+  - **Security Section** (4): Security camera, padlock, insurance document, customer headset
+  - **Features Section** (6): Globe, contactless card, padlock, money transfer, smartphone, safe vault
+  - **Tools & Calculators** (4): House, piggy bank, money bag, money tree
+- **Icon Uniqueness**: Each feature now has its own distinct icon - no duplicates across sections
+  - Travel = Passport (not airplane)
+  - Credit Cards = Payment card with chip
+  - Business = Briefcase (not building)
+  - Calculators = Abacus (not generic calculator)
+  - Investments = Stock market chart (not arrow)
+  - 24/7 Fraud Monitoring = Security camera (not shield)
+  - FDIC Insured = Insurance document (not trophy)
+  - Expert Support = Customer headset (not people)
+  - Instant Virtual Cards = Contactless card (not credit card)
+  - Instant Transfers = Money transfer icon (not arrow)
+  - Protected Accounts = Safe vault (not shield)
+  - Investment Calculator = Money tree (not arrow)
+  - Loan Calculator = Money bag (not generic calculator)
 - **Icon Styling**: White/gray circular backgrounds with shadow, object-contain sizing, hover scale animations on product categories
 - **Assets Location**: All 3D icons stored in `attached_assets/stock_images/3d_realistic_*.jpg`
 - **Mobile Responsive**: Icons scale appropriately on mobile devices with proper padding and spacing

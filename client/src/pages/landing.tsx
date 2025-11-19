@@ -20,19 +20,32 @@ import awardIcon3D from "@assets/stock_images/3d_realistic_trophy__10bda263.jpg"
 import supportIcon3D from "@assets/stock_images/3d_realistic_people__098ca549.jpg";
 import globeIcon3D from "@assets/stock_images/3d_realistic_globe_e_a5b4ea7e.jpg";
 import smartphoneIcon3D from "@assets/stock_images/3d_realistic_smartph_c76b18fb.jpg";
+import passportIcon3D from "@assets/stock_images/3d_realistic_passpor_4ae4dadb.jpg";
+import paymentCardIcon3D from "@assets/stock_images/3d_realistic_payment_e2c5e149.jpg";
+import briefcaseIcon3D from "@assets/stock_images/3d_realistic_briefca_edb90aaf.jpg";
+import abacusIcon3D from "@assets/stock_images/3d_realistic_abacus__9d87d5a3.jpg";
+import stockMarketIcon3D from "@assets/stock_images/3d_realistic_stock_m_007ee2c3.jpg";
+import insuranceIcon3D from "@assets/stock_images/3d_realistic_insuran_1ab47cee.jpg";
+import securityCameraIcon3D from "@assets/stock_images/3d_realistic_securit_c1bd5a83.jpg";
+import headsetIcon3D from "@assets/stock_images/3d_realistic_headset_b09c75ec.jpg";
+import contactlessCardIcon3D from "@assets/stock_images/3d_realistic_contact_80024a04.jpg";
+import moneyTransferIcon3D from "@assets/stock_images/3d_realistic_money_t_6985112a.jpg";
+import safeVaultIcon3D from "@assets/stock_images/3d_realistic_safe_va_17bb651d.jpg";
+import moneyTreeIcon3D from "@assets/stock_images/3d_realistic_growth__d4dfa5a9.jpg";
+import moneyBagIcon3D from "@assets/stock_images/3d_realistic_loan_mo_9815e2c4.jpg";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
   
   const productCategories = [
-    { icon: creditCardIcon3D, label: "Credit Cards", href: "/cards" },
+    { icon: paymentCardIcon3D, label: "Credit Cards", href: "/cards" },
     { icon: piggyBankIcon3D, label: "Savings", href: "/savings" },
     { icon: houseIcon3D, label: "Home Loans", href: "/home-loans" },
     { icon: carIcon3D, label: "Auto Loans", href: "/auto-loans" },
-    { icon: airplaneIcon3D, label: "Travel", href: "/travel" },
-    { icon: investmentIcon3D, label: "Investments", href: "/investments" },
-    { icon: buildingIcon3D, label: "Business", href: "/business" },
-    { icon: calculatorIcon3D, label: "Calculators", href: "/calculators" },
+    { icon: passportIcon3D, label: "Travel", href: "/travel" },
+    { icon: stockMarketIcon3D, label: "Investments", href: "/investments" },
+    { icon: briefcaseIcon3D, label: "Business", href: "/business" },
+    { icon: abacusIcon3D, label: "Calculators", href: "/calculators" },
   ];
   
   const navLinks = [
@@ -304,7 +317,7 @@ export default function Landing() {
           <div className="grid gap-6 md:gap-8 grid-cols-2 lg:grid-cols-4">
             <div className="text-center" data-testid="trust-security">
               <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/80 dark:bg-gray-800/80 shadow-sm p-3">
-                <img src={shieldIcon3D} alt="Security" className="w-full h-full object-contain" />
+                <img src={securityCameraIcon3D} alt="Security" className="w-full h-full object-contain" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">24/7 Fraud Monitoring</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -324,7 +337,7 @@ export default function Landing() {
 
             <div className="text-center" data-testid="trust-insurance">
               <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/80 dark:bg-gray-800/80 shadow-sm p-3">
-                <img src={awardIcon3D} alt="Insurance" className="w-full h-full object-contain" />
+                <img src={insuranceIcon3D} alt="Insurance" className="w-full h-full object-contain" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">FDIC Insured</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -334,7 +347,7 @@ export default function Landing() {
 
             <div className="text-center" data-testid="trust-support">
               <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-white/80 dark:bg-gray-800/80 shadow-sm p-3">
-                <img src={supportIcon3D} alt="Support" className="w-full h-full object-contain" />
+                <img src={headsetIcon3D} alt="Support" className="w-full h-full object-contain" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">Expert Support</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -422,7 +435,7 @@ export default function Landing() {
             <Card data-testid="card-feature-cards">
               <CardContent className="p-5 md:p-6">
                 <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-white/80 dark:bg-gray-800/80 flex items-center justify-center mb-4 shadow-sm p-3">
-                  <img src={creditCardIcon3D} alt="Virtual Cards" className="w-full h-full object-contain" />
+                  <img src={contactlessCardIcon3D} alt="Virtual Cards" className="w-full h-full object-contain" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Instant Virtual Cards</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -446,7 +459,7 @@ export default function Landing() {
             <Card data-testid="card-feature-transfers">
               <CardContent className="p-5 md:p-6">
                 <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-white/80 dark:bg-gray-800/80 flex items-center justify-center mb-4 shadow-sm p-3">
-                  <img src={investmentIcon3D} alt="Transfers" className="w-full h-full object-contain" />
+                  <img src={moneyTransferIcon3D} alt="Transfers" className="w-full h-full object-contain" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Instant Transfers</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -470,7 +483,7 @@ export default function Landing() {
             <Card data-testid="card-feature-support">
               <CardContent className="p-5 md:p-6">
                 <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-white/80 dark:bg-gray-800/80 flex items-center justify-center mb-4 shadow-sm p-3">
-                  <img src={shieldIcon3D} alt="Protected Accounts" className="w-full h-full object-contain" />
+                  <img src={safeVaultIcon3D} alt="Protected Accounts" className="w-full h-full object-contain" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Protected Accounts</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -532,7 +545,7 @@ export default function Landing() {
             >
               <CardContent className="p-4 md:p-6 text-center">
                 <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-white/80 dark:bg-gray-800/80 flex items-center justify-center shadow-sm p-2">
-                  <img src={calculatorIcon3D} alt="Loan" className="w-full h-full object-contain" />
+                  <img src={moneyBagIcon3D} alt="Loan" className="w-full h-full object-contain" />
                 </div>
                 <h3 className="text-sm md:text-base font-semibold mb-2">Loan Calculator</h3>
                 <p className="text-xs md:text-sm text-muted-foreground">
@@ -548,7 +561,7 @@ export default function Landing() {
             >
               <CardContent className="p-4 md:p-6 text-center">
                 <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-white/80 dark:bg-gray-800/80 flex items-center justify-center shadow-sm p-2">
-                  <img src={investmentIcon3D} alt="Investment" className="w-full h-full object-contain" />
+                  <img src={moneyTreeIcon3D} alt="Investment" className="w-full h-full object-contain" />
                 </div>
                 <h3 className="text-sm md:text-base font-semibold mb-2">Investment Calculator</h3>
                 <p className="text-xs md:text-sm text-muted-foreground">
