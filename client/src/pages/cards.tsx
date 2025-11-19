@@ -1,17 +1,11 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
-import { CreditCard, Eye, EyeOff, Copy } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { CreditCard } from "lucide-react";
+import CardDisplay from "@/components/CardDisplay";
 import type { Card as CardType, Account } from "@shared/schema";
 
 export default function Cards() {
-  const [visibleCvvs, setVisibleCvvs] = useState<Set<string>>(new Set());
-  const { toast } = useToast();
-
   const { data: cards, isLoading: cardsLoading } = useQuery<CardType[]>({
     queryKey: ["/api/cards"],
   });
@@ -19,36 +13,6 @@ export default function Cards() {
   const { data: accounts } = useQuery<Account[]>({
     queryKey: ["/api/accounts"],
   });
-
-  const toggleCvvVisibility = (cardId: string) => {
-    setVisibleCvvs(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(cardId)) {
-        newSet.delete(cardId);
-      } else {
-        newSet.add(cardId);
-      }
-      return newSet;
-    });
-  };
-
-  const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Copied",
-      description: `${label} copied to clipboard`,
-    });
-  };
-
-  const formatCardNumber = (number: string) => {
-    return number.match(/.{1,4}/g)?.join(' ') || number;
-  };
-
-  const getCardGradient = (type: string) => {
-    return type === 'credit' 
-      ? 'bg-gradient-to-br from-primary via-primary/90 to-primary/80'
-      : 'bg-gradient-to-br from-chart-1 via-chart-1/90 to-chart-1/80';
-  };
 
   return (
     <div className="space-y-8">
@@ -71,111 +35,13 @@ export default function Cards() {
         <div className="grid gap-6 md:grid-cols-2">
           {cards.map((card, index) => {
             const account = accounts?.find(a => a.id === card.accountId);
-            const isCvvVisible = visibleCvvs.has(card.id);
-            
             return (
-              <Card
+              <CardDisplay
                 key={card.id}
-                className={`${getCardGradient(card.cardType)} text-white border-0`}
-                data-testid={`card-${index}`}
-              >
-                <CardContent className="p-6">
-                  <div className="space-y-6">
-                    {/* Card Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <CreditCard className="h-6 w-6" />
-                        <span className="font-medium">
-                          {card.cardType === 'credit' ? 'Credit Card' : 'Debit Card'}
-                        </span>
-                      </div>
-                      <Badge
-                        variant={card.isActive ? "default" : "secondary"}
-                        className="bg-white/20 text-white border-0"
-                        data-testid={`badge-status-${index}`}
-                      >
-                        {card.isActive ? 'Active' : 'Inactive'}
-                      </Badge>
-                    </div>
-
-                    {/* Card Number */}
-                    <div className="space-y-2">
-                      <p className="text-xs text-white/70">Card Number</p>
-                      <div className="flex items-center justify-between">
-                        <p
-                          className="text-xl font-mono tracking-wider"
-                          data-testid={`text-card-number-${index}`}
-                        >
-                          {formatCardNumber(card.cardNumber)}
-                        </p>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 text-white hover:bg-white/20"
-                          onClick={() => copyToClipboard(card.cardNumber, 'Card number')}
-                          data-testid={`button-copy-card-number-${index}`}
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Card Details */}
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="space-y-1">
-                        <p className="text-xs text-white/70">Cardholder</p>
-                        <p className="text-sm font-medium truncate" data-testid={`text-cardholder-${index}`}>
-                          {card.cardholderName}
-                        </p>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-xs text-white/70">Expiry</p>
-                        <p className="text-sm font-medium font-mono" data-testid={`text-expiry-${index}`}>
-                          {card.expiryMonth}/{card.expiryYear.slice(-2)}
-                        </p>
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-xs text-white/70">CVV</p>
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium font-mono" data-testid={`text-cvv-${index}`}>
-                            {isCvvVisible ? card.cvv : '***'}
-                          </p>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6 text-white hover:bg-white/20"
-                            onClick={() => toggleCvvVisibility(card.id)}
-                            data-testid={`button-toggle-cvv-${index}`}
-                          >
-                            {isCvvVisible ? (
-                              <EyeOff className="h-3 w-3" />
-                            ) : (
-                              <Eye className="h-3 w-3" />
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Account Info */}
-                    {account && (
-                      <div className="pt-4 border-t border-white/20">
-                        <p className="text-xs text-white/70 mb-1">Linked Account</p>
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-mono" data-testid={`text-linked-account-${index}`}>
-                            {account.accountNumber.slice(0, 4)}...{account.accountNumber.slice(-4)}
-                          </p>
-                          <p className="text-xs text-white/70">
-                            {account.region === 'AU' && account.bsb && `BSB: ${account.bsb.slice(0, 3)}-${account.bsb.slice(3)}`}
-                            {account.region === 'US' && account.routingNumber && `Routing: ${account.routingNumber}`}
-                            {account.region === 'NZ' && account.swiftCode && `SWIFT: ${account.swiftCode}`}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+                card={card}
+                account={account}
+                index={index}
+              />
             );
           })}
         </div>
