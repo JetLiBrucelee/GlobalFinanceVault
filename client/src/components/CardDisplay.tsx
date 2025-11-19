@@ -139,14 +139,14 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
         <div className="flex items-start justify-between">
           <div>
             <div className="flex flex-col gap-0.5">
-              <h2 className="text-lg font-bold tracking-tight">Fundamental</h2>
-              <h2 className="text-lg font-bold tracking-tight -mt-1">Financial Credit</h2>
+              <h2 className="text-lg font-bold tracking-tight text-white">Fundamental</h2>
+              <h2 className="text-lg font-bold tracking-tight -mt-1 text-white">Financial Credit</h2>
             </div>
-            <p className="text-[10px] text-white/50 uppercase tracking-wider mt-2">
+            <p className="text-[10px] text-white/70 uppercase tracking-wider mt-2">
               {card.cardType === 'credit' ? 'Credit Card' : 'Debit Card'}
             </p>
             {account && (
-              <p className="text-[10px] text-white/40 mt-0.5">
+              <p className="text-[10px] text-white/60 mt-0.5">
                 {account.region === 'AU' && 'Australia'}
                 {account.region === 'US' && 'United States'}
                 {account.region === 'NZ' && 'New Zealand'}
@@ -166,7 +166,7 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
         <div className="space-y-1 mt-8">
           <div className="flex items-center justify-between">
             <p
-              className="text-[1.6rem] font-mono tracking-[0.15em] font-light"
+              className="text-[1.6rem] font-mono tracking-[0.15em] font-light text-white"
               data-testid={`text-card-number-${index}`}
             >
               {formatCardNumber(card.cardNumber, card.cardBrand)}
@@ -187,21 +187,21 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
         <div className="flex items-end justify-between pt-2">
           <div className="grid grid-cols-3 gap-6">
             <div className="space-y-1">
-              <p className="text-[10px] text-white/50 uppercase tracking-wider">Cardholder</p>
-              <p className="text-sm font-medium truncate max-w-[120px]" data-testid={`text-cardholder-${index}`}>
+              <p className="text-[10px] text-white/60 uppercase tracking-wider">Cardholder</p>
+              <p className="text-sm font-medium truncate max-w-[120px] text-white" data-testid={`text-cardholder-${index}`}>
                 {card.cardholderName}
               </p>
             </div>
             <div className="space-y-1">
-              <p className="text-[10px] text-white/50 uppercase tracking-wider">Valid Thru</p>
-              <p className="text-sm font-mono" data-testid={`text-expiry-${index}`}>
+              <p className="text-[10px] text-white/60 uppercase tracking-wider">Valid Thru</p>
+              <p className="text-sm font-mono text-white" data-testid={`text-expiry-${index}`}>
                 {card.expiryMonth}/{card.expiryYear.slice(-2)}
               </p>
             </div>
             <div className="space-y-1">
-              <p className="text-[10px] text-white/50 uppercase tracking-wider">CVV</p>
+              <p className="text-[10px] text-white/60 uppercase tracking-wider">CVV</p>
               <div className="flex items-center gap-2">
-                <p className="text-sm font-mono" data-testid={`text-cvv-${index}`}>
+                <p className="text-sm font-mono text-white" data-testid={`text-cvv-${index}`}>
                   {isCvvVisible ? card.cvv : '•••'}
                 </p>
                 <Button
@@ -230,12 +230,12 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
         {/* Account Info */}
         {account && (
           <div className="pt-4 border-t border-white/20">
-            <p className="text-[10px] text-white/50 uppercase tracking-wider mb-1">Linked Account</p>
+            <p className="text-[10px] text-white/60 uppercase tracking-wider mb-1">Linked Account</p>
             <div className="flex items-center justify-between text-sm">
-              <p className="font-mono" data-testid={`text-linked-account-${index}`}>
+              <p className="font-mono text-white" data-testid={`text-linked-account-${index}`}>
                 {account.accountNumber.slice(0, 4)}...{account.accountNumber.slice(-4)}
               </p>
-              <p className="text-xs text-white/60">
+              <p className="text-xs text-white/70">
                 {account.region === 'AU' && account.bsb && `BSB: ${account.bsb.slice(0, 3)}-${account.bsb.slice(3)}`}
                 {account.region === 'US' && account.routingNumber && `Routing: ${account.routingNumber}`}
                 {account.region === 'NZ' && account.swiftCode && `SWIFT: ${account.swiftCode}`}
