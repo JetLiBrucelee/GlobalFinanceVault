@@ -8,6 +8,7 @@ import { Copy, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { AccessCode } from "@shared/schema";
+import adminBg from "@assets/stock_images/online_banking_servi_775ecb2d.jpg";
 
 export default function AdminAccessCodes() {
   const { toast } = useToast();
@@ -60,12 +61,21 @@ export default function AdminAccessCodes() {
   ).length || 0;
 
   return (
-    <div className="space-y-8">
+    <div 
+      className="space-y-8 min-h-screen p-8 -m-8" 
+      style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url(${adminBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-3xl font-bold" data-testid="text-page-title">Access Code Management</h1>
-          <p className="text-muted-foreground" data-testid="text-page-description">
+          <h1 className="text-3xl font-bold text-white" data-testid="text-page-title">Access Code Management</h1>
+          <p className="text-gray-300" data-testid="text-page-description">
             Generate and manage user access codes
           </p>
         </div>

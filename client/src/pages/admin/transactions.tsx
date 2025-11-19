@@ -8,6 +8,7 @@ import { Check, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { Transaction } from "@shared/schema";
+import adminBg from "@assets/stock_images/online_banking_servi_775ecb2d.jpg";
 
 export default function AdminTransactions() {
   const { toast } = useToast();
@@ -77,11 +78,20 @@ export default function AdminTransactions() {
   const processedTransactions = transactions?.filter(t => t.status !== 'pending') || [];
 
   return (
-    <div className="space-y-8">
+    <div 
+      className="space-y-8 min-h-screen p-8 -m-8" 
+      style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url(${adminBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold" data-testid="text-page-title">Transaction Management</h1>
-        <p className="text-muted-foreground" data-testid="text-page-description">
+        <h1 className="text-3xl font-bold text-white" data-testid="text-page-title">Transaction Management</h1>
+        <p className="text-gray-300" data-testid="text-page-description">
           Approve or decline pending transactions
         </p>
       </div>

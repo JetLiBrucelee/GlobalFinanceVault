@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import adminBg from "@assets/stock_images/online_banking_servi_775ecb2d.jpg";
 
 export default function AdminUsers() {
   const { toast } = useToast();
@@ -241,11 +242,20 @@ export default function AdminUsers() {
   };
 
   return (
-    <div className="space-y-8">
+    <div 
+      className="space-y-8 min-h-screen p-8 -m-8" 
+      style={{
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url(${adminBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold" data-testid="text-page-title">Manage Users</h1>
-        <p className="text-muted-foreground" data-testid="text-page-description">
+        <h1 className="text-3xl font-bold text-white" data-testid="text-page-title">Manage Users</h1>
+        <p className="text-gray-300" data-testid="text-page-description">
           View and manage all user accounts
         </p>
       </div>
