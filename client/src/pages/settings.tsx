@@ -12,12 +12,17 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 
 import dogAvatar from "@assets/stock_images/cute_cartoon_dog_ava_f554a6f2.jpg";
 import catAvatar from "@assets/stock_images/cute_cartoon_cat_ava_1ac2277f.jpg";
-import birdAvatar from "@assets/stock_images/cute_cartoon_bird_av_0615cb5c.jpg";
-import lionAvatar from "@assets/stock_images/cute_cartoon_lion_av_c9fb81d3.jpg";
+import birdAvatar from "@assets/stock_images/cute_cartoon_bird_av_8d9e30a4.jpg";
+import lionAvatar from "@assets/stock_images/cute_cartoon_lion_av_6338142e.jpg";
 import bearAvatar from "@assets/stock_images/cute_cartoon_bear_av_40b41f20.jpg";
-import cowAvatar from "@assets/stock_images/cute_cartoon_cow_ava_ce54458e.jpg";
+import cowAvatar from "@assets/stock_images/cute_cartoon_cow_ava_1cc8911c.jpg";
 import rabbitAvatar from "@assets/stock_images/cute_cartoon_rabbit__9c34f387.jpg";
 import pandaAvatar from "@assets/stock_images/cute_cartoon_panda_a_863bd583.jpg";
+import foxAvatar from "@assets/stock_images/cute_cartoon_fox_ava_7f79586d.jpg";
+import tigerAvatar from "@assets/stock_images/cute_cartoon_tiger_a_ddb3c42a.jpg";
+import penguinAvatar from "@assets/stock_images/cute_cartoon_penguin_0157b1f2.jpg";
+import koalaAvatar from "@assets/stock_images/cute_cartoon_koala_a_927f9c54.jpg";
+import elephantAvatar from "@assets/stock_images/cute_cartoon_elephan_923250d1.jpg";
 
 const avatarImages: Record<string, string> = {
   dog: dogAvatar,
@@ -28,6 +33,11 @@ const avatarImages: Record<string, string> = {
   cow: cowAvatar,
   rabbit: rabbitAvatar,
   panda: pandaAvatar,
+  fox: foxAvatar,
+  tiger: tigerAvatar,
+  penguin: penguinAvatar,
+  koala: koalaAvatar,
+  elephant: elephantAvatar,
 };
 
 const avatarNames: Record<string, string> = {
@@ -39,6 +49,11 @@ const avatarNames: Record<string, string> = {
   cow: "Cow",
   rabbit: "Rabbit",
   panda: "Panda",
+  fox: "Fox",
+  tiger: "Tiger",
+  penguin: "Penguin",
+  koala: "Koala",
+  elephant: "Elephant",
 };
 
 export default function Settings() {

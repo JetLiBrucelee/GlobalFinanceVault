@@ -147,7 +147,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.id;
       const { avatar } = req.body;
 
-      const allowedAvatars = ['dog', 'cat', 'bird', 'lion', 'bear', 'cow', 'rabbit', 'panda'];
+      const allowedAvatars = ['dog', 'cat', 'bird', 'lion', 'bear', 'cow', 'rabbit', 'panda', 'fox', 'tiger', 'penguin', 'koala', 'elephant'];
       if (!avatar || !allowedAvatars.includes(avatar)) {
         return res.status(400).json({ message: "Invalid avatar. Must be one of: " + allowedAvatars.join(', ') });
       }
