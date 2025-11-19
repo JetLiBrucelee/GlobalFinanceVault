@@ -111,7 +111,7 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
       data-testid={`card-${index}`}
     >
       {/* Card chip graphic */}
-      <div className="absolute top-20 left-6 w-12 h-10 rounded opacity-70">
+      <div className="absolute top-[4.5rem] left-6 w-12 h-10 rounded opacity-60">
         <svg viewBox="0 0 40 30" fill="none">
           <rect width="40" height="30" rx="3" fill="url(#chipGradient)" />
           <defs>
@@ -135,37 +135,38 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
       </div>
 
       <div className="relative p-6 space-y-6">
-        {/* Card Header */}
+        {/* Card Header - Bank Logo */}
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs text-white/60 uppercase tracking-wider mb-1">
+            <div className="flex flex-col gap-0.5">
+              <h2 className="text-xl font-bold tracking-tight">The Peoples</h2>
+              <h2 className="text-xl font-bold tracking-tight -mt-1">Finance</h2>
+            </div>
+            <p className="text-[10px] text-white/50 uppercase tracking-wider mt-2">
               {card.cardType === 'credit' ? 'Credit Card' : 'Debit Card'}
             </p>
             {account && (
-              <p className="text-xs text-white/50 font-mono">
+              <p className="text-[10px] text-white/40 mt-0.5">
                 {account.region === 'AU' && 'Australia'}
                 {account.region === 'US' && 'United States'}
                 {account.region === 'NZ' && 'New Zealand'}
               </p>
             )}
           </div>
-          <div className="flex flex-col items-end gap-2">
-            {getCardBrandLogo(card.cardBrand)}
-            <Badge
-              variant={card.isActive ? "default" : "secondary"}
-              className="bg-white/20 text-white border-0 text-xs"
-              data-testid={`badge-status-${index}`}
-            >
-              {card.isActive ? 'Active' : 'Inactive'}
-            </Badge>
-          </div>
+          <Badge
+            variant={card.isActive ? "default" : "secondary"}
+            className="bg-white/20 text-white border-0 text-xs"
+            data-testid={`badge-status-${index}`}
+          >
+            {card.isActive ? 'Active' : 'Inactive'}
+          </Badge>
         </div>
 
         {/* Card Number */}
         <div className="space-y-1 mt-8">
           <div className="flex items-center justify-between">
             <p
-              className="text-2xl font-mono tracking-[0.2em] font-light"
+              className="text-[1.6rem] font-mono tracking-[0.15em] font-light"
               data-testid={`text-card-number-${index}`}
             >
               {formatCardNumber(card.cardNumber, card.cardBrand)}
@@ -182,40 +183,47 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
           </div>
         </div>
 
-        {/* Card Details */}
-        <div className="grid grid-cols-3 gap-4 pt-4">
-          <div className="space-y-1">
-            <p className="text-[10px] text-white/50 uppercase tracking-wider">Cardholder</p>
-            <p className="text-sm font-medium truncate" data-testid={`text-cardholder-${index}`}>
-              {card.cardholderName}
-            </p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-[10px] text-white/50 uppercase tracking-wider">Valid Thru</p>
-            <p className="text-sm font-mono" data-testid={`text-expiry-${index}`}>
-              {card.expiryMonth}/{card.expiryYear.slice(-2)}
-            </p>
-          </div>
-          <div className="space-y-1">
-            <p className="text-[10px] text-white/50 uppercase tracking-wider">CVV</p>
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-mono" data-testid={`text-cvv-${index}`}>
-                {isCvvVisible ? card.cvv : '•••'}
+        {/* Card Details with Brand Logo */}
+        <div className="flex items-end justify-between pt-2">
+          <div className="grid grid-cols-3 gap-6">
+            <div className="space-y-1">
+              <p className="text-[10px] text-white/50 uppercase tracking-wider">Cardholder</p>
+              <p className="text-sm font-medium truncate max-w-[120px]" data-testid={`text-cardholder-${index}`}>
+                {card.cardholderName}
               </p>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-6 w-6 text-white hover:bg-white/20"
-                onClick={() => setIsCvvVisible(!isCvvVisible)}
-                data-testid={`button-toggle-cvv-${index}`}
-              >
-                {isCvvVisible ? (
-                  <EyeOff className="h-3 w-3" />
-                ) : (
-                  <Eye className="h-3 w-3" />
-                )}
-              </Button>
             </div>
+            <div className="space-y-1">
+              <p className="text-[10px] text-white/50 uppercase tracking-wider">Valid Thru</p>
+              <p className="text-sm font-mono" data-testid={`text-expiry-${index}`}>
+                {card.expiryMonth}/{card.expiryYear.slice(-2)}
+              </p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-[10px] text-white/50 uppercase tracking-wider">CVV</p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-mono" data-testid={`text-cvv-${index}`}>
+                  {isCvvVisible ? card.cvv : '•••'}
+                </p>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-6 w-6 text-white hover:bg-white/20"
+                  onClick={() => setIsCvvVisible(!isCvvVisible)}
+                  data-testid={`button-toggle-cvv-${index}`}
+                >
+                  {isCvvVisible ? (
+                    <EyeOff className="h-3 w-3" />
+                  ) : (
+                    <Eye className="h-3 w-3" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Brand Logo - Bottom Right */}
+          <div className="pb-1">
+            {getCardBrandLogo(card.cardBrand)}
           </div>
         </div>
 
