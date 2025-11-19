@@ -29,7 +29,7 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
-  updateUserStatus(id: string, updates: { isBlocked?: boolean; isLocked?: boolean; isAdmin?: boolean }): Promise<User>;
+  updateUserStatus(id: string, updates: { isBlocked?: boolean; isLocked?: boolean; isAdmin?: boolean; isApproved?: boolean }): Promise<User>;
   updateUserAvatar(id: string, avatar: string): Promise<User>;
   updateUserProfile(id: string, updates: { firstName: string; lastName: string }): Promise<User>;
   deleteUser(id: string): Promise<void>;
@@ -94,7 +94,7 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(users).orderBy(desc(users.createdAt));
   }
 
-  async updateUserStatus(id: string, updates: { isBlocked?: boolean; isLocked?: boolean; isAdmin?: boolean }): Promise<User> {
+  async updateUserStatus(id: string, updates: { isBlocked?: boolean; isLocked?: boolean; isAdmin?: boolean; isApproved?: boolean }): Promise<User> {
     const [user] = await db
       .update(users)
       .set({ ...updates, updatedAt: new Date() })

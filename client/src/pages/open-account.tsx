@@ -24,8 +24,13 @@ const accountOpeningSchema = z.object({
   city: z.string().min(2, "City is required"),
   postalCode: z.string().min(4, "Postal code is required"),
   accountType: z.enum(["checking", "savings", "business"]),
-  region: z.enum(["AU", "US", "NZ"]),
-  initialDeposit: z.string().min(1, "Initial deposit is required"),
+  initialDeposit: z.string().min(1, "Initial deposit is required").default("0"),
+  username: z.string().min(4, "Username must be at least 4 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string().min(8, "Please confirm your password"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 type AccountOpeningForm = z.infer<typeof accountOpeningSchema>;
@@ -40,14 +45,17 @@ export default function OpenAccount() {
     resolver: zodResolver(accountOpeningSchema),
     defaultValues: {
       accountType: "checking",
-      region: "AU",
       initialDeposit: "0",
+      username: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
   const createAccountMutation = useMutation({
     mutationFn: async (data: AccountOpeningForm) => {
-      return await apiRequest("/api/accounts/open", "POST", data);
+      const response = await apiRequest("POST", "/api/accounts/open", data);
+      return await response.json();
     },
     onSuccess: (data) => {
       setAccountDetails(data);
@@ -95,6 +103,8 @@ export default function OpenAccount() {
   ];
 
   if (isSuccess && accountDetails) {
+    const { accounts = [], username } = accountDetails;
+    
     return (
       <div className="min-h-screen relative flex items-center justify-center p-4">
         <div 
@@ -107,67 +117,91 @@ export default function OpenAccount() {
           }}
         />
         
-        <Card className="w-full max-w-2xl relative z-10">
+        <Card className="w-full max-w-4xl relative z-10">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
               <CheckCircle2 className="h-10 w-10 text-green-600" />
             </div>
-            <CardTitle className="text-3xl">Account Created Successfully!</CardTitle>
+            <CardTitle className="text-3xl">Accounts Created Successfully!</CardTitle>
             <CardDescription>
-              Your account has been set up and is ready to use
+              Your accounts in all three regions have been set up. Please wait for admin approval.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-900">
+              <p className="text-sm text-yellow-900 dark:text-yellow-100">
+                <strong>Pending Approval:</strong> Your account registration is awaiting admin approval. Once approved, you can sign in with your credentials.
+              </p>
+            </div>
+
             <div className="grid gap-4 p-6 bg-muted/50 rounded-lg">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Account Number</p>
-                  <p className="text-lg font-mono font-bold">{accountDetails.accountNumber}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Account Type</p>
-                  <p className="text-lg font-semibold capitalize">{accountDetails.accountType}</p>
-                </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Username</p>
+                <p className="text-lg font-mono font-bold">{username}</p>
               </div>
-              
-              {accountDetails.bsb && (
-                <div>
-                  <p className="text-sm text-muted-foreground">BSB (Australia)</p>
-                  <p className="text-lg font-mono font-bold">{accountDetails.bsb}</p>
-                </div>
-              )}
-              
-              {accountDetails.routingNumber && (
-                <div>
-                  <p className="text-sm text-muted-foreground">Routing Number (USA)</p>
-                  <p className="text-lg font-mono font-bold">{accountDetails.routingNumber}</p>
-                </div>
-              )}
-              
-              {accountDetails.branchCode && (
-                <div>
-                  <p className="text-sm text-muted-foreground">Branch Code (New Zealand)</p>
-                  <p className="text-lg font-mono font-bold">{accountDetails.branchCode}</p>
-                </div>
-              )}
-              
-              {accountDetails.swiftCode && (
-                <div>
-                  <p className="text-sm text-muted-foreground">SWIFT Code</p>
-                  <p className="text-lg font-mono font-bold">{accountDetails.swiftCode}</p>
-                </div>
-              )}
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {accounts.map((account: any, index: number) => {
+                const regionName = account.region === 'AU' ? 'Australia' : account.region === 'US' ? 'United States' : 'New Zealand';
+                return (
+                  <Card key={index} className="overflow-hidden">
+                    <div className="bg-primary/10 px-4 py-2">
+                      <h4 className="font-semibold text-center">{regionName}</h4>
+                    </div>
+                    <CardContent className="p-4 space-y-3">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Account Number</p>
+                        <p className="text-sm font-mono font-bold">{account.accountNumber}</p>
+                      </div>
+                      
+                      {account.bsb && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">BSB</p>
+                          <p className="text-sm font-mono font-bold">{account.bsb}</p>
+                        </div>
+                      )}
+                      
+                      {account.routingNumber && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">Routing Number</p>
+                          <p className="text-sm font-mono font-bold">{account.routingNumber}</p>
+                        </div>
+                      )}
+                      
+                      {account.branchCode && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">Branch Code</p>
+                          <p className="text-sm font-mono font-bold">{account.branchCode}</p>
+                        </div>
+                      )}
+                      
+                      {account.swiftCode && (
+                        <div>
+                          <p className="text-xs text-muted-foreground">SWIFT Code</p>
+                          <p className="text-sm font-mono font-bold">{account.swiftCode}</p>
+                        </div>
+                      )}
+
+                      <div>
+                        <p className="text-xs text-muted-foreground">Account Type</p>
+                        <p className="text-sm font-semibold capitalize">{account.accountType}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-900">
               <p className="text-sm text-blue-900 dark:text-blue-100">
-                <strong>Important:</strong> Please save these account details securely. You'll need them to access your account and set up direct deposits.
+                <strong>Important:</strong> Please save these account details securely. Once your accounts are approved by an administrator, you can sign in using your username and password.
               </p>
             </div>
 
             <div className="flex gap-4">
               <Button className="flex-1" onClick={() => window.location.href = '/api/login'}>
-                Sign In to Your Account
+                Try Signing In
               </Button>
               <Button variant="outline" onClick={() => window.location.href = '/'}>
                 Back to Home
@@ -265,10 +299,9 @@ export default function OpenAccount() {
             )}
 
             {step === 2 && (
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <h3 className="text-xl font-semibold">Personal Information</h3>
-                  
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold">Personal Information</h3>
+                <Form {...form}>
                   <div className="grid gap-4 md:grid-cols-2">
                     <FormField
                       control={form.control}
@@ -389,29 +422,6 @@ export default function OpenAccount() {
 
                   <FormField
                     control={form.control}
-                    name="region"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Country/Region</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger data-testid="select-region">
-                              <SelectValue placeholder="Select region" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="AU">Australia</SelectItem>
-                            <SelectItem value="US">United States</SelectItem>
-                            <SelectItem value="NZ">New Zealand</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
                     name="initialDeposit"
                     render={({ field }) => (
                       <FormItem>
@@ -429,12 +439,81 @@ export default function OpenAccount() {
                       Back
                     </Button>
                     <Button 
+                      type="button"
+                      onClick={() => setStep(3)}
+                      className="flex-1"
+                    >
+                      Continue
+                    </Button>
+                  </div>
+                </Form>
+              </div>
+            )}
+
+            {step === 3 && (
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <h3 className="text-xl font-semibold">Create Your Login Credentials</h3>
+                  
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <Input {...field} data-testid="input-username" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} data-testid="input-password" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} data-testid="input-confirm-password" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-900">
+                    <p className="text-sm text-blue-900 dark:text-blue-100">
+                      <strong>Note:</strong> Your application will create accounts in all three regions (USA, Australia, and New Zealand) automatically. Each account will have unique account numbers and region-specific identifiers.
+                    </p>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <Button type="button" variant="outline" onClick={() => setStep(2)} className="flex-1">
+                      Back
+                    </Button>
+                    <Button 
                       type="submit" 
                       className="flex-1" 
                       disabled={createAccountMutation.isPending}
                       data-testid="button-submit-account"
                     >
-                      {createAccountMutation.isPending ? "Creating Account..." : "Open Account"}
+                      {createAccountMutation.isPending ? "Creating Accounts..." : "Open Accounts"}
                     </Button>
                   </div>
                 </form>

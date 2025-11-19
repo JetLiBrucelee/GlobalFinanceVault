@@ -53,6 +53,11 @@ export async function setupAuth(app: Express) {
           return done(null, false, { message: "Account is locked. Please contact support." });
         }
 
+        // Check approval status (admins bypass this check)
+        if (!user.isAdmin && !user.isApproved) {
+          return done(null, false, { message: "Account is pending approval. Please wait for admin approval." });
+        }
+
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
           return done(null, false, { message: "Invalid username or password" });
@@ -102,6 +107,7 @@ export async function setupAuth(app: Express) {
           lastName: user.lastName,
           avatar: user.avatar || 'cat',
           isAdmin: user.isAdmin,
+          isApproved: user.isApproved,
         });
       });
     })(req, res, next);

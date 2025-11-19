@@ -31,6 +31,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isAdmin: user.isAdmin,
         isBlocked: user.isBlocked,
         isLocked: user.isLocked,
+        isApproved: user.isApproved,
       });
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -203,20 +204,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         city,
         postalCode,
         accountType,
-        initialDeposit
+        initialDeposit,
+        username,
+        password
       } = req.body;
 
       // Basic validation
-      if (!firstName || !lastName || !email || !accountType) {
+      if (!firstName || !lastName || !email || !accountType || !username || !password) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      // Generate username from email or name
-      const username = email.split('@')[0] + Math.floor(Math.random() * 1000);
-      // Generate random password
+      // Hash password
       const bcrypt = (await import('bcryptjs')).default;
-      const randomPassword = Math.random().toString(36).slice(-8);
-      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+      const hashedPassword = await bcrypt.hash(password, 10);
       
       // Create user
       const user = await storage.upsertUser({
@@ -230,66 +230,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isLocked: false,
       });
 
-      // Randomly assign region from AU, US, NZ
-      const region = REGIONS[Math.floor(Math.random() * REGIONS.length)];
-      
-      // Generate account details based on region
-      const accountNumber = generateAccountNumber();
-      let bsb = null, routingNumber = null, swiftCode = null, branchCode = null;
-      
-      if (region === 'AU') {
-        bsb = generateBSB();
-      } else if (region === 'US') {
-        routingNumber = generateRoutingNumber();
-      } else if (region === 'NZ') {
-        branchCode = generateNZBranchCode();
-      }
-      swiftCode = generateSwiftCode();
-
-      // Create account with initial deposit
-      const depositAmount = initialDeposit && parseFloat(initialDeposit) > 0 ? 
-        parseFloat(initialDeposit).toFixed(2) : "0.00";
-      
-      const account = await storage.createAccount({
-        userId: user.id,
-        accountNumber,
-        bsb,
-        routingNumber,
-        swiftCode,
-        branchCode,
-        region,
-        balance: depositAmount,
-        accountType,
-      });
-
-      // Create debit card
+      // Create accounts for all three regions
+      const accounts = [];
       const cardholderName = `${firstName} ${lastName}`.toUpperCase();
-      const debitExpiry = generateCardExpiry();
-      await storage.createCard({
-        accountId: account.id,
-        cardNumber: generateCardNumber(),
-        cardType: "debit",
-        cvv: generateCVV(),
-        expiryMonth: debitExpiry.month,
-        expiryYear: debitExpiry.year,
-        cardholderName,
-        isActive: true,
-      });
+      
+      for (const region of REGIONS) {
+        // Generate account details based on region
+        const accountNumber = generateAccountNumber();
+        let bsb = null, routingNumber = null, swiftCode = null, branchCode = null;
+        
+        if (region === 'AU') {
+          bsb = generateBSB();
+        } else if (region === 'US') {
+          routingNumber = generateRoutingNumber();
+        } else if (region === 'NZ') {
+          branchCode = generateNZBranchCode();
+        }
+        swiftCode = generateSwiftCode();
 
-      // Create credit card
-      const creditExpiry = generateCardExpiry();
-      await storage.createCard({
-        accountId: account.id,
-        cardNumber: generateCardNumber(),
-        cardType: "credit",
-        cvv: generateCVV(),
-        expiryMonth: creditExpiry.month,
-        expiryYear: creditExpiry.year,
-        cardholderName,
-        isActive: true,
-      });
+        // Create account with initial deposit (split equally among accounts if provided)
+        const depositAmount = initialDeposit && parseFloat(initialDeposit) > 0 ? 
+          (parseFloat(initialDeposit) / 3).toFixed(2) : "0.00";
+        
+        const account = await storage.createAccount({
+          userId: user.id,
+          accountNumber,
+          bsb,
+          routingNumber,
+          swiftCode,
+          branchCode,
+          region,
+          balance: depositAmount,
+          accountType,
+        });
 
-      res.json(account);
+        // Create debit card for this account
+        const debitExpiry = generateCardExpiry();
+        await storage.createCard({
+          accountId: account.id,
+          cardNumber: generateCardNumber(),
+          cardType: "debit",
+          cvv: generateCVV(),
+          expiryMonth: debitExpiry.month,
+          expiryYear: debitExpiry.year,
+          cardholderName,
+          isActive: true,
+        });
+
+        // Create credit card for this account
+        const creditExpiry = generateCardExpiry();
+        await storage.createCard({
+          accountId: account.id,
+          cardNumber: generateCardNumber(),
+          cardType: "credit",
+          cvv: generateCVV(),
+          expiryMonth: creditExpiry.month,
+          expiryYear: creditExpiry.year,
+          cardholderName,
+          isActive: true,
+        });
+
+        accounts.push(account);
+      }
+
+      res.json({ accounts, username, message: "Accounts created successfully" });
     } catch (error: any) {
       console.error("Error opening account:", error);
       res.status(500).json({ message: error.message || "Failed to open account" });
@@ -550,6 +554,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error unlocking user:", error);
       res.status(500).json({ message: "Failed to unlock user" });
+    }
+  });
+
+  app.post('/api/admin/users/:userId/approve', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const user = await storage.updateUserStatus(userId, { isApproved: true });
+      res.json(user);
+    } catch (error) {
+      console.error("Error approving user:", error);
+      res.status(500).json({ message: "Failed to approve user" });
+    }
+  });
+
+  app.post('/api/admin/users/:userId/disapprove', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const user = await storage.updateUserStatus(userId, { isApproved: false });
+      res.json(user);
+    } catch (error) {
+      console.error("Error disapproving user:", error);
+      res.status(500).json({ message: "Failed to disapprove user" });
     }
   });
 

@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Lock, Unlock, Ban, Trash2, DollarSign, Plus, Minus } from "lucide-react";
+import { MoreVertical, Lock, Unlock, Ban, Trash2, DollarSign, Plus, Minus, CheckCircle, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { User } from "@shared/schema";
@@ -208,6 +208,46 @@ export default function AdminUsers() {
     },
   });
 
+  const approveUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      return await apiRequest("POST", `/api/admin/users/${userId}/approve`, {});
+    },
+    onSuccess: () => {
+      toast({
+        title: "User Approved",
+        description: "User account has been approved successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Action Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const disapproveUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      return await apiRequest("POST", `/api/admin/users/${userId}/disapprove`, {});
+    },
+    onSuccess: () => {
+      toast({
+        title: "User Disapproved",
+        description: "User account has been disapproved",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Action Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleFundDebit = () => {
     if (!fundDialog.user || !amount || parseFloat(amount) <= 0) {
       toast({
@@ -305,15 +345,19 @@ export default function AdminUsers() {
                         )}
                       </TableCell>
                       <TableCell data-testid={`cell-status-${index}`}>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
+                          {user.isAdmin ? (
+                            <Badge variant="default" className="bg-purple-600">Admin</Badge>
+                          ) : user.isApproved ? (
+                            <Badge variant="default" className="bg-green-600">Approved</Badge>
+                          ) : (
+                            <Badge variant="secondary" className="bg-yellow-600">Pending</Badge>
+                          )}
                           {user.isBlocked && (
                             <Badge variant="destructive">Blocked</Badge>
                           )}
                           {user.isLocked && (
                             <Badge variant="secondary">Locked</Badge>
-                          )}
-                          {!user.isBlocked && !user.isLocked && (
-                            <Badge variant="default">Active</Badge>
                           )}
                         </div>
                       </TableCell>
@@ -330,6 +374,28 @@ export default function AdminUsers() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
+                            {!user.isAdmin && (
+                              <>
+                                {user.isApproved ? (
+                                  <DropdownMenuItem
+                                    onClick={() => disapproveUserMutation.mutate(user.id)}
+                                    data-testid={`action-disapprove-${index}`}
+                                  >
+                                    <XCircle className="mr-2 h-4 w-4" />
+                                    Disapprove Account
+                                  </DropdownMenuItem>
+                                ) : (
+                                  <DropdownMenuItem
+                                    onClick={() => approveUserMutation.mutate(user.id)}
+                                    data-testid={`action-approve-${index}`}
+                                  >
+                                    <CheckCircle className="mr-2 h-4 w-4" />
+                                    Approve Account
+                                  </DropdownMenuItem>
+                                )}
+                                <DropdownMenuSeparator />
+                              </>
+                            )}
                             <DropdownMenuItem
                               onClick={() => setFundDialog({ open: true, type: 'fund', user })}
                               data-testid={`action-fund-${index}`}
