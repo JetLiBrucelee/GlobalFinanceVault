@@ -3,9 +3,55 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Cat, Dog, Bird } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+
+const avatarIcons: Record<string, typeof Cat> = {
+  cat: Cat,
+  dog: Dog,
+  duck: Bird,
+};
+
+const avatarNames: Record<string, string> = {
+  cat: "Cat",
+  dog: "Dog",
+  duck: "Duck",
+};
 
 export default function Settings() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || 'cat');
+
+  const updateAvatarMutation = useMutation({
+    mutationFn: async (avatar: string) => {
+      return await apiRequest("PATCH", '/api/user/avatar', { avatar });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Avatar Updated",
+        description: "Your profile avatar has been updated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update avatar",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleAvatarSelect = (avatar: string) => {
+    setSelectedAvatar(avatar);
+    updateAvatarMutation.mutate(avatar);
+  };
+
+  const AvatarIcon = avatarIcons[selectedAvatar];
 
   return (
     <div className="space-y-8">
@@ -25,12 +71,9 @@ export default function Settings() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20" data-testid="avatar-profile">
-              <AvatarImage src={user?.profileImageUrl || undefined} />
-              <AvatarFallback className="text-2xl">
-                {user?.firstName?.[0]}{user?.lastName?.[0]}
-              </AvatarFallback>
-            </Avatar>
+            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center" data-testid="avatar-profile">
+              <AvatarIcon className="h-12 w-12 text-primary" />
+            </div>
             <div>
               <p className="text-xl font-semibold" data-testid="text-name">
                 {user?.firstName} {user?.lastName}
@@ -42,6 +85,29 @@ export default function Settings() {
                 <Badge className="mt-2" data-testid="badge-admin">Administrator</Badge>
               )}
             </div>
+          </div>
+
+          <div className="space-y-3">
+            <p className="font-medium">Profile Avatar</p>
+            <div className="flex gap-3">
+              {Object.entries(avatarIcons).map(([key, Icon]) => (
+                <Button
+                  key={key}
+                  variant={selectedAvatar === key ? "default" : "outline"}
+                  size="lg"
+                  onClick={() => handleAvatarSelect(key)}
+                  disabled={updateAvatarMutation.isPending}
+                  data-testid={`button-avatar-${key}`}
+                  className="flex flex-col gap-2 h-auto p-4"
+                >
+                  <Icon className="h-8 w-8" />
+                  <span className="text-xs">{avatarNames[key]}</span>
+                </Button>
+              ))}
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Choose your profile avatar. Changes apply immediately.
+            </p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">

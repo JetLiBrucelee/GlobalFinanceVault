@@ -100,6 +100,7 @@ export async function setupAuth(app: Express) {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          avatar: user.avatar || 'cat',
           isAdmin: user.isAdmin,
         });
       });

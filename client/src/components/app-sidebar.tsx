@@ -1,4 +1,4 @@
-import { Home, CreditCard, ArrowLeftRight, FileText, Settings, LogOut, ShieldCheck, Users } from "lucide-react";
+import { Home, CreditCard, ArrowLeftRight, FileText, Settings, LogOut, ShieldCheck, Users, Cat, Dog, Bird } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,12 +17,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { User } from "@shared/schema";
 
+const avatarIcons: Record<string, typeof Cat> = {
+  cat: Cat,
+  dog: Dog,
+  duck: Bird,
+};
+
 interface AppSidebarProps {
   user?: User;
 }
 
 export function AppSidebar({ user }: AppSidebarProps) {
   const [location] = useLocation();
+  const AvatarIcon = user?.avatar ? avatarIcons[user.avatar] || Cat : Cat;
 
   const userMenuItems = [
     { title: "Dashboard", url: "/", icon: Home, testId: "link-dashboard" },
@@ -96,12 +103,9 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
       <SidebarFooter className="p-4">
         <div className="flex items-center gap-3 rounded-lg p-2">
-          <Avatar data-testid="avatar-user">
-            <AvatarImage src={user?.profileImageUrl || undefined} />
-            <AvatarFallback>
-              {user?.firstName?.[0]}{user?.lastName?.[0]}
-            </AvatarFallback>
-          </Avatar>
+          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0" data-testid="avatar-user">
+            <AvatarIcon className="h-6 w-6 text-primary" />
+          </div>
           <div className="flex-1 overflow-hidden">
             <p className="text-sm font-medium truncate" data-testid="text-user-name">
               {user?.firstName} {user?.lastName}

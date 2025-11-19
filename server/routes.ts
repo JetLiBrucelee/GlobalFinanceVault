@@ -27,6 +27,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        avatar: user.avatar || 'cat',
         isAdmin: user.isAdmin,
         isBlocked: user.isBlocked,
         isLocked: user.isLocked,
@@ -128,6 +129,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error verifying access code:", error);
       res.status(500).json({ message: "Failed to verify access code" });
+    }
+  });
+
+  // ===================
+  // USER ROUTES
+  // ===================
+
+  app.patch('/api/user/avatar', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { avatar } = req.body;
+
+      if (!avatar || !['cat', 'dog', 'duck'].includes(avatar)) {
+        return res.status(400).json({ message: "Invalid avatar. Must be cat, dog, or duck" });
+      }
+
+      await storage.updateUserAvatar(userId, avatar);
+      res.json({ message: "Avatar updated successfully" });
+    } catch (error) {
+      console.error("Error updating avatar:", error);
+      res.status(500).json({ message: "Failed to update avatar" });
     }
   });
 

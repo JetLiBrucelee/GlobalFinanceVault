@@ -30,6 +30,7 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
   updateUserStatus(id: string, updates: { isBlocked?: boolean; isLocked?: boolean; isAdmin?: boolean }): Promise<User>;
+  updateUserAvatar(id: string, avatar: string): Promise<User>;
   deleteUser(id: string): Promise<void>;
 
   // Account operations
@@ -96,6 +97,15 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db
       .update(users)
       .set({ ...updates, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async updateUserAvatar(id: string, avatar: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ avatar, updatedAt: new Date() })
       .where(eq(users.id, id))
       .returning();
     return user;

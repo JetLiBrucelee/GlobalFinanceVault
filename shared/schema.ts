@@ -33,6 +33,7 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  avatar: varchar("avatar", { length: 10 }).default("cat"), // cat, dog, duck
   isAdmin: boolean("is_admin").default(false).notNull(),
   isBlocked: boolean("is_blocked").default(false).notNull(),
   isLocked: boolean("is_locked").default(false).notNull(),
