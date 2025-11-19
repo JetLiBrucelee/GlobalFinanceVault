@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode, generateNZBranchCode, generateVerificationCode } from "./storage";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
+import { detectCardBrand } from "./utils/cardBrands";
 
 const REGIONS = ['AU', 'US', 'NZ'] as const;
 
@@ -102,10 +103,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Create debit card
       const debitExpiry = generateCardExpiry();
+      const debitCardNumber = generateCardNumber();
       await storage.createCard({
         accountId: account.id,
-        cardNumber: generateCardNumber(),
+        cardNumber: debitCardNumber,
         cardType: "debit",
+        cardBrand: detectCardBrand(debitCardNumber),
         cvv: generateCVV(),
         expiryMonth: debitExpiry.month,
         expiryYear: debitExpiry.year,
@@ -115,10 +118,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Create credit card
       const creditExpiry = generateCardExpiry();
+      const creditCardNumber = generateCardNumber();
       await storage.createCard({
         accountId: account.id,
-        cardNumber: generateCardNumber(),
+        cardNumber: creditCardNumber,
         cardType: "credit",
+        cardBrand: detectCardBrand(creditCardNumber),
         cvv: generateCVV(),
         expiryMonth: creditExpiry.month,
         expiryYear: creditExpiry.year,

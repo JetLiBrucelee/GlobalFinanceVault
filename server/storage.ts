@@ -21,6 +21,7 @@ import {
 import { db } from "./db";
 import { eq, and, or, desc } from "drizzle-orm";
 import { randomBytes } from "crypto";
+import { detectCardBrand, generateCardNumberWithBrand, type CardBrand } from "./utils/cardBrands";
 
 // Generate random verification code (12-digit numeric code)
 export function generateVerificationCode(length: number = 12): string {
@@ -489,13 +490,11 @@ export function generateSwiftCode(): string {
   return swift;
 }
 
-export function generateCardNumber(): string {
-  // Generate a random 16-digit card number
-  let cardNumber = '';
-  for (let i = 0; i < 16; i++) {
-    cardNumber += Math.floor(Math.random() * 10).toString();
-  }
-  return cardNumber;
+export function generateCardNumber(brand?: CardBrand): string {
+  // Generate a card number with the specified brand or random brand
+  const brands: CardBrand[] = ['visa', 'mastercard', 'amex'];
+  const selectedBrand = brand || brands[Math.floor(Math.random() * brands.length)];
+  return generateCardNumberWithBrand(selectedBrand);
 }
 
 export function generateCVV(): string {

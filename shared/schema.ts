@@ -74,6 +74,7 @@ export const cards = pgTable("cards", {
   accountId: varchar("account_id").notNull().references(() => accounts.id, { onDelete: 'cascade' }),
   cardNumber: varchar("card_number", { length: 16 }).notNull().unique(),
   cardType: varchar("card_type", { length: 10 }).notNull(), // debit, credit
+  cardBrand: varchar("card_brand", { length: 20 }).default("visa").notNull(), // visa, mastercard, amex, unknown
   cvv: varchar("cvv", { length: 3 }).notNull(),
   expiryMonth: varchar("expiry_month", { length: 2 }).notNull(),
   expiryYear: varchar("expiry_year", { length: 4 }).notNull(),
@@ -97,6 +98,8 @@ export const transactions = pgTable("transactions", {
   toAccountId: varchar("to_account_id").references(() => accounts.id, { onDelete: 'set null' }),
   amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
   type: varchar("type", { length: 20 }).notNull(), // transfer, bill_pay, payid, deposit, withdrawal, admin_credit
+  transferMethod: varchar("transfer_method", { length: 20 }).default("internal"), // internal, external, wire
+  transferDetails: jsonb("transfer_details"), // Store method-specific details
   status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, in-progress, completed, declined
   description: text("description"),
   reference: varchar("reference"),
