@@ -1,4 +1,4 @@
-import { Home, CreditCard, ArrowLeftRight, FileText, Settings, LogOut, ShieldCheck, Users, Cat, Dog, Bird, BadgePlus, Beef, Rabbit } from "lucide-react";
+import { Home, CreditCard, ArrowLeftRight, FileText, Settings, LogOut, ShieldCheck, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -13,21 +13,28 @@ import {
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "wouter";
 import { Shield } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { User } from "@shared/schema";
-import { SiPandas } from "react-icons/si";
 import bankLogo from "@assets/bank-logo.jpg";
 
-const avatarIcons: Record<string, any> = {
-  dog: Dog,
-  cat: Cat,
-  bird: Bird,
-  lion: BadgePlus,
-  bear: Beef,
-  cow: Beef,
-  rabbit: Rabbit,
-  panda: SiPandas,
+import dogAvatar from "@assets/stock_images/cute_cartoon_dog_ava_f554a6f2.jpg";
+import catAvatar from "@assets/stock_images/cute_cartoon_cat_ava_1ac2277f.jpg";
+import birdAvatar from "@assets/stock_images/cute_cartoon_bird_av_0615cb5c.jpg";
+import lionAvatar from "@assets/stock_images/cute_cartoon_lion_av_c9fb81d3.jpg";
+import bearAvatar from "@assets/stock_images/cute_cartoon_bear_av_40b41f20.jpg";
+import cowAvatar from "@assets/stock_images/cute_cartoon_cow_ava_ce54458e.jpg";
+import rabbitAvatar from "@assets/stock_images/cute_cartoon_rabbit__9c34f387.jpg";
+import pandaAvatar from "@assets/stock_images/cute_cartoon_panda_a_863bd583.jpg";
+
+const avatarImages: Record<string, string> = {
+  dog: dogAvatar,
+  cat: catAvatar,
+  bird: birdAvatar,
+  lion: lionAvatar,
+  bear: bearAvatar,
+  cow: cowAvatar,
+  rabbit: rabbitAvatar,
+  panda: pandaAvatar,
 };
 
 interface AppSidebarProps {
@@ -36,7 +43,7 @@ interface AppSidebarProps {
 
 export function AppSidebar({ user }: AppSidebarProps) {
   const [location] = useLocation();
-  const AvatarIcon = user?.avatar ? avatarIcons[user.avatar] || Cat : Cat;
+  const avatarImage = user?.avatar ? avatarImages[user.avatar] || avatarImages.cat : avatarImages.cat;
 
   const userMenuItems = [
     { title: "Dashboard", url: "/", icon: Home, testId: "link-dashboard" },
@@ -114,8 +121,8 @@ export function AppSidebar({ user }: AppSidebarProps) {
 
       <SidebarFooter className="p-4">
         <div className="flex items-center gap-3 rounded-lg p-2">
-          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0" data-testid="avatar-user">
-            <AvatarIcon className="h-6 w-6 text-primary" />
+          <div className="h-10 w-10 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0" data-testid="avatar-user">
+            <img src={avatarImage} alt="User avatar" className="w-full h-full object-cover" />
           </div>
           <div className="flex-1 overflow-hidden">
             <p className="text-sm font-medium truncate" data-testid="text-user-name">

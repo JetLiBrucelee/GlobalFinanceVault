@@ -154,6 +154,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch('/api/user/profile', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { firstName, lastName } = req.body;
+
+      if (!firstName || !lastName) {
+        return res.status(400).json({ message: "First name and last name are required" });
+      }
+
+      if (firstName.trim().length < 1 || lastName.trim().length < 1) {
+        return res.status(400).json({ message: "First name and last name cannot be empty" });
+      }
+
+      await storage.updateUserProfile(userId, { firstName: firstName.trim(), lastName: lastName.trim() });
+      res.json({ message: "Profile updated successfully" });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
   // ===================
   // ACCOUNT ROUTES
   // ===================
