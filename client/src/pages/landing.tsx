@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Globe, Lock, TrendingUp, Smartphone, Award, Users, DollarSign, Star, Check, Search } from "lucide-react";
+import { Shield, Globe, Lock, TrendingUp, Smartphone, Award, Users, DollarSign, Star, Check, Search, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
 import { ProfessionalFooter } from "@/components/professional-footer";
 import { useLocation } from "wouter";
 import bankLogo from "@assets/bank-logo.jpg";
@@ -46,6 +47,7 @@ import plantGrowthIcon3D from "@assets/stock_images/3d_realistic_plant_p_1007f9c
 
 export default function Landing() {
   const [, setLocation] = useLocation();
+  const [showScamAlerts, setShowScamAlerts] = useState(false);
   
   const productCategories = [
     { icon: paymentCardIcon3D, label: "Credit Cards", href: "/cards" },
@@ -371,16 +373,72 @@ export default function Landing() {
             <CardContent className="p-6">
               <div className="flex gap-4">
                 <Shield className="h-6 w-6 text-destructive flex-shrink-0 mt-1" />
-                <div>
+                <div className="flex-1">
                   <h3 className="font-semibold mb-2">Stay Alert: Phishing Scams Are Widespread</h3>
                   <p className="text-sm text-muted-foreground">
                     Be cautious - do not click on links you receive through suspicious SMS or emails. 
                     We'll never ask you for your PIN, password, or access to your device or internet banking. 
                     <strong className="text-foreground"> Stop. Think. Protect.</strong>
                   </p>
-                  <Button variant="ghost" className="px-0 mt-2 h-auto" onClick={() => window.location.href = '#security'} data-testid="security-alert-cta">
-                    View latest scam alerts →
+                  <Button 
+                    variant="ghost" 
+                    className="px-0 mt-2 h-auto" 
+                    onClick={() => setShowScamAlerts(!showScamAlerts)} 
+                    data-testid="security-alert-cta"
+                  >
+                    View latest scam alerts {showScamAlerts ? <ChevronUp className="ml-1 h-4 w-4" /> : <ChevronDown className="ml-1 h-4 w-4" />}
                   </Button>
+
+                  {/* Expandable Scam Alerts Section */}
+                  {showScamAlerts && (
+                    <div className="mt-6 space-y-4 pt-4 border-t border-destructive/20" data-testid="scam-alerts-expanded">
+                      <div className="flex gap-3">
+                        <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-sm mb-1">Fake Tax Office Calls</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Scammers are impersonating tax officials claiming you owe money. The real tax office will never demand immediate payment via gift cards or cryptocurrency. If contacted, hang up and call the official tax office directly.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-sm mb-1">Investment Fraud Apps</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Fake investment platforms are promising high returns with minimal risk. These apps may show fake profits to encourage larger deposits before disappearing. Always verify investment platforms with regulatory authorities.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-sm mb-1">Romance Scams</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Criminals are creating fake online profiles to build relationships before requesting money for emergencies. Never send money to someone you've only met online, regardless of the emotional connection.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-sm mb-1">Fake Bank SMS Messages</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Text messages claiming your account has been locked or suspended with urgent action required. These contain malicious links. We will never ask you to click a link in a text message to verify your account.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="bg-background rounded-md p-4 mt-4">
+                        <p className="text-xs text-muted-foreground">
+                          <strong className="text-foreground">If you believe you've been scammed:</strong> Contact us immediately at 1-800-FRAUD-HELP. Time is critical - the sooner you report it, the better chance we have of recovering your funds.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>
