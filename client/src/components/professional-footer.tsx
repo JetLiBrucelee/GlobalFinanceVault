@@ -86,7 +86,7 @@ export function ProfessionalFooter() {
                 support@fundcredit.com.au
               </p>
               <p className="mt-3 font-medium text-foreground">Routing Information:</p>
-              <p>BSB: 062-000 to 062-999</p>
+              <p>BSB: 062-001</p>
               <p>SWIFT: FUNDAUSX</p>
             </div>
           </div>
@@ -126,7 +126,7 @@ export function ProfessionalFooter() {
                 support@fundcredit.co.nz
               </p>
               <p className="mt-3 font-medium text-foreground">Routing Information:</p>
-              <p>Bank Code: 03-0000 to 03-9999</p>
+              <p>Bank Code: 03-0001</p>
               <p>SWIFT: FUNDNZAX</p>
             </div>
           </div>
