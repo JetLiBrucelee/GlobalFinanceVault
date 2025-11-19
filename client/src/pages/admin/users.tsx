@@ -26,7 +26,7 @@ import {
 import { MoreVertical, Lock, Unlock, Ban, Trash2, DollarSign, Plus, Minus, CheckCircle, XCircle, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { User, Account, Transaction } from "@shared/schema";
+import type { User } from "@shared/schema";
 import {
   Dialog,
   DialogContent,
@@ -37,14 +37,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import adminBg from "@assets/stock_images/online_banking_servi_775ecb2d.jpg";
-
-interface UserDetails {
-  user: User;
-  accounts: Account[];
-  recentTransactions: Transaction[];
-}
+import { UserDetailsDrawer } from "@/components/admin/user-details-drawer";
 
 export default function AdminUsers() {
   const { toast } = useToast();
@@ -71,10 +65,6 @@ export default function AdminUsers() {
     queryKey: ["/api/admin/users"],
   });
 
-  const { data: userDetails, isLoading: isLoadingDetails } = useQuery<UserDetails>({
-    queryKey: [`/api/admin/users/${detailDialog.userId}/details`],
-    enabled: !!detailDialog.userId && detailDialog.open,
-  });
 
   const blockUserMutation = useMutation({
     mutationFn: async (userId: string) => {
@@ -577,127 +567,12 @@ export default function AdminUsers() {
         </DialogContent>
       </Dialog>
 
-      {/* User Detail Dialog */}
-      <Dialog open={detailDialog.open} onOpenChange={(open) => setDetailDialog({ ...detailDialog, open })}>
-        <DialogContent className="max-w-3xl max-h-[80vh]" data-testid="dialog-user-details">
-          <DialogHeader>
-            <DialogTitle>User Details</DialogTitle>
-            <DialogDescription>
-              View account balances and recent transactions
-            </DialogDescription>
-          </DialogHeader>
-          <ScrollArea className="max-h-[60vh]">
-            {isLoadingDetails ? (
-              <div className="space-y-4 py-4">
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-40 w-full" />
-                <Skeleton className="h-40 w-full" />
-              </div>
-            ) : userDetails ? (
-              <div className="space-y-6 py-4">
-                {/* User Info */}
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-lg">User Information</h3>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div><span className="font-medium">Name:</span> {userDetails.user.firstName} {userDetails.user.lastName}</div>
-                    <div><span className="font-medium">Email:</span> {userDetails.user.email}</div>
-                    <div><span className="font-medium">Username:</span> {userDetails.user.username}</div>
-                    <div><span className="font-medium">Status:</span> {
-                      userDetails.user.isApproved ? 
-                        <Badge variant="default" className="bg-green-600 ml-2">Approved</Badge> : 
-                        <Badge variant="secondary" className="bg-yellow-600 ml-2">Pending</Badge>
-                    }</div>
-                  </div>
-                </div>
-
-                {/* Accounts */}
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-lg">Accounts ({userDetails.accounts.length})</h3>
-                  {userDetails.accounts.length > 0 ? (
-                    <div className="space-y-3">
-                      {userDetails.accounts.map((account) => (
-                        <Card key={account.id}>
-                          <CardContent className="pt-4">
-                            <div className="flex justify-between items-start">
-                              <div className="space-y-1">
-                                <div className="font-medium">{account.region} Account - {account.accountType}</div>
-                                <div className="text-sm text-muted-foreground">Account #: {account.accountNumber}</div>
-                                {account.bsb && <div className="text-sm text-muted-foreground">BSB: {account.bsb}</div>}
-                                {account.routingNumber && <div className="text-sm text-muted-foreground">Routing: {account.routingNumber}</div>}
-                              </div>
-                              <div className="text-right">
-                                <div className="text-2xl font-bold">
-                                  ${parseFloat(account.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                </div>
-                                <div className="text-xs text-muted-foreground">Balance</div>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-muted-foreground text-sm">No accounts found</p>
-                  )}
-                </div>
-
-                {/* Recent Transactions */}
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-lg">Recent Transactions (Last 5)</h3>
-                  {userDetails.recentTransactions.length > 0 ? (
-                    <div className="rounded-md border">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead className="text-right">Amount</TableHead>
-                            <TableHead>Status</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {userDetails.recentTransactions.map((transaction) => (
-                            <TableRow key={transaction.id}>
-                              <TableCell className="text-sm">
-                                {new Date(transaction.createdAt!).toLocaleDateString()}
-                              </TableCell>
-                              <TableCell className="text-sm capitalize">{transaction.type}</TableCell>
-                              <TableCell className="text-sm">{transaction.description || '-'}</TableCell>
-                              <TableCell className="text-sm text-right font-medium">
-                                ${parseFloat(transaction.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                              </TableCell>
-                              <TableCell>
-                                <Badge variant={
-                                  transaction.status === 'completed' ? 'default' :
-                                  transaction.status === 'pending' ? 'secondary' :
-                                  'destructive'
-                                }>
-                                  {transaction.status}
-                                </Badge>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  ) : (
-                    <p className="text-muted-foreground text-sm">No transactions found</p>
-                  )}
-                </div>
-              </div>
-            ) : null}
-          </ScrollArea>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDetailDialog({ open: false, userId: null })}
-            >
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* User Detail Drawer */}
+      <UserDetailsDrawer
+        userId={detailDialog.userId}
+        open={detailDialog.open}
+        onOpenChange={(open) => setDetailDialog({ open, userId: open ? detailDialog.userId : null })}
+      />
     </div>
   );
 }
