@@ -32,6 +32,13 @@ export const users = pgTable("users", {
   email: varchar("email").unique(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
+  phone: varchar("phone"),
+  addressLine1: varchar("address_line1"),
+  addressLine2: varchar("address_line2"),
+  city: varchar("city"),
+  state: varchar("state"),
+  postalCode: varchar("postal_code"),
+  country: varchar("country"),
   profileImageUrl: varchar("profile_image_url"),
   avatar: varchar("avatar", { length: 10 }).default("cat"), // dog, cat, bird, lion, bear, cow, rabbit, panda, fox, tiger, penguin, koala, elephant
   isAdmin: boolean("is_admin").default(false).notNull(),
@@ -42,8 +49,16 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const updateUserSchema = createInsertSchema(users).omit({
+  id: true,
+  password: true,
+  createdAt: true,
+  updatedAt: true,
+}).partial();
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type UpdateUser = z.infer<typeof updateUserSchema>;
 
 // Bank accounts table
 export const accounts = pgTable("accounts", {
@@ -65,7 +80,14 @@ export const insertAccountSchema = createInsertSchema(accounts).omit({
   createdAt: true,
 });
 
+export const updateAccountSchema = createInsertSchema(accounts).omit({
+  id: true,
+  userId: true,
+  createdAt: true,
+}).partial();
+
 export type InsertAccount = z.infer<typeof insertAccountSchema>;
+export type UpdateAccount = z.infer<typeof updateAccountSchema>;
 export type Account = typeof accounts.$inferSelect;
 
 // Cards table (Debit and Credit)

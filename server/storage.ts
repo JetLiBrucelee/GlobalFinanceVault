@@ -39,11 +39,13 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserById(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserWithAccounts(id: string): Promise<{ user: User; accounts: Account[] } | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
   updateUserStatus(id: string, updates: { isBlocked?: boolean; isLocked?: boolean; isAdmin?: boolean; isApproved?: boolean }): Promise<User>;
   updateUserAvatar(id: string, avatar: string): Promise<User>;
   updateUserProfile(id: string, updates: { firstName: string; lastName: string }): Promise<User>;
+  updateUserDetails(id: string, updates: Partial<User>): Promise<User>;
   deleteUser(id: string): Promise<void>;
 
   // Account operations
@@ -51,6 +53,7 @@ export interface IStorage {
   getAccountByNumber(accountNumber: string): Promise<Account | undefined>;
   createAccount(account: InsertAccount): Promise<Account>;
   updateAccountBalance(accountId: string, newBalance: string): Promise<Account>;
+  updateAccountDetails(accountId: string, updates: Partial<Account>): Promise<Account>;
   getAllAccounts(): Promise<Account[]>;
 
   // Card operations
@@ -143,6 +146,24 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async getUserWithAccounts(id: string): Promise<{ user: User; accounts: Account[] } | undefined> {
+    const user = await this.getUserById(id);
+    if (!user) return undefined;
+    
+    const userAccounts = await this.getAccountsByUserId(id);
+    return { user, accounts: userAccounts };
+  }
+
+  async updateUserDetails(id: string, updates: Partial<User>): Promise<User> {
+    const { password, id: _id, createdAt, ...allowedUpdates } = updates as any;
+    const [user] = await db
+      .update(users)
+      .set({ ...allowedUpdates, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
   async deleteUser(id: string): Promise<void> {
     await db.delete(users).where(eq(users.id, id));
   }
@@ -166,6 +187,16 @@ export class DatabaseStorage implements IStorage {
     const [account] = await db
       .update(accounts)
       .set({ balance: newBalance })
+      .where(eq(accounts.id, accountId))
+      .returning();
+    return account;
+  }
+
+  async updateAccountDetails(accountId: string, updates: Partial<Account>): Promise<Account> {
+    const { id: _id, userId, createdAt, ...allowedUpdates } = updates as any;
+    const [account] = await db
+      .update(accounts)
+      .set(allowedUpdates)
       .where(eq(accounts.id, accountId))
       .returning();
     return account;

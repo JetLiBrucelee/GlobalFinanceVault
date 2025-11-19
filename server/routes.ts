@@ -525,12 +525,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/admin/users/:userId/details', isAuthenticated, isAdmin, async (req, res) => {
     try {
       const { userId } = req.params;
-      const user = await storage.getUserById(userId);
-      if (!user) {
+      const result = await storage.getUserWithAccounts(userId);
+      if (!result) {
         return res.status(404).json({ message: "User not found" });
       }
       
-      const accounts = await storage.getAccountsByUserId(userId);
+      const { user, accounts } = result;
       const recentTransactions = await storage.getRecentTransactionsByUserId(userId, 5);
       
       // Return only safe, non-sensitive user fields
@@ -541,6 +541,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          phone: user.phone,
+          addressLine1: user.addressLine1,
+          addressLine2: user.addressLine2,
+          city: user.city,
+          state: user.state,
+          postalCode: user.postalCode,
+          country: user.country,
           avatar: user.avatar,
           isAdmin: user.isAdmin,
           isBlocked: user.isBlocked,
@@ -621,6 +628,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error disapproving user:", error);
       res.status(500).json({ message: "Failed to disapprove user" });
+    }
+  });
+
+  app.patch('/api/admin/users/:userId', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { updateUserSchema } = await import("@shared/schema");
+      
+      // Validate request body
+      const validation = updateUserSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ 
+          message: "Invalid update data",
+          errors: validation.error.errors 
+        });
+      }
+      
+      const updates = validation.data;
+      
+      // Check if there are any updates
+      if (Object.keys(updates).length === 0) {
+        return res.status(400).json({ message: "No fields to update" });
+      }
+      
+      // Check if user exists
+      const existingUser = await storage.getUserById(userId);
+      if (!existingUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Update user details
+      const updatedUser = await storage.updateUserDetails(userId, updates);
+      if (!updatedUser) {
+        return res.status(500).json({ message: "Failed to update user" });
+      }
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  app.patch('/api/admin/users/:userId/accounts/:accountId', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const { updateAccountSchema } = await import("@shared/schema");
+      
+      // Validate request body
+      const validation = updateAccountSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({ 
+          message: "Invalid update data",
+          errors: validation.error.errors 
+        });
+      }
+      
+      const updates = validation.data;
+      
+      // Check if there are any updates
+      if (Object.keys(updates).length === 0) {
+        return res.status(400).json({ message: "No fields to update" });
+      }
+      
+      // Update account details
+      const updatedAccount = await storage.updateAccountDetails(accountId, updates);
+      if (!updatedAccount) {
+        return res.status(404).json({ message: "Account not found" });
+      }
+      
+      res.json(updatedAccount);
+    } catch (error) {
+      console.error("Error updating account:", error);
+      res.status(500).json({ message: "Failed to update account" });
     }
   });
 
