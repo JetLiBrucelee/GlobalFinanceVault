@@ -1,38 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Globe, Lock, TrendingUp, Smartphone, Award, Users, DollarSign, Star, Check, Search } from "lucide-react";
+import { Shield, Globe, Lock, TrendingUp, Smartphone, Award, Users, DollarSign, Star, Check, Search, CreditCard, PiggyBank, Home, Car, Plane, Building2, Calculator, UserCheck } from "lucide-react";
 import { ProfessionalFooter } from "@/components/professional-footer";
 import { useLocation } from "wouter";
 import bankLogo from "@assets/bank-logo.jpg";
 import bgPattern from "@assets/banking-background.jpg";
-import airplaneIcon from "@assets/stock_images/modern_airplane_icon_8e2d11fa.jpg";
-import creditCardIcon from "@assets/stock_images/credit_card_icon_pro_7f6470ae.jpg";
-import encryptionIcon from "@assets/stock_images/encryption_lock_secu_84c0a261.jpg";
-import globeIcon from "@assets/stock_images/globe_world_map_icon_192cc559.jpg";
-import savingsIcon from "@assets/stock_images/piggy_bank_savings_i_9ebb3eee.jpg";
-import homeIcon from "@assets/stock_images/house_home_icon_prof_2d47bc72.jpg";
-import carIcon from "@assets/stock_images/car_automobile_icon__9cb3592a.jpg";
-import calculatorIcon from "@assets/stock_images/calculator_icon_prof_ae404510.jpg";
-import businessIcon from "@assets/stock_images/business_building_of_c45a8446.jpg";
-import investmentIcon from "@assets/stock_images/upward_trend_investm_6766776b.jpg";
-import shieldIcon from "@assets/stock_images/shield_protection_ic_eccd5f76.jpg";
-import supportIcon from "@assets/stock_images/customer_support_peo_db4faf8a.jpg";
-import insuranceIcon from "@assets/stock_images/insurance_badge_cert_1b88efed.jpg";
-import mobileIcon from "@assets/stock_images/smartphone_mobile_ph_47e5f6a2.jpg";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
   
   const productCategories = [
-    { icon: creditCardIcon, label: "Credit Cards", href: "/cards" },
-    { icon: savingsIcon, label: "Savings", href: "/savings" },
-    { icon: homeIcon, label: "Home Loans", href: "/home-loans" },
-    { icon: carIcon, label: "Auto Loans", href: "/auto-loans" },
-    { icon: airplaneIcon, label: "Travel", href: "/travel" },
-    { icon: investmentIcon, label: "Investments", href: "/investments" },
-    { icon: businessIcon, label: "Business", href: "/business" },
-    { icon: calculatorIcon, label: "Calculators", href: "/calculators" },
+    { icon: CreditCard, label: "Credit Cards", href: "/cards" },
+    { icon: PiggyBank, label: "Savings", href: "/savings" },
+    { icon: Home, label: "Home Loans", href: "/home-loans" },
+    { icon: Car, label: "Auto Loans", href: "/auto-loans" },
+    { icon: Plane, label: "Travel", href: "/travel" },
+    { icon: TrendingUp, label: "Investments", href: "/investments" },
+    { icon: Building2, label: "Business", href: "/business" },
+    { icon: Calculator, label: "Calculators", href: "/calculators" },
   ];
   
   const navLinks = [
@@ -190,8 +176,8 @@ export default function Landing() {
                 className="flex flex-col items-center gap-2 md:gap-3 p-3 md:p-4 rounded-lg hover-elevate transition-all group"
                 data-testid={`category-${category.label.toLowerCase().replace(' ', '-')}`}
               >
-                <div className="h-14 w-14 md:h-16 md:w-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors p-3 md:p-4">
-                  <img src={category.icon} alt={category.label} className="w-full h-full object-contain" />
+                <div className="h-14 w-14 md:h-16 md:w-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <category.icon className="h-7 w-7 md:h-8 md:w-8 text-primary" />
                 </div>
                 <span className="text-xs md:text-sm font-medium text-center leading-tight">{category.label}</span>
               </button>
@@ -303,8 +289,8 @@ export default function Landing() {
 
           <div className="grid gap-6 md:gap-8 grid-cols-2 lg:grid-cols-4">
             <div className="text-center" data-testid="trust-security">
-              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 p-4">
-                <img src={shieldIcon} alt="Security" className="w-full h-full object-contain" />
+              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10">
+                <Shield className="h-8 w-8 md:h-10 md:w-10 text-primary" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">24/7 Fraud Monitoring</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -313,8 +299,8 @@ export default function Landing() {
             </div>
 
             <div className="text-center" data-testid="trust-encryption">
-              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 p-4">
-                <img src={encryptionIcon} alt="Encryption" className="w-full h-full object-contain" />
+              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10">
+                <Lock className="h-8 w-8 md:h-10 md:w-10 text-primary" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">256-bit Encryption</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -323,8 +309,8 @@ export default function Landing() {
             </div>
 
             <div className="text-center" data-testid="trust-insurance">
-              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 p-4">
-                <img src={insuranceIcon} alt="Insurance" className="w-full h-full object-contain" />
+              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10">
+                <Award className="h-8 w-8 md:h-10 md:w-10 text-primary" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">FDIC Insured</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -333,8 +319,8 @@ export default function Landing() {
             </div>
 
             <div className="text-center" data-testid="trust-support">
-              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10 p-4">
-                <img src={supportIcon} alt="Support" className="w-full h-full object-contain" />
+              <div className="mx-auto mb-3 md:mb-4 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center rounded-full bg-primary/10">
+                <UserCheck className="h-8 w-8 md:h-10 md:w-10 text-primary" />
               </div>
               <h3 className="text-sm md:text-base font-semibold mb-2">Expert Support</h3>
               <p className="text-xs md:text-sm text-muted-foreground px-2">
@@ -409,8 +395,8 @@ export default function Landing() {
           <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <Card data-testid="card-feature-global">
               <CardContent className="p-5 md:p-6">
-                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
-                  <img src={globeIcon} alt="Global Banking" className="w-full h-full object-contain" />
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <Globe className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Global Banking</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -421,8 +407,8 @@ export default function Landing() {
 
             <Card data-testid="card-feature-cards">
               <CardContent className="p-5 md:p-6">
-                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
-                  <img src={creditCardIcon} alt="Virtual Cards" className="w-full h-full object-contain" />
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <CreditCard className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Instant Virtual Cards</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -433,8 +419,8 @@ export default function Landing() {
 
             <Card data-testid="card-feature-secure">
               <CardContent className="p-5 md:p-6">
-                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
-                  <img src={encryptionIcon} alt="Security" className="w-full h-full object-contain" />
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <Lock className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Bank-Grade Security</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -445,8 +431,8 @@ export default function Landing() {
 
             <Card data-testid="card-feature-transfers">
               <CardContent className="p-5 md:p-6">
-                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
-                  <img src={investmentIcon} alt="Transfers" className="w-full h-full object-contain" />
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <TrendingUp className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Instant Transfers</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -457,8 +443,8 @@ export default function Landing() {
 
             <Card data-testid="card-feature-mobile">
               <CardContent className="p-5 md:p-6">
-                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
-                  <img src={mobileIcon} alt="Mobile First" className="w-full h-full object-contain" />
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <Smartphone className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Mobile First</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -469,8 +455,8 @@ export default function Landing() {
 
             <Card data-testid="card-feature-support">
               <CardContent className="p-5 md:p-6">
-                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center p-4 mb-4">
-                  <img src={shieldIcon} alt="Protected Accounts" className="w-full h-full object-contain" />
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <Shield className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Protected Accounts</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
@@ -499,8 +485,8 @@ export default function Landing() {
               onClick={() => setLocation('/calculators')}
             >
               <CardContent className="p-4 md:p-6 text-center">
-                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center p-3">
-                  <img src={homeIcon} alt="Mortgage Calculator" className="w-full h-full object-contain" />
+                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Home className="h-6 w-6 md:h-7 md:w-7 text-primary" />
                 </div>
                 <h3 className="text-sm md:text-base font-semibold mb-2">Mortgage Calculator</h3>
                 <p className="text-xs md:text-sm text-muted-foreground">
@@ -515,8 +501,8 @@ export default function Landing() {
               onClick={() => setLocation('/calculators')}
             >
               <CardContent className="p-4 md:p-6 text-center">
-                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center p-3">
-                  <img src={savingsIcon} alt="Savings Calculator" className="w-full h-full object-contain" />
+                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
+                  <PiggyBank className="h-6 w-6 md:h-7 md:w-7 text-primary" />
                 </div>
                 <h3 className="text-sm md:text-base font-semibold mb-2">Savings Calculator</h3>
                 <p className="text-xs md:text-sm text-muted-foreground">
@@ -531,8 +517,8 @@ export default function Landing() {
               onClick={() => setLocation('/calculators')}
             >
               <CardContent className="p-4 md:p-6 text-center">
-                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center p-3">
-                  <img src={calculatorIcon} alt="Loan Calculator" className="w-full h-full object-contain" />
+                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Calculator className="h-6 w-6 md:h-7 md:w-7 text-primary" />
                 </div>
                 <h3 className="text-sm md:text-base font-semibold mb-2">Loan Calculator</h3>
                 <p className="text-xs md:text-sm text-muted-foreground">
@@ -547,8 +533,8 @@ export default function Landing() {
               onClick={() => setLocation('/calculators')}
             >
               <CardContent className="p-4 md:p-6 text-center">
-                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center p-3">
-                  <img src={investmentIcon} alt="Investment Calculator" className="w-full h-full object-contain" />
+                <div className="h-12 w-12 md:h-14 md:w-14 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center">
+                  <TrendingUp className="h-6 w-6 md:h-7 md:w-7 text-primary" />
                 </div>
                 <h3 className="text-sm md:text-base font-semibold mb-2">Investment Calculator</h3>
                 <p className="text-xs md:text-sm text-muted-foreground">
