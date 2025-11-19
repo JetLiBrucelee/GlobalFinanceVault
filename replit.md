@@ -24,13 +24,15 @@ Preferred communication style: Simple, everyday language.
   - Discover: Starts with 6011, 622126-622925, 644-649, or 65
 - **Card Generation**: Card numbers now generated with specific brand prefixes for realistic card distribution
 - **Database Field**: Added `cardBrand` field to cards table to persist brand information
-- **Realistic Card UI**: Complete redesign of card display with:
-  - Brand-specific color gradients (Visa blue, Mastercard red/orange, Amex blue, etc.)
-  - Chip graphic overlay for authentic card appearance
-  - Brand logos (SVG-based for Visa, Mastercard, Amex, Discover)
-  - Proper number formatting (4-4-4-4 for most cards, 4-6-5 for American Express)
-  - Enhanced typography and styling matching real banking cards
-  - Region indicators for multi-region accounts
+- **Professional Card UI**: Complete redesign matching professional banking card aesthetics (inspired by bibank reference):
+  - **Bank Logo**: "Fundamental Financial Credit" wordmark positioned at top-left (industry standard)
+  - **Brand Logos**: Visa/Mastercard/Amex/Discover logos positioned at bottom-right (professional banking standard)
+  - **Color Gradients**: Brand-specific gradients (Visa blue, Mastercard red/orange, Amex blue, etc.)
+  - **Chip Graphic**: Subtle gold chip overlay for authentic card appearance
+  - **Typography**: Prominent card number with refined hierarchy for cardholder/expiry/CVV details
+  - **Card Type**: Subtle DEBIT/CREDIT indicator below bank logo
+  - **Region Indicator**: Discrete region display (Australia/United States/New Zealand)
+  - **Number Formatting**: 4-4-4-4 for most cards, 4-6-5 for American Express
 
 ### Transfer Methods Enhancement
 - **Method Types**: Support for three transfer types:
