@@ -29,6 +29,7 @@ import Loans from "@/pages/loans";
 import CreditCards from "@/pages/credit-cards";
 import Support from "@/pages/support";
 import OpenAccount from "@/pages/open-account";
+import TravelBanking from "@/pages/travel";
 import backgroundImage from "@assets/banking-background.jpg";
 
 function Router() {
@@ -95,6 +96,10 @@ function Router() {
       <Route path="/transfers" component={Transfers} />
       <Route path="/statements" component={Statements} />
       <Route path="/settings" component={Settings} />
+      <Route path="/travel" component={TravelBanking} />
+      <Route path="/calculators" component={() => <div>Calculators - Coming Soon</div>} />
+      <Route path="/business" component={() => <div>Business - Coming Soon</div>} />
+      <Route path="/auto-loans" component={() => <div>Auto Loans - Coming Soon</div>} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/users" component={AdminUsers} />
       <Route path="/admin/transactions" component={AdminTransactions} />
