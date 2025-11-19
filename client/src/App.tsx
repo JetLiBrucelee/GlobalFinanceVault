@@ -75,8 +75,8 @@ function Router() {
     );
   }
 
-  // If no accounts, redirect to access code verification
-  if (!accounts || accounts.length === 0) {
+  // If no accounts, redirect to access code verification (admins skip this check)
+  if (!user?.isAdmin && (!accounts || accounts.length === 0)) {
     return (
       <Switch>
         <Route path="/access-code" component={AccessCode} />
