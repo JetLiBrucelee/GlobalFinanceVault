@@ -55,6 +55,16 @@ Preferred communication style: Simple, everyday language.
   - Example: "Welcome back, [FirstName] [LastName]!" for regular users
 - **Admin Bypass**: Admin users (like Don Pablo Administrative) bypass access code verification on login
 
+### Landing Page 3D Icons
+- **3D Realistic Icons**: All landing page icons replaced with high-quality 3D glossy realistic stock images (22 total icons)
+  - **Product Categories** (8): Credit card, piggy bank, house, car, airplane, building, calculator, upward arrow
+  - **Security Section** (4): Shield, lock, trophy/award, people/support
+  - **Features Section** (6): Globe, credit card, lock, upward arrow, smartphone, shield
+  - **Tools & Calculators** (4): House, piggy bank, calculator, upward arrow
+- **Icon Styling**: White/gray circular backgrounds with shadow, object-contain sizing, hover scale animations on product categories
+- **Assets Location**: All 3D icons stored in `attached_assets/stock_images/3d_realistic_*.jpg`
+- **Mobile Responsive**: Icons scale appropriately on mobile devices with proper padding and spacing
+
 ## System Architecture
 
 ### Frontend Architecture
