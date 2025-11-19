@@ -136,19 +136,19 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
         }} />
       </div>
 
-      <div className="relative p-4 space-y-4">
+      <div className="relative p-4 space-y-2.5">
         {/* Card Header - Bank Logo */}
         <div className="flex items-start justify-between">
           <div>
             <div className="flex flex-col gap-0.5">
-              <h2 className="text-base font-bold tracking-tight text-white">Fundamental</h2>
-              <h2 className="text-base font-bold tracking-tight -mt-1 text-white">Financial Credit</h2>
+              <h2 className="text-sm font-bold tracking-tight text-white">Fundamental</h2>
+              <h2 className="text-sm font-bold tracking-tight -mt-0.5 text-white">Financial Credit</h2>
             </div>
-            <p className="text-[9px] text-white/70 uppercase tracking-wider mt-1.5">
+            <p className="text-[8px] text-white/70 uppercase tracking-wider mt-1">
               {card.cardType === 'credit' ? 'Credit Card' : 'Debit Card'}
             </p>
             {account && (
-              <p className="text-[9px] text-white/60 mt-0.5">
+              <p className="text-[8px] text-white/60 mt-0.5">
                 {account.region === 'AU' && 'Australia'}
                 {account.region === 'US' && 'United States'}
                 {account.region === 'NZ' && 'New Zealand'}
@@ -165,10 +165,10 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
         </div>
 
         {/* Card Number */}
-        <div className="space-y-1 mt-6">
+        <div className="mt-4">
           <div className="flex items-center justify-between">
             <p
-              className="text-xl font-mono tracking-[0.12em] font-light text-white"
+              className="text-lg font-mono tracking-[0.12em] font-light text-white"
               data-testid={`text-card-number-${index}`}
             >
               {formatCardNumber(card.cardNumber, card.cardBrand)}
@@ -186,24 +186,24 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
         </div>
 
         {/* Card Details with Brand Logo */}
-        <div className="flex items-end justify-between pt-1">
-          <div className="grid grid-cols-3 gap-4">
+        <div className="flex items-end justify-between">
+          <div className="grid grid-cols-3 gap-3">
             <div className="space-y-0.5">
-              <p className="text-[9px] text-white/60 uppercase tracking-wider">Cardholder</p>
-              <p className="text-xs font-medium truncate max-w-[100px] text-white" data-testid={`text-cardholder-${index}`}>
+              <p className="text-[8px] text-white/60 uppercase tracking-wider">Cardholder</p>
+              <p className="text-[11px] font-medium truncate max-w-[90px] text-white" data-testid={`text-cardholder-${index}`}>
                 {card.cardholderName}
               </p>
             </div>
             <div className="space-y-0.5">
-              <p className="text-[9px] text-white/60 uppercase tracking-wider">Valid Thru</p>
-              <p className="text-xs font-mono text-white" data-testid={`text-expiry-${index}`}>
+              <p className="text-[8px] text-white/60 uppercase tracking-wider">Valid Thru</p>
+              <p className="text-[11px] font-mono text-white" data-testid={`text-expiry-${index}`}>
                 {card.expiryMonth}/{card.expiryYear.slice(-2)}
               </p>
             </div>
             <div className="space-y-0.5">
-              <p className="text-[9px] text-white/60 uppercase tracking-wider">CVV</p>
-              <div className="flex items-center gap-1.5">
-                <p className="text-xs font-mono text-white" data-testid={`text-cvv-${index}`}>
+              <p className="text-[8px] text-white/60 uppercase tracking-wider">CVV</p>
+              <div className="flex items-center gap-1">
+                <p className="text-[11px] font-mono text-white" data-testid={`text-cvv-${index}`}>
                   {isCvvVisible ? card.cvv : '•••'}
                 </p>
                 <Button
@@ -214,9 +214,9 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
                   data-testid={`button-toggle-cvv-${index}`}
                 >
                   {isCvvVisible ? (
-                    <EyeOff className="h-3 w-3" />
+                    <EyeOff className="h-2.5 w-2.5" />
                   ) : (
-                    <Eye className="h-3 w-3" />
+                    <Eye className="h-2.5 w-2.5" />
                   )}
                 </Button>
               </div>
@@ -224,16 +224,16 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
           </div>
           
           {/* Brand Logo - Bottom Right */}
-          <div className="pb-0.5">
+          <div>
             {getCardBrandLogo(card.cardBrand)}
           </div>
         </div>
 
         {/* Account Info */}
         {account && (
-          <div className="pt-3 border-t border-white/20">
-            <p className="text-[9px] text-white/60 uppercase tracking-wider mb-1">Linked Account</p>
-            <div className="flex items-center justify-between text-xs">
+          <div className="pt-2 border-t border-white/20">
+            <p className="text-[8px] text-white/60 uppercase tracking-wider mb-0.5">Linked Account</p>
+            <div className="flex items-center justify-between text-[11px]">
               <p className="font-mono text-white" data-testid={`text-linked-account-${index}`}>
                 {account.accountNumber.slice(0, 4)}...{account.accountNumber.slice(-4)}
               </p>
