@@ -86,15 +86,15 @@ export default function Dashboard() {
     return <ArrowDownRight className="h-4 w-4 text-chart-2" />;
   };
 
-  const renderDualCurrencyBalance = (usdBalance: number, abbreviated = false) => {
+  const renderDualCurrencyBalance = (usdBalance: number) => {
     const zarBalance = convertToZAR(usdBalance);
     return (
       <div>
-        <div className="text-2xl font-bold break-words" data-testid="text-balance-usd" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-          {formatCurrency(usdBalance, 'USD', abbreviated)}
+        <div className="text-xl font-bold break-words" data-testid="text-balance-usd" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+          {formatCurrency(usdBalance, 'USD', false)}
         </div>
-        <div className="text-lg font-semibold text-muted-foreground mt-1" data-testid="text-balance-zar">
-          {formatCurrency(zarBalance, 'ZAR', abbreviated)}
+        <div className="text-base font-semibold text-muted-foreground mt-1" data-testid="text-balance-zar">
+          {formatCurrency(zarBalance, 'ZAR', false)}
         </div>
       </div>
     );
@@ -126,7 +126,7 @@ export default function Dashboard() {
             {accountsLoading ? (
               <Skeleton className="h-8 w-32" />
             ) : isZAAccount ? (
-              renderDualCurrencyBalance(Number(primaryAccount?.balance || 0), true)
+              renderDualCurrencyBalance(Number(primaryAccount?.balance || 0))
             ) : (
               <div className="text-2xl font-bold break-words" data-testid="text-balance" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                 {formatCurrency(primaryAccount?.balance || 0, 'USD', true)}
