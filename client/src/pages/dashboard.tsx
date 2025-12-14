@@ -8,6 +8,13 @@ import { Link } from "wouter";
 import type { Account, Transaction } from "@shared/schema";
 import { useAuth } from "@/hooks/useAuth";
 
+interface ExchangeRate {
+  from: string;
+  to: string;
+  rate: number;
+  timestamp: string;
+}
+
 export default function Dashboard() {
   const { user } = useAuth();
   const { data: accounts, isLoading: accountsLoading } = useQuery<Account[]>({
@@ -19,26 +26,47 @@ export default function Dashboard() {
   });
 
   const primaryAccount = accounts?.[0];
+  const isZAAccount = primaryAccount?.region === 'ZA';
+
+  const { data: exchangeRate } = useQuery<ExchangeRate>({
+    queryKey: ["/api/exchange-rate/USD/ZAR"],
+    enabled: isZAAccount,
+  });
+
   const recentTransactions = transactions?.slice(0, 5) || [];
 
-  const formatCurrency = (amount: string | number, abbreviated = false) => {
+  const formatCurrency = (amount: string | number, currency: string = 'USD', abbreviated = false) => {
     const value = Number(amount);
+    
+    const currencyConfig: Record<string, { locale: string; code: string; symbol: string }> = {
+      'USD': { locale: 'en-US', code: 'USD', symbol: '$' },
+      'AUD': { locale: 'en-AU', code: 'AUD', symbol: 'A$' },
+      'NZD': { locale: 'en-NZ', code: 'NZD', symbol: 'NZ$' },
+      'ZAR': { locale: 'en-ZA', code: 'ZAR', symbol: 'R' },
+    };
+
+    const config = currencyConfig[currency] || currencyConfig['USD'];
     
     if (abbreviated && value >= 1_000_000_000) {
       const billions = value / 1_000_000_000;
-      return `$${billions.toFixed(billions >= 100 ? 0 : 1)}B`;
+      return `${config.symbol}${billions.toFixed(billions >= 100 ? 0 : 1)}B`;
     } else if (abbreviated && value >= 1_000_000) {
       const millions = value / 1_000_000;
-      return `$${millions.toFixed(millions >= 100 ? 0 : 1)}M`;
+      return `${config.symbol}${millions.toFixed(millions >= 100 ? 0 : 1)}M`;
     } else if (abbreviated && value >= 1_000) {
       const thousands = value / 1_000;
-      return `$${thousands.toFixed(thousands >= 100 ? 0 : 1)}K`;
+      return `${config.symbol}${thousands.toFixed(thousands >= 100 ? 0 : 1)}K`;
     }
     
-    return new Intl.NumberFormat('en-AU', {
+    return new Intl.NumberFormat(config.locale, {
       style: 'currency',
-      currency: 'AUD',
+      currency: config.code,
     }).format(value);
+  };
+
+  const convertToZAR = (usdAmount: number): number => {
+    if (!exchangeRate) return usdAmount * 18.5;
+    return usdAmount * exchangeRate.rate;
   };
 
   const getStatusBadge = (status: string) => {
@@ -58,6 +86,20 @@ export default function Dashboard() {
     return <ArrowDownRight className="h-4 w-4 text-chart-2" />;
   };
 
+  const renderDualCurrencyBalance = (usdBalance: number, abbreviated = false) => {
+    const zarBalance = convertToZAR(usdBalance);
+    return (
+      <div>
+        <div className="text-2xl font-bold break-words" data-testid="text-balance-usd" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+          {formatCurrency(usdBalance, 'USD', abbreviated)}
+        </div>
+        <div className="text-lg font-semibold text-muted-foreground mt-1" data-testid="text-balance-zar">
+          {formatCurrency(zarBalance, 'ZAR', abbreviated)}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -66,6 +108,11 @@ export default function Dashboard() {
         <p className="text-muted-foreground" data-testid="text-page-description">
           Welcome back{user ? `, ${user.firstName} ${user.lastName}` : ''}! Here's your account overview
         </p>
+        {isZAAccount && (
+          <p className="text-sm text-muted-foreground mt-1" data-testid="text-currency-note">
+            Showing USD balance with real-time ZAR conversion (Rate: 1 USD = R{exchangeRate?.rate?.toFixed(2) || '18.50'})
+          </p>
+        )}
       </div>
 
       {/* Account Overview Cards */}
@@ -78,13 +125,16 @@ export default function Dashboard() {
           <CardContent>
             {accountsLoading ? (
               <Skeleton className="h-8 w-32" />
+            ) : isZAAccount ? (
+              renderDualCurrencyBalance(Number(primaryAccount?.balance || 0), true)
             ) : (
               <div className="text-2xl font-bold break-words" data-testid="text-balance" style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                {formatCurrency(primaryAccount?.balance || 0, true)}
+                {formatCurrency(primaryAccount?.balance || 0, 'USD', true)}
               </div>
             )}
             <p className="text-xs text-muted-foreground mt-1" data-testid="text-account-number">
               {primaryAccount?.accountNumber ? `****${primaryAccount.accountNumber.slice(-4)}` : '****'}
+              {primaryAccount?.region && ` (${primaryAccount.region})`}
             </p>
           </CardContent>
         </Card>
@@ -98,13 +148,26 @@ export default function Dashboard() {
             {transactionsLoading ? (
               <Skeleton className="h-8 w-32" />
             ) : (
-              <div className="text-2xl font-bold" data-testid="text-total-income">
-                {formatCurrency(
-                  transactions
-                    ?.filter(t => t.toAccountId === primaryAccount?.id && t.status === 'completed')
-                    .reduce((sum, t) => sum + Number(t.amount), 0) || 0
+              <>
+                <div className="text-2xl font-bold" data-testid="text-total-income">
+                  {formatCurrency(
+                    transactions
+                      ?.filter(t => t.toAccountId === primaryAccount?.id && t.status === 'completed')
+                      .reduce((sum, t) => sum + Number(t.amount), 0) || 0,
+                    'USD'
+                  )}
+                </div>
+                {isZAAccount && (
+                  <div className="text-lg font-semibold text-muted-foreground" data-testid="text-total-income-zar">
+                    {formatCurrency(
+                      convertToZAR(transactions
+                        ?.filter(t => t.toAccountId === primaryAccount?.id && t.status === 'completed')
+                        .reduce((sum, t) => sum + Number(t.amount), 0) || 0),
+                      'ZAR'
+                    )}
+                  </div>
                 )}
-              </div>
+              </>
             )}
             <p className="text-xs text-muted-foreground mt-1">This month</p>
           </CardContent>
@@ -119,13 +182,26 @@ export default function Dashboard() {
             {transactionsLoading ? (
               <Skeleton className="h-8 w-32" />
             ) : (
-              <div className="text-2xl font-bold" data-testid="text-total-expenses">
-                {formatCurrency(
-                  transactions
-                    ?.filter(t => t.fromAccountId === primaryAccount?.id && t.status === 'completed')
-                    .reduce((sum, t) => sum + Number(t.amount), 0) || 0
+              <>
+                <div className="text-2xl font-bold" data-testid="text-total-expenses">
+                  {formatCurrency(
+                    transactions
+                      ?.filter(t => t.fromAccountId === primaryAccount?.id && t.status === 'completed')
+                      .reduce((sum, t) => sum + Number(t.amount), 0) || 0,
+                    'USD'
+                  )}
+                </div>
+                {isZAAccount && (
+                  <div className="text-lg font-semibold text-muted-foreground" data-testid="text-total-expenses-zar">
+                    {formatCurrency(
+                      convertToZAR(transactions
+                        ?.filter(t => t.fromAccountId === primaryAccount?.id && t.status === 'completed')
+                        .reduce((sum, t) => sum + Number(t.amount), 0) || 0),
+                      'ZAR'
+                    )}
+                  </div>
                 )}
-              </div>
+              </>
             )}
             <p className="text-xs text-muted-foreground mt-1">This month</p>
           </CardContent>
@@ -269,8 +345,14 @@ export default function Dashboard() {
                       data-testid={`text-transaction-amount-${index}`}
                     >
                       {transaction.fromAccountId === primaryAccount?.id ? '-' : '+'}
-                      {formatCurrency(transaction.amount)}
+                      {formatCurrency(transaction.amount, 'USD')}
                     </p>
+                    {isZAAccount && (
+                      <p className="text-sm text-muted-foreground" data-testid={`text-transaction-amount-zar-${index}`}>
+                        {transaction.fromAccountId === primaryAccount?.id ? '-' : '+'}
+                        {formatCurrency(convertToZAR(Number(transaction.amount)), 'ZAR')}
+                      </p>
+                    )}
                     {getStatusBadge(transaction.status)}
                   </div>
                 </div>

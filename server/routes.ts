@@ -4,7 +4,20 @@ import { storage, generateAccountNumber, generateBSB, generateRoutingNumber, gen
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { detectCardBrand, generateCardNumberWithBrand } from "./utils/cardBrands";
 
-const REGIONS = ['AU', 'US', 'NZ'] as const;
+const REGIONS = ['AU', 'US', 'NZ', 'ZA'] as const;
+
+// Currency codes for each region
+const REGION_CURRENCIES: Record<string, { code: string; symbol: string; name: string }> = {
+  'AU': { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  'US': { code: 'USD', symbol: '$', name: 'US Dollar' },
+  'NZ': { code: 'NZD', symbol: 'NZ$', name: 'New Zealand Dollar' },
+  'ZA': { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
+};
+
+// Generate South African branch code
+function generateZABranchCode(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -83,6 +96,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         routingNumber = generateRoutingNumber();
       } else if (region === 'NZ') {
         swiftCode = generateSwiftCode();
+      } else if (region === 'ZA') {
+        swiftCode = generateSwiftCode();
       }
 
       // Create account
@@ -135,6 +150,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error verifying access code:", error);
       res.status(500).json({ message: "Failed to verify access code" });
+    }
+  });
+
+  // ===================
+  // CURRENCY ROUTES
+  // ===================
+
+  // Get region currencies info
+  app.get('/api/currencies', async (req, res) => {
+    res.json(REGION_CURRENCIES);
+  });
+
+  // Get exchange rate for USD to other currencies (for ZA users showing dual currency)
+  app.get('/api/exchange-rate/:from/:to', async (req, res) => {
+    try {
+      const { from, to } = req.params;
+      
+      // Default fallback exchange rates (updated periodically)
+      // In production, you'd want to use a real-time API
+      const fallbackRates: Record<string, Record<string, number>> = {
+        'USD': { 'ZAR': 18.5, 'AUD': 1.55, 'NZD': 1.68, 'USD': 1 },
+        'AUD': { 'ZAR': 11.94, 'USD': 0.65, 'NZD': 1.08, 'AUD': 1 },
+        'ZAR': { 'USD': 0.054, 'AUD': 0.084, 'NZD': 0.091, 'ZAR': 1 },
+        'NZD': { 'USD': 0.60, 'AUD': 0.93, 'ZAR': 11.01, 'NZD': 1 },
+      };
+
+      const rate = fallbackRates[from.toUpperCase()]?.[to.toUpperCase()];
+      
+      if (!rate) {
+        return res.status(400).json({ message: "Unsupported currency pair" });
+      }
+
+      res.json({ 
+        from: from.toUpperCase(), 
+        to: to.toUpperCase(), 
+        rate,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error fetching exchange rate:", error);
+      res.status(500).json({ message: "Failed to fetch exchange rate" });
     }
   });
 
@@ -250,6 +306,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           routingNumber = generateRoutingNumber();
         } else if (region === 'NZ') {
           branchCode = generateNZBranchCode();
+        } else if (region === 'ZA') {
+          branchCode = generateZABranchCode();
         }
         swiftCode = generateSwiftCode();
 
