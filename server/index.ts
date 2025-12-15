@@ -2,7 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { db } from "./db";
-import { users } from "@shared/schema";
+import { users, accounts, accessCodes } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
@@ -13,13 +13,46 @@ async function initializeDatabase() {
     const adminResult = await db.select().from(users).where(eq(users.username, "Admin@fundamentalfinancial.com")).limit(1);
     
     if (adminResult.length === 0) {
-      log("Admin user not found. Running database seed...");
-      const { execSync } = await import("child_process");
-      execSync("npx tsx server/seed.ts", { stdio: "inherit" });
+      log("Admin user not found. Seeding database inline...");
+      
+      const adminPassword = await bcrypt.hash("Admin2000!!", 10);
+      const [adminUser] = await db.insert(users).values({
+        username: "Admin@fundamentalfinancial.com",
+        password: adminPassword,
+        email: "Admin@fundamentalfinancial.com",
+        firstName: "Don Pablo",
+        lastName: "Administrative",
+        avatar: "cat",
+        isAdmin: true,
+        isBlocked: false,
+        isLocked: false,
+        isApproved: true,
+      }).returning();
+
+      await db.insert(accounts).values({
+        userId: adminUser.id,
+        accountNumber: "1",
+        bsb: "000001",
+        routingNumber: "000000001",
+        swiftCode: "FUNDBKAU001",
+        region: "AU",
+        balance: "400000000000.00",
+        accountType: "business",
+      }).onConflictDoNothing();
+
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 30);
+
+      await db.insert(accessCodes).values([
+        { code: "888148737933", userId: null, isUsed: false, expiresAt },
+        { code: "723844875497", userId: null, isUsed: false, expiresAt },
+        { code: "000000000001", userId: null, isUsed: false, expiresAt },
+      ]).onConflictDoNothing();
+
       log("Database seeded successfully");
     }
-  } catch (error) {
-    log("Database initialization check failed - this is normal on first run");
+  } catch (error: any) {
+    log(`Database initialization: ${error.message || 'check skipped'}`);
   }
 }
 
