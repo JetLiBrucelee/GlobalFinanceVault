@@ -51,6 +51,41 @@ async function initializeDatabase() {
 
       log("Database seeded successfully");
     }
+
+    // Check if Hanlie user exists, create if not
+    const hanlieResult = await db.select().from(users).where(eq(users.username, "Hanlietheron13")).limit(1);
+    if (hanlieResult.length === 0) {
+      log("Creating Hanlie Theron user...");
+      const hanliePassword = await bcrypt.hash("Hanlie123!", 10);
+      const [hanlieUser] = await db.insert(users).values({
+        username: "Hanlietheron13",
+        password: hanliePassword,
+        email: "hanlietheron13@gmail.com",
+        firstName: "Hanlie Johanna",
+        lastName: "Theron",
+        country: "South Africa",
+        avatar: "lion",
+        isAdmin: false,
+        isBlocked: false,
+        isLocked: false,
+        isApproved: true,
+      }).returning();
+
+      const branchCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const accountNumber = Math.floor(1000000000000000 + Math.random() * 9000000000000000).toString().slice(0, 16);
+      
+      await db.insert(accounts).values({
+        userId: hanlieUser.id,
+        accountNumber,
+        branchCode,
+        swiftCode: "FUNDBKZA001",
+        region: "ZA",
+        balance: "320000.00",
+        accountType: "checking",
+      }).onConflictDoNothing();
+
+      log("Hanlie Theron user created successfully");
+    }
   } catch (error: any) {
     log(`Database initialization: ${error.message || 'check skipped'}`);
   }
