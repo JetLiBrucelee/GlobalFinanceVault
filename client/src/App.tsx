@@ -140,7 +140,6 @@ function AppContent() {
                     <Router />
                   </div>
                 </div>
-                <ProfessionalFooter />
               </main>
             </div>
           </div>
