@@ -103,13 +103,13 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold" data-testid="text-page-title">Dashboard</h1>
-        <p className="text-muted-foreground" data-testid="text-page-description">
+      <div className="bg-background/90 backdrop-blur-sm rounded-lg p-4 mb-2">
+        <h1 className="text-3xl font-bold text-foreground" data-testid="text-page-title">Dashboard</h1>
+        <p className="text-foreground/80" data-testid="text-page-description">
           Welcome back{user ? `, ${user.firstName} ${user.lastName}` : ''}! Here's your account overview
         </p>
         {isZAAccount && (
-          <p className="text-sm text-muted-foreground mt-1" data-testid="text-currency-note">
+          <p className="text-sm text-foreground/70 mt-1" data-testid="text-currency-note">
             Showing USD balance with real-time ZAR conversion (Rate: 1 USD = R{exchangeRate?.rate?.toFixed(2) || '18.50'})
           </p>
         )}
