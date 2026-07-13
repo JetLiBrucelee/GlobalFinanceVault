@@ -1,20 +1,47 @@
+import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Copy, Plus } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Copy, Plus, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { AccessCode } from "@shared/schema";
+import type { AccessCode, User } from "@shared/schema";
 import adminBg from "@assets/stock_images/online_banking_servi_775ecb2d.jpg";
+
+type AccessCodeWithTarget = AccessCode & { targetUsername: string | null };
 
 export default function AdminAccessCodes() {
   const { toast } = useToast();
+  const [userDialogOpen, setUserDialogOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
 
-  const { data: accessCodes, isLoading } = useQuery<AccessCode[]>({
+  const { data: accessCodes, isLoading } = useQuery<AccessCodeWithTarget[]>({
     queryKey: ["/api/admin/access-codes"],
+  });
+
+  const { data: users } = useQuery<User[]>({
+    queryKey: ["/api/admin/users"],
+    enabled: userDialogOpen,
   });
 
   const generateCodeMutation = useMutation({
@@ -27,6 +54,28 @@ export default function AdminAccessCodes() {
         description: `Code: ${data.code}`,
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/access-codes"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Generation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const generateCodeForUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      return await apiRequest("POST", "/api/admin/access-codes/generate", { userId });
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Login Code Generated",
+        description: `Give this code to the user for their next login: ${data.code}`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/access-codes"] });
+      setUserDialogOpen(false);
+      setSelectedUserId("");
     },
     onError: (error: Error) => {
       toast({
@@ -79,14 +128,56 @@ export default function AdminAccessCodes() {
             Generate and manage user access codes
           </p>
         </div>
-        <Button
-          onClick={() => generateCodeMutation.mutate()}
-          disabled={generateCodeMutation.isPending}
-          data-testid="button-generate"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Generate New Code
-        </Button>
+        <div className="flex gap-2">
+          <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="secondary" data-testid="button-generate-for-user">
+                <UserPlus className="mr-2 h-4 w-4" />
+                Generate Login Code for User
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Generate Login Code</DialogTitle>
+                <DialogDescription>
+                  Select a user to generate a single-use access code required for their next login.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2 py-2">
+                <Label htmlFor="target-user">User</Label>
+                <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+                  <SelectTrigger id="target-user" data-testid="select-target-user">
+                    <SelectValue placeholder="Select a user" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users?.filter(u => !u.isAdmin).map(u => (
+                      <SelectItem key={u.id} value={u.id} data-testid={`option-user-${u.username}`}>
+                        {u.username} {u.firstName || u.lastName ? `(${u.firstName ?? ''} ${u.lastName ?? ''})`.trim() : ''}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={() => generateCodeForUserMutation.mutate(selectedUserId)}
+                  disabled={!selectedUserId || generateCodeForUserMutation.isPending}
+                  data-testid="button-confirm-generate-for-user"
+                >
+                  Generate Code
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Button
+            onClick={() => generateCodeMutation.mutate()}
+            disabled={generateCodeMutation.isPending}
+            data-testid="button-generate"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Generate Untargeted Code
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -158,6 +249,7 @@ export default function AdminAccessCodes() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Code</TableHead>
+                    <TableHead>For User</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Created</TableHead>
                     <TableHead>Expires</TableHead>
@@ -172,6 +264,11 @@ export default function AdminAccessCodes() {
                       <TableRow key={accessCode.id} data-testid={`row-code-${index}`}>
                         <TableCell className="font-mono text-lg tracking-wider" data-testid={`cell-code-${index}`}>
                           {accessCode.code}
+                        </TableCell>
+                        <TableCell data-testid={`cell-user-${index}`}>
+                          {accessCode.targetUsername ?? (
+                            <span className="text-muted-foreground">Any user</span>
+                          )}
                         </TableCell>
                         <TableCell data-testid={`cell-status-${index}`}>
                           <Badge variant={status.variant}>{status.label}</Badge>
@@ -232,18 +329,20 @@ export default function AdminAccessCodes() {
           <div>
             <h4 className="font-semibold mb-2">What are Access Codes?</h4>
             <p className="text-sm text-muted-foreground">
-              Access codes are single-use verification codes that users must enter after logging in 
-              to activate their account. This provides an additional layer of security and control 
-              over who can access the banking system.
+              Every regular user must enter a valid access code every time they log in, right after
+              their username and password are accepted. Admin accounts are not affected and never see
+              this step. Use "Generate Login Code for User" to issue a single-use code for one specific
+              user's next login.
             </p>
           </div>
           <div>
             <h4 className="font-semibold mb-2">How to Use</h4>
             <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-              <li>Generate a new access code by clicking the "Generate New Code" button</li>
-              <li>Share the code with the user who needs to activate their account</li>
-              <li>Codes expire after 7 days and can only be used once</li>
-              <li>Users must enter the code after logging in to complete their registration</li>
+              <li>Click "Generate Login Code for User" and pick the user who needs to sign in</li>
+              <li>Share the code with that user out of band — it only works for their account</li>
+              <li>User-targeted codes expire after 24 hours and can only be used once</li>
+              <li>Without a valid code, the user is told to contact Corvenza Capital Finance and cannot proceed</li>
+              <li>"Generate Untargeted Code" creates a legacy any-user code, kept for compatibility</li>
             </ul>
           </div>
         </CardContent>

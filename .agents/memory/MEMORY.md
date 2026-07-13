@@ -1,1 +1,2 @@
 - [Large-file edit corruption](large-file-edit-safety.md) — the Edit tool can silently corrupt big/risky multi-line replacements; use a Node script with exact-match + occurrence-count assertions instead.
+- [Per-login access-code gate](per-login-access-code-gate.md) — login gating uses a session flag, not account existence, so it re-fires every login without duplicating one-time signup side effects.

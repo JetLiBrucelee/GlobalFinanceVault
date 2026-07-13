@@ -30,13 +30,15 @@ export default function AccessCode() {
       await apiRequest("POST", "/api/auth/verify-access-code", { code });
       toast({
         title: "Access Granted",
-        description: "Your account is now active!",
+        description: "You're now signed in.",
       });
       window.location.href = "/";
     } catch (error: any) {
       toast({
         title: "Invalid Access Code",
-        description: error.message || "The access code you entered is invalid or has expired",
+        description:
+          error.message ||
+          "The access code you entered is invalid or has expired. Contact Corvenza Capital Finance for the correct code.",
         variant: "destructive",
       });
     } finally {
@@ -53,7 +55,7 @@ export default function AccessCode() {
           </div>
           <CardTitle className="text-2xl" data-testid="text-title">Access Code Required</CardTitle>
           <CardDescription data-testid="text-description">
-            Please enter the 12-digit access code provided by your administrator to activate your account
+            For your security, every login requires a 12-digit access code issued by an administrator
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -72,7 +74,7 @@ export default function AccessCode() {
                 data-testid="input-access-code"
               />
               <p className="text-xs text-muted-foreground text-center" data-testid="text-helper">
-                Contact your administrator if you haven't received an access code
+                Don't have a code? Contact Corvenza Capital Finance to receive your login access code.
               </p>
             </div>
 

@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage, generateAccountNumber, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode, generateVerificationCode } from "./storage";
-import { setupAuth, isAuthenticated, isAdmin } from "./auth";
+import { setupAuth, isAuthenticated, isAdmin, requiresAccessCode } from "./auth";
 import { detectCardBrand, generateCardNumberWithBrand } from "./utils/cardBrands";
 
 // Currency codes (USA only)
@@ -52,6 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isLocked: user.isLocked,
         isApproved: user.isApproved,
         createdAt: user.createdAt,
+        accessCodeVerified: user.isAdmin ? true : !!(req.session as any).accessCodeVerified,
       });
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -83,6 +84,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Access code has expired" });
       }
 
+      // A code generated for a specific user can only clear that user's login.
+      // Legacy/untargeted codes (userId null) remain usable by anyone, for
+      // backward compatibility with codes generated before per-user targeting.
+      if (accessCode.userId && accessCode.userId !== userId) {
+        return res.status(403).json({ message: "This access code is not valid for your account" });
+      }
+
       // Mark access code as used
       await storage.markAccessCodeUsed(accessCode.id);
 
@@ -91,56 +99,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateUserStatus(userId, { isAdmin: true });
       }
 
-      // Create account and cards for the user (USA only)
-      const accountNumber = generateAccountNumber();
-      const routingNumber = generateRoutingNumber();
-      const swiftCode = generateSwiftCode();
+      // This code has cleared the access-code gate for the current login session.
+      req.session.accessCodeVerified = true;
 
-      // Create account
-      const account = await storage.createAccount({
-        userId,
-        accountNumber,
-        routingNumber,
-        swiftCode,
-        balance: "10000.00", // Starting balance
-        accountType: "checking",
-      });
+      // Only create the user's bank account and cards the very first time they
+      // ever clear the gate. Later logins reuse this same check-and-verify
+      // endpoint and must not create duplicate accounts.
+      const existingAccounts = await storage.getAccountsByUserId(userId);
+      if (existingAccounts.length === 0) {
+        const accountNumber = generateAccountNumber();
+        const routingNumber = generateRoutingNumber();
+        const swiftCode = generateSwiftCode();
 
-      // Get user info for card holder name
-      const user = await storage.getUser(userId);
-      const cardholderName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim().toUpperCase();
+        const account = await storage.createAccount({
+          userId,
+          accountNumber,
+          routingNumber,
+          swiftCode,
+          balance: "10000.00", // Starting balance
+          accountType: "checking",
+        });
 
-      // Create debit card (Mastercard)
-      const debitExpiry = generateCardExpiry();
-      const debitCardNumber = generateCardNumberWithBrand('mastercard');
-      await storage.createCard({
-        accountId: account.id,
-        cardNumber: debitCardNumber,
-        cardType: "debit",
-        cardBrand: detectCardBrand(debitCardNumber),
-        cvv: generateCVV(),
-        expiryMonth: debitExpiry.month,
-        expiryYear: debitExpiry.year,
-        cardholderName,
-        isActive: true,
-      });
+        // Get user info for card holder name
+        const user = await storage.getUser(userId);
+        const cardholderName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim().toUpperCase();
 
-      // Create credit card (Visa)
-      const creditExpiry = generateCardExpiry();
-      const creditCardNumber = generateCardNumberWithBrand('visa');
-      await storage.createCard({
-        accountId: account.id,
-        cardNumber: creditCardNumber,
-        cardType: "credit",
-        cardBrand: detectCardBrand(creditCardNumber),
-        cvv: generateCVV(),
-        expiryMonth: creditExpiry.month,
-        expiryYear: creditExpiry.year,
-        cardholderName,
-        isActive: true,
-      });
+        // Create debit card (Mastercard)
+        const debitExpiry = generateCardExpiry();
+        const debitCardNumber = generateCardNumberWithBrand('mastercard');
+        await storage.createCard({
+          accountId: account.id,
+          cardNumber: debitCardNumber,
+          cardType: "debit",
+          cardBrand: detectCardBrand(debitCardNumber),
+          cvv: generateCVV(),
+          expiryMonth: debitExpiry.month,
+          expiryYear: debitExpiry.year,
+          cardholderName,
+          isActive: true,
+        });
 
-      res.json({ message: "Account activated successfully", account });
+        // Create credit card (Visa)
+        const creditExpiry = generateCardExpiry();
+        const creditCardNumber = generateCardNumberWithBrand('visa');
+        await storage.createCard({
+          accountId: account.id,
+          cardNumber: creditCardNumber,
+          cardType: "credit",
+          cardBrand: detectCardBrand(creditCardNumber),
+          cvv: generateCVV(),
+          expiryMonth: creditExpiry.month,
+          expiryYear: creditExpiry.year,
+          cardholderName,
+          isActive: true,
+        });
+
+        return res.json({ message: "Account activated successfully", account });
+      }
+
+      res.json({ message: "Access code verified successfully" });
     } catch (error) {
       console.error("Error verifying access code:", error);
       res.status(500).json({ message: "Failed to verify access code" });
@@ -181,7 +198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // USER ROUTES
   // ======
 
-  app.patch('/api/user/avatar', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/user/avatar', isAuthenticated, requiresAccessCode, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const { avatar } = req.body;
@@ -199,7 +216,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch('/api/user/profile', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/user/profile', isAuthenticated, requiresAccessCode, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const { firstName, lastName, phone, addressLine1, addressLine2, city, state, postalCode, country } = req.body;
@@ -237,7 +254,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ACCOUNT ROUTES
   // ======
 
-  app.get('/api/accounts', isAuthenticated, async (req: any, res) => {
+  app.get('/api/accounts', isAuthenticated, requiresAccessCode, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const accounts = await storage.getAccountsByUserId(userId);
@@ -350,7 +367,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CARD ROUTES
   // ======
 
-  app.get('/api/cards', isAuthenticated, async (req: any, res) => {
+  app.get('/api/cards', isAuthenticated, requiresAccessCode, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const accounts = await storage.getAccountsByUserId(userId);
@@ -372,7 +389,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // TRANSACTION ROUTES
   // ======
 
-  app.get('/api/transactions', isAuthenticated, async (req: any, res) => {
+  app.get('/api/transactions', isAuthenticated, requiresAccessCode, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const accounts = await storage.getAccountsByUserId(userId);
@@ -395,7 +412,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/transactions/transfer', isAuthenticated, async (req: any, res) => {
+  app.post('/api/transactions/transfer', isAuthenticated, requiresAccessCode, async (req: any, res) => {
     try {
       const userId = req.user.id;
       const { toAccountNumber, amount, description } = req.body;
@@ -456,7 +473,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/transactions/bill-pay', isAuthenticated, async (req: any, res) => {
+  app.post('/api/transactions/bill-pay', isAuthenticated, requiresAccessCode, async (req: any, res) => {
     try {
       const userId = req.user.id;
       
@@ -997,15 +1014,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/admin/access-codes/generate', isAuthenticated, isAdmin, async (req, res) => {
+  app.post('/api/admin/access-codes/generate', isAuthenticated, isAdmin, async (req: any, res) => {
     try {
+      const { userId } = req.body || {};
+
+      if (userId) {
+        const targetUser = await storage.getUser(userId);
+        if (!targetUser) {
+          return res.status(404).json({ message: "User not found" });
+        }
+      }
+
       const code = generateAccessCode();
       const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7); // Expires in 7 days
+      // Codes for a specific user's next login expire quickly; untargeted
+      // legacy codes keep the longer 7-day window.
+      if (userId) {
+        expiresAt.setDate(expiresAt.getDate() + 1);
+      } else {
+        expiresAt.setDate(expiresAt.getDate() + 7);
+      }
 
       const accessCode = await storage.createAccessCode({
         code,
-        userId: null,
+        userId: userId || null,
         isUsed: false,
         expiresAt,
       });

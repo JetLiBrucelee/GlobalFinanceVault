@@ -77,8 +77,9 @@ function Router() {
     );
   }
 
-  // If no accounts, redirect to access code verification (admins skip this check)
-  if (!user?.isAdmin && (!accounts || accounts.length === 0)) {
+  // Every non-admin login must clear a fresh admin-issued access code before
+  // reaching the app, regardless of whether they already have an account.
+  if (!user?.isAdmin && !user?.accessCodeVerified) {
     return (
       <Switch>
         <Route path="/access-code" component={AccessCode} />

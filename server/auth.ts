@@ -98,7 +98,12 @@ export async function setupAuth(app: Express) {
         if (err) {
           return res.status(500).json({ message: "Login failed" });
         }
-        
+
+        // Admins bypass the access-code gate. Every other user must verify
+        // a fresh admin-issued access code before this session can reach
+        // any account data, even if they've logged in before.
+        (req.session as any).accessCodeVerified = !!user.isAdmin;
+
         return res.json({
           id: user.id,
           username: user.username,
@@ -108,6 +113,7 @@ export async function setupAuth(app: Express) {
           avatar: user.avatar || 'cat',
           isAdmin: user.isAdmin,
           isApproved: user.isApproved,
+          accessCodeVerified: (req.session as any).accessCodeVerified,
         });
       });
     })(req, res, next);
@@ -150,6 +156,26 @@ export const isAdmin: RequestHandler = async (req, res, next) => {
   const user = req.user as User;
   if (!user.isAdmin) {
     return res.status(403).json({ message: "Forbidden - Admin access required" });
+  }
+
+  next();
+};
+
+// Blocks access to account data until the current login session has been
+// cleared with a fresh admin-issued access code. Admins set this flag
+// automatically on login (see /api/login) and never see the gate.
+export const requiresAccessCode: RequestHandler = (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const user = req.user as User;
+  if (user.isAdmin) {
+    return next();
+  }
+
+  if (!(req.session as any).accessCodeVerified) {
+    return res.status(403).json({ message: "Access code verification is required for this session" });
   }
 
   next();

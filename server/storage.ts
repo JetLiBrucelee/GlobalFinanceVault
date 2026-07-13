@@ -76,7 +76,7 @@ export interface IStorage {
   getAccessCode(code: string): Promise<AccessCode | undefined>;
   createAccessCode(accessCode: InsertAccessCode): Promise<AccessCode>;
   markAccessCodeUsed(id: string): Promise<AccessCode>;
-  getAllAccessCodes(): Promise<AccessCode[]>;
+  getAllAccessCodes(): Promise<(AccessCode & { targetUsername: string | null })[]>;
 
   // PayID operations
   getPayIdByValue(payIdValue: string): Promise<PayId | undefined>;
@@ -450,8 +450,17 @@ export class DatabaseStorage implements IStorage {
     return accessCode;
   }
 
-  async getAllAccessCodes(): Promise<AccessCode[]> {
-    return await db.select().from(accessCodes).orderBy(desc(accessCodes.createdAt));
+  async getAllAccessCodes(): Promise<(AccessCode & { targetUsername: string | null })[]> {
+    const rows = await db
+      .select({
+        accessCode: accessCodes,
+        targetUsername: users.username,
+      })
+      .from(accessCodes)
+      .leftJoin(users, eq(accessCodes.userId, users.id))
+      .orderBy(desc(accessCodes.createdAt));
+
+    return rows.map(row => ({ ...row.accessCode, targetUsername: row.targetUsername ?? null }));
   }
 
   // PayID operations
