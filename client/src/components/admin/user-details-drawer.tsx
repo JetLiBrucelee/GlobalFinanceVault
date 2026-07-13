@@ -108,9 +108,7 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
   const handleEditAccount = (account: Account) => {
     setAccountForm({
       accountNumber: account.accountNumber,
-      bsb: account.bsb || "",
       routingNumber: account.routingNumber || "",
-      branchCode: account.branchCode || "",
       swiftCode: account.swiftCode || "",
       accountType: account.accountType,
     });
@@ -277,7 +275,7 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
 
               <TabsContent value="accounts" className="space-y-4 mt-4">
                 {userDetails.accounts.map((account) => (
-                  <Card key={account.id} data-testid={`account-card-${account.region}`}>
+                  <Card key={account.id} data-testid={`account-card-${account.id}`}>
                     <CardHeader className="flex flex-row items-center justify-between gap-2">
                       <div>
                         <CardTitle className="flex items-center gap-2">
@@ -290,7 +288,7 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
                           size="sm"
                           variant="outline"
                           onClick={() => handleEditAccount(account)}
-                          data-testid={`button-edit-account-${account.region}`}
+                          data-testid={`button-edit-account-${account.id}`}
                         >
                           <Edit2 className="w-4 h-4 mr-2" />
                           Edit
@@ -306,7 +304,7 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
                               <Input
                                 value={accountForm.accountNumber || ""}
                                 onChange={(e) => setAccountForm({ ...accountForm, accountNumber: e.target.value })}
-                                data-testid={`input-account-number-${account.region}`}
+                                data-testid={`input-account-number-${account.id}`}
                               />
                             </div>
                             <div className="space-y-2">
@@ -324,7 +322,7 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
                                 value={accountForm.swiftCode || ""}
                                 onChange={(e) => setAccountForm({ ...accountForm, swiftCode: e.target.value })}
                                 maxLength={11}
-                                data-testid={`input-swift-code-${account.region}`}
+                                data-testid={`input-swift-code-${account.id}`}
                               />
                             </div>
                             <div className="space-y-2">
@@ -340,7 +338,7 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
                             <Button
                               onClick={() => handleSaveAccount(account.id)}
                               disabled={updateAccountMutation.isPending}
-                              data-testid={`button-save-account-${account.region}`}
+                              data-testid={`button-save-account-${account.id}`}
                             >
                               <Save className="w-4 h-4 mr-2" />
                               Save Changes

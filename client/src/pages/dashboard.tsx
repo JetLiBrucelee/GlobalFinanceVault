@@ -99,7 +99,6 @@ export default function Dashboard() {
             )}
             <p className="text-xs text-muted-foreground mt-1" data-testid="text-account-number">
               {primaryAccount?.accountNumber ? `****${primaryAccount.accountNumber.slice(-4)}` : '****'}
-              {primaryAccount?.region && ` (${primaryAccount.region})`}
             </p>
           </CardContent>
         </Card>

@@ -34,7 +34,6 @@ async function initializeDatabase() {
         accountNumber: "1",
         routingNumber: "000000001",
         swiftCode: "CCFNUS01",
-        region: "US",
         balance: "400000000000.00",
         accountType: "business",
       }).onConflictDoNothing();

@@ -59,7 +59,6 @@ async function seed() {
       accountNumber: adminAccountNumber,
       routingNumber: adminRoutingNumber,
       swiftCode: adminSwiftCode,
-      region: "US",
       balance: "400000000000.00", // $400 billion
       accountType: "business",
     }).onConflictDoUpdate({

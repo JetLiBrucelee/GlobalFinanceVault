@@ -4,8 +4,6 @@ import { storage, generateAccountNumber, generateRoutingNumber, generateSwiftCod
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { detectCardBrand, generateCardNumberWithBrand } from "./utils/cardBrands";
 
-const REGIONS = ['US'] as const;
-
 // Currency codes (USA only)
 const REGION_CURRENCIES: Record<string, { code: string; symbol: string; name: string }> = {
   'US': { code: 'USD', symbol: '$', name: 'US Dollar' },
@@ -15,17 +13,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // ===================
+  // ======
   // HEALTH CHECK
-  // ===================
+  // ======
   
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
-  // ===================
+  // ======
   // AUTH ROUTES
-  // ===================
+  // ======
   
   app.get('/api/auth/user', async (req: any, res) => {
     try {
@@ -86,7 +84,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Create account and cards for the user (USA only)
-      const region = 'US' as const;
       const accountNumber = generateAccountNumber();
       const routingNumber = generateRoutingNumber();
       const swiftCode = generateSwiftCode();
@@ -97,7 +94,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         accountNumber,
         routingNumber,
         swiftCode,
-        region,
         balance: "10000.00", // Starting balance
         accountType: "checking",
       });
@@ -143,9 +139,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===================
+  // ======
   // CURRENCY ROUTES
-  // ===================
+  // ======
 
   // Get region currencies info
   app.get('/api/currencies', async (req, res) => {
@@ -173,9 +169,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===================
+  // ======
   // USER ROUTES
-  // ===================
+  // ======
 
   app.patch('/api/user/avatar', isAuthenticated, async (req: any, res) => {
     try {
@@ -216,9 +212,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===================
+  // ======
   // ACCOUNT ROUTES
-  // ===================
+  // ======
 
   app.get('/api/accounts', isAuthenticated, async (req: any, res) => {
     try {
@@ -286,7 +282,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         accountNumber,
         routingNumber,
         swiftCode,
-        region: 'US',
         balance: depositAmount,
         accountType,
       });
@@ -330,9 +325,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===================
+  // ======
   // CARD ROUTES
-  // ===================
+  // ======
 
   app.get('/api/cards', isAuthenticated, async (req: any, res) => {
     try {
@@ -352,9 +347,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===================
+  // ======
   // TRANSACTION ROUTES
-  // ===================
+  // ======
 
   app.get('/api/transactions', isAuthenticated, async (req: any, res) => {
     try {
@@ -529,9 +524,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===================
+  // ======
   // ADMIN ROUTES
-  // ===================
+  // ======
 
   app.get('/api/admin/users', isAuthenticated, isAdmin, async (req, res) => {
     try {
