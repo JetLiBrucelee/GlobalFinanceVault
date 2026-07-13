@@ -7,7 +7,7 @@ export default function Support() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-red-50/30 to-slate-50 p-8">
       <div className="max-w-4xl mx-auto">
         <Button
           variant="ghost"
@@ -40,7 +40,7 @@ export default function Support() {
                 <CardContent className="p-6 text-center">
                   <Mail className="h-8 w-8 mx-auto mb-3 text-primary" />
                   <h3 className="font-semibold mb-2">Email</h3>
-                  <p className="text-sm text-muted-foreground">support@fundamentalfinancialcredit.com</p>
+                  <p className="text-sm text-muted-foreground">support@corvenzacapitalfinance.com</p>
                 </CardContent>
               </Card>
               

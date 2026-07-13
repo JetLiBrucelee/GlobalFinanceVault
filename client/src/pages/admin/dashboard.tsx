@@ -39,9 +39,9 @@ export default function AdminDashboard() {
       return `$${thousands.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}K`;
     }
     
-    return new Intl.NumberFormat('en-AU', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'AUD',
+      currency: 'USD',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);

@@ -1,6 +1,6 @@
 import { db } from "./db";
 import { users, accessCodes, accounts } from "@shared/schema";
-import { generateAccessCode, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode } from "./storage";
+import { generateAccessCode, generateAccountNumber, generateRoutingNumber, generateSwiftCode } from "./storage";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 
@@ -12,7 +12,7 @@ async function seed() {
     const adminPassword = await bcrypt.hash("Admin2000!!", 10);
 
     // Check if admin already exists to preserve their profile name changes
-    const existingAdminResult = await db.select().from(users).where(eq(users.username, "Admin@fundamentalfinancial.com")).limit(1);
+    const existingAdminResult = await db.select().from(users).where(eq(users.username, "Admin@corvenzacapitalfinance.com")).limit(1);
     const existingAdmin = existingAdminResult[0];
     
     let adminUser;
@@ -23,7 +23,7 @@ async function seed() {
         .update(users)
         .set({
           password: adminPassword,
-          email: "Admin@fundamentalfinancial.com",
+          email: "Admin@corvenzacapitalfinance.com",
           isAdmin: true,
           updatedAt: new Date(),
         })
@@ -34,9 +34,9 @@ async function seed() {
     } else {
       // Admin doesn't exist - create with default values
       const [created] = await db.insert(users).values({
-        username: "Admin@fundamentalfinancial.com",
+        username: "Admin@corvenzacapitalfinance.com",
         password: adminPassword,
-        email: "Admin@fundamentalfinancial.com",
+        email: "Admin@corvenzacapitalfinance.com",
         firstName: "Don Pablo",
         lastName: "Administrative",
         avatar: "cat",
@@ -51,17 +51,15 @@ async function seed() {
 
     // Create admin account with FIXED account number "1" and $400 billion balance
     const adminAccountNumber = "1";
-    const adminBSB = "000001";
     const adminRoutingNumber = "000000001";
-    const adminSwiftCode = "FUNDBKAU001";
+    const adminSwiftCode = "CCFNUS01";
     
     await db.insert(accounts).values({
       userId: adminUser.id,
       accountNumber: adminAccountNumber,
-      bsb: adminBSB,
       routingNumber: adminRoutingNumber,
       swiftCode: adminSwiftCode,
-      region: "AU",
+      region: "US",
       balance: "400000000000.00", // $400 billion
       accountType: "business",
     }).onConflictDoUpdate({
@@ -69,7 +67,6 @@ async function seed() {
       set: {
         balance: "400000000000.00", // Always reset to $400 billion
         userId: adminUser.id,
-        bsb: adminBSB,
         routingNumber: adminRoutingNumber,
         swiftCode: adminSwiftCode,
       }
@@ -110,7 +107,7 @@ async function seed() {
     console.log("\n═══════════════════════════════════════════");
     console.log("👤 PERMANENT ADMIN LOGIN CREDENTIALS:");
     console.log("═══════════════════════════════════════════");
-    console.log(`   Username: Admin@fundamentalfinancial.com`);
+    console.log(`   Username: Admin@corvenzacapitalfinance.com`);
     console.log(`   Password: Admin2000!!`);
     console.log(`   Account Number: ${adminAccountNumber}`);
     console.log(`   Balance: $400,000,000,000.00`);

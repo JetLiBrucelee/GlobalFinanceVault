@@ -1,23 +1,15 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage, generateAccountNumber, generateBSB, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode, generateNZBranchCode, generateVerificationCode } from "./storage";
+import { storage, generateAccountNumber, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode, generateVerificationCode } from "./storage";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { detectCardBrand, generateCardNumberWithBrand } from "./utils/cardBrands";
 
-const REGIONS = ['AU', 'US', 'NZ', 'ZA'] as const;
+const REGIONS = ['US'] as const;
 
-// Currency codes for each region
+// Currency codes (USA only)
 const REGION_CURRENCIES: Record<string, { code: string; symbol: string; name: string }> = {
-  'AU': { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
   'US': { code: 'USD', symbol: '$', name: 'US Dollar' },
-  'NZ': { code: 'NZD', symbol: 'NZ$', name: 'New Zealand Dollar' },
-  'ZA': { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
 };
-
-// Generate South African branch code
-function generateZABranchCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -93,26 +85,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateUserStatus(userId, { isAdmin: true });
       }
 
-      // Create account and cards for the user
-      const region = REGIONS[Math.floor(Math.random() * REGIONS.length)];
+      // Create account and cards for the user (USA only)
+      const region = 'US' as const;
       const accountNumber = generateAccountNumber();
-      
-      let bsb = null, routingNumber = null, swiftCode = null;
-      if (region === 'AU') {
-        bsb = generateBSB();
-      } else if (region === 'US') {
-        routingNumber = generateRoutingNumber();
-      } else if (region === 'NZ') {
-        swiftCode = generateSwiftCode();
-      } else if (region === 'ZA') {
-        swiftCode = generateSwiftCode();
-      }
+      const routingNumber = generateRoutingNumber();
+      const swiftCode = generateSwiftCode();
 
       // Create account
       const account = await storage.createAccount({
         userId,
         accountNumber,
-        bsb,
         routingNumber,
         swiftCode,
         region,
@@ -170,30 +152,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(REGION_CURRENCIES);
   });
 
-  // Get exchange rate for USD to other currencies (for ZA users showing dual currency)
+  // Exchange rate endpoint retained for compatibility; USA-only deployment always returns USD parity.
   app.get('/api/exchange-rate/:from/:to', async (req, res) => {
     try {
       const { from, to } = req.params;
-      
-      // Default fallback exchange rates (updated periodically)
-      // In production, you'd want to use a real-time API
-      const fallbackRates: Record<string, Record<string, number>> = {
-        'USD': { 'ZAR': 18.5, 'AUD': 1.55, 'NZD': 1.68, 'USD': 1 },
-        'AUD': { 'ZAR': 11.94, 'USD': 0.65, 'NZD': 1.08, 'AUD': 1 },
-        'ZAR': { 'USD': 0.054, 'AUD': 0.084, 'NZD': 0.091, 'ZAR': 1 },
-        'NZD': { 'USD': 0.60, 'AUD': 0.93, 'ZAR': 11.01, 'NZD': 1 },
-      };
 
-      const rate = fallbackRates[from.toUpperCase()]?.[to.toUpperCase()];
-      
-      if (!rate) {
+      if (from.toUpperCase() !== 'USD' || to.toUpperCase() !== 'USD') {
         return res.status(400).json({ message: "Unsupported currency pair" });
       }
 
-      res.json({ 
-        from: from.toUpperCase(), 
-        to: to.toUpperCase(), 
-        rate,
+      res.json({
+        from: 'USD',
+        to: 'USD',
+        rate: 1,
         timestamp: new Date().toISOString()
       });
     } catch (error) {
@@ -299,76 +270,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isLocked: false,
       });
 
-      // Create accounts for all three regions
+      // Create a single US account for the user
       const accounts = [];
       const cardholderName = `${firstName} ${lastName}`.toUpperCase();
-      
-      for (const region of REGIONS) {
-        // Generate account details based on region
-        const accountNumber = generateAccountNumber();
-        let bsb = null, routingNumber = null, swiftCode = null, branchCode = null;
-        
-        if (region === 'AU') {
-          bsb = generateBSB();
-        } else if (region === 'US') {
-          routingNumber = generateRoutingNumber();
-        } else if (region === 'NZ') {
-          branchCode = generateNZBranchCode();
-        } else if (region === 'ZA') {
-          branchCode = generateZABranchCode();
-        }
-        swiftCode = generateSwiftCode();
 
-        // Create account with initial deposit (split equally among accounts if provided)
-        const depositAmount = initialDeposit && parseFloat(initialDeposit) > 0 ? 
-          (parseFloat(initialDeposit) / 3).toFixed(2) : "0.00";
-        
-        const account = await storage.createAccount({
-          userId: user.id,
-          accountNumber,
-          bsb,
-          routingNumber,
-          swiftCode,
-          branchCode,
-          region,
-          balance: depositAmount,
-          accountType,
-        });
+      const accountNumber = generateAccountNumber();
+      const routingNumber = generateRoutingNumber();
+      const swiftCode = generateSwiftCode();
 
-        // Create debit card for this account (Mastercard)
-        const debitExpiry = generateCardExpiry();
-        const debitCardNumber = generateCardNumberWithBrand('mastercard');
-        await storage.createCard({
-          accountId: account.id,
-          cardNumber: debitCardNumber,
-          cardType: "debit",
-          cardBrand: detectCardBrand(debitCardNumber),
-          cvv: generateCVV(),
-          expiryMonth: debitExpiry.month,
-          expiryYear: debitExpiry.year,
-          cardholderName,
-          isActive: true,
-        });
+      const depositAmount = initialDeposit && parseFloat(initialDeposit) > 0 ?
+        parseFloat(initialDeposit).toFixed(2) : "0.00";
 
-        // Create credit card for this account (Visa)
-        const creditExpiry = generateCardExpiry();
-        const creditCardNumber = generateCardNumberWithBrand('visa');
-        await storage.createCard({
-          accountId: account.id,
-          cardNumber: creditCardNumber,
-          cardType: "credit",
-          cardBrand: detectCardBrand(creditCardNumber),
-          cvv: generateCVV(),
-          expiryMonth: creditExpiry.month,
-          expiryYear: creditExpiry.year,
-          cardholderName,
-          isActive: true,
-        });
+      const account = await storage.createAccount({
+        userId: user.id,
+        accountNumber,
+        routingNumber,
+        swiftCode,
+        region: 'US',
+        balance: depositAmount,
+        accountType,
+      });
 
-        accounts.push(account);
-      }
+      // Create debit card for this account (Mastercard)
+      const debitExpiry = generateCardExpiry();
+      const debitCardNumber = generateCardNumberWithBrand('mastercard');
+      await storage.createCard({
+        accountId: account.id,
+        cardNumber: debitCardNumber,
+        cardType: "debit",
+        cardBrand: detectCardBrand(debitCardNumber),
+        cvv: generateCVV(),
+        expiryMonth: debitExpiry.month,
+        expiryYear: debitExpiry.year,
+        cardholderName,
+        isActive: true,
+      });
 
-      res.json({ accounts, username, message: "Accounts created successfully" });
+      // Create credit card for this account (Visa)
+      const creditExpiry = generateCardExpiry();
+      const creditCardNumber = generateCardNumberWithBrand('visa');
+      await storage.createCard({
+        accountId: account.id,
+        cardNumber: creditCardNumber,
+        cardType: "credit",
+        cardBrand: detectCardBrand(creditCardNumber),
+        cvv: generateCVV(),
+        expiryMonth: creditExpiry.month,
+        expiryYear: creditExpiry.year,
+        cardholderName,
+        isActive: true,
+      });
+
+      accounts.push(account);
+
+      res.json({ accounts, username, message: "Account created successfully" });
     } catch (error: any) {
       console.error("Error opening account:", error);
       res.status(500).json({ message: error.message || "Failed to open account" });

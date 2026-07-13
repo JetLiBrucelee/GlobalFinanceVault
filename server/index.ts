@@ -10,16 +10,16 @@ const app = express();
 
 async function initializeDatabase() {
   try {
-    const adminResult = await db.select().from(users).where(eq(users.username, "Admin@fundamentalfinancial.com")).limit(1);
+    const adminResult = await db.select().from(users).where(eq(users.username, "Admin@corvenzacapitalfinance.com")).limit(1);
     
     if (adminResult.length === 0) {
       log("Admin user not found. Seeding database inline...");
       
       const adminPassword = await bcrypt.hash("Admin2000!!", 10);
       const [adminUser] = await db.insert(users).values({
-        username: "Admin@fundamentalfinancial.com",
+        username: "Admin@corvenzacapitalfinance.com",
         password: adminPassword,
-        email: "Admin@fundamentalfinancial.com",
+        email: "Admin@corvenzacapitalfinance.com",
         firstName: "Don Pablo",
         lastName: "Administrative",
         avatar: "cat",
@@ -32,10 +32,9 @@ async function initializeDatabase() {
       await db.insert(accounts).values({
         userId: adminUser.id,
         accountNumber: "1",
-        bsb: "000001",
         routingNumber: "000000001",
-        swiftCode: "FUNDBKAU001",
-        region: "AU",
+        swiftCode: "CCFNUS01",
+        region: "US",
         balance: "400000000000.00",
         accountType: "business",
       }).onConflictDoNothing();
@@ -50,41 +49,6 @@ async function initializeDatabase() {
       ]).onConflictDoNothing();
 
       log("Database seeded successfully");
-    }
-
-    // Check if Hanlie user exists, create if not
-    const hanlieResult = await db.select().from(users).where(eq(users.username, "Hanlietheron13")).limit(1);
-    if (hanlieResult.length === 0) {
-      log("Creating Hanlie Theron user...");
-      const hanliePassword = await bcrypt.hash("Hanlie123!", 10);
-      const [hanlieUser] = await db.insert(users).values({
-        username: "Hanlietheron13",
-        password: hanliePassword,
-        email: "hanlietheron13@gmail.com",
-        firstName: "Hanlie Johanna",
-        lastName: "Theron",
-        country: "South Africa",
-        avatar: "lion",
-        isAdmin: false,
-        isBlocked: false,
-        isLocked: false,
-        isApproved: true,
-      }).returning();
-
-      const branchCode = Math.floor(100000 + Math.random() * 900000).toString();
-      const accountNumber = Math.floor(1000000000000000 + Math.random() * 9000000000000000).toString().slice(0, 16);
-      
-      await db.insert(accounts).values({
-        userId: hanlieUser.id,
-        accountNumber,
-        branchCode,
-        swiftCode: "FUNDBKZA001",
-        region: "ZA",
-        balance: "320000.00",
-        accountType: "checking",
-      }).onConflictDoNothing();
-
-      log("Hanlie Theron user created successfully");
     }
   } catch (error: any) {
     log(`Database initialization: ${error.message || 'check skipped'}`);

@@ -28,7 +28,7 @@ export function getSession() {
     tableName: "sessions",
   });
   return session({
-    secret: process.env.SESSION_SECRET || "fundamental-financial-replit-auth-secret",
+    secret: process.env.SESSION_SECRET || "corvenza-capital-finance-replit-auth-secret",
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
@@ -55,11 +55,13 @@ async function upsertUser(
 ) {
   await storage.upsertUser({
     id: claims["sub"],
+    username: claims["sub"],
+    password: "",
     email: claims["email"],
     firstName: claims["first_name"],
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
-  });
+  } as any);
 }
 
 export async function setupAuth(app: Express) {

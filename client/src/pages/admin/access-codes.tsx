@@ -177,14 +177,14 @@ export default function AdminAccessCodes() {
                           <Badge variant={status.variant}>{status.label}</Badge>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground" data-testid={`cell-created-${index}`}>
-                          {new Date(accessCode.createdAt!).toLocaleDateString('en-AU')}
+                          {new Date(accessCode.createdAt!).toLocaleDateString('en-US')}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground" data-testid={`cell-expires-${index}`}>
-                          {new Date(accessCode.expiresAt).toLocaleDateString('en-AU')}
+                          {new Date(accessCode.expiresAt).toLocaleDateString('en-US')}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground" data-testid={`cell-used-${index}`}>
                           {accessCode.usedAt 
-                            ? new Date(accessCode.usedAt).toLocaleDateString('en-AU')
+                            ? new Date(accessCode.usedAt).toLocaleDateString('en-US')
                             : '-'
                           }
                         </TableCell>

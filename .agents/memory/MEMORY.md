@@ -1,0 +1,1 @@
+- [Large-file edit corruption](large-file-edit-safety.md) — the Edit tool can silently corrupt big/risky multi-line replacements; use a Node script with exact-match + occurrence-count assertions instead.

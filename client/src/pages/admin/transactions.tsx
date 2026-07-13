@@ -71,9 +71,9 @@ export default function AdminTransactions() {
   });
 
   const formatCurrency = (amount: string | number) => {
-    return new Intl.NumberFormat('en-AU', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'AUD',
+      currency: 'USD',
     }).format(Number(amount));
   };
 

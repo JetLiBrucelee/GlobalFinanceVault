@@ -212,9 +212,9 @@ export default function Transfers() {
   });
 
   const formatCurrency = (amount: string | number) => {
-    return new Intl.NumberFormat('en-AU', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'AUD',
+      currency: 'USD',
     }).format(Number(amount));
   };
 
@@ -356,45 +356,17 @@ export default function Transfers() {
                 {!isAdmin && transferMethod === 'external' && (
                   <>
                     <div className="grid grid-cols-2 gap-4">
-                      {primaryAccount?.region === 'AU' && (
-                        <div className="space-y-2">
-                          <Label htmlFor="bsb">BSB</Label>
-                          <Input
-                            id="bsb"
-                            type="text"
-                            placeholder="XXX-XXX"
-                            value={transferForm.bsb}
-                            onChange={(e) => setTransferForm({ ...transferForm, bsb: e.target.value })}
-                            required
-                          />
-                        </div>
-                      )}
-                      {primaryAccount?.region === 'US' && (
-                        <div className="space-y-2">
-                          <Label htmlFor="routingNumber">Routing Number</Label>
-                          <Input
-                            id="routingNumber"
-                            type="text"
-                            placeholder="XXXXXXXXX"
-                            value={transferForm.routingNumber}
-                            onChange={(e) => setTransferForm({ ...transferForm, routingNumber: e.target.value })}
-                            required
-                          />
-                        </div>
-                      )}
-                      {primaryAccount?.region === 'NZ' && (
-                        <div className="space-y-2">
-                          <Label htmlFor="swiftCode">Bank SWIFT Code</Label>
-                          <Input
-                            id="swiftCode"
-                            type="text"
-                            placeholder="AAAANZZZ"
-                            value={transferForm.swiftCode}
-                            onChange={(e) => setTransferForm({ ...transferForm, swiftCode: e.target.value.toUpperCase() })}
-                            required
-                          />
-                        </div>
-                      )}
+                      <div className="space-y-2">
+                        <Label htmlFor="routingNumber">Routing Number</Label>
+                        <Input
+                          id="routingNumber"
+                          type="text"
+                          placeholder="XXXXXXXXX"
+                          value={transferForm.routingNumber}
+                          onChange={(e) => setTransferForm({ ...transferForm, routingNumber: e.target.value })}
+                          required
+                        />
+                      </div>
                       <div className="space-y-2">
                         <Label htmlFor="beneficiaryName">Beneficiary Name</Label>
                         <Input
@@ -762,7 +734,7 @@ export default function Transfers() {
             ))}
 
             {inProgressTransactions.map((transaction: any, index: number) => (
-              <Card key={transaction.id} className="border-blue-500/30" data-testid={`card-inprogress-${index}`}>
+              <Card key={transaction.id} className="border-primary/30" data-testid={`card-inprogress-${index}`}>
                 <CardContent className="pt-6 space-y-3">
                   <div className="flex items-start justify-between">
                     <div>

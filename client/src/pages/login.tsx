@@ -36,7 +36,7 @@ export default function Login() {
       await apiRequest("POST", "/api/login", { username, password });
       toast({
         title: "Login Successful",
-        description: "Welcome to Fundamental Financial Credit",
+        description: "Welcome to Corvenza Capital Finance",
       });
       window.location.href = "/";
     } catch (error: any) {
@@ -69,8 +69,8 @@ export default function Login() {
         
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-12">
-            <img src={bankLogo} alt="Fundamental Financial Credit" className="h-12 w-12 object-contain bg-white rounded-full p-1" />
-            <span className="text-2xl font-bold">Fundamental Financial Credit</span>
+            <img src={bankLogo} alt="Corvenza Capital Finance" className="h-12 w-12 object-contain bg-white rounded-full p-1" />
+            <span className="text-2xl font-bold">Corvenza Capital Finance</span>
           </div>
           
           <div className="space-y-6">
@@ -103,11 +103,11 @@ export default function Login() {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="w-1/2 flex items-center justify-center p-8 bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50 dark:from-slate-950 dark:via-blue-950/10 dark:to-slate-950">
+      <div className="w-1/2 flex items-center justify-center p-8 bg-gradient-to-br from-slate-50 via-red-50/20 to-slate-50 dark:from-slate-950 dark:via-red-950/10 dark:to-slate-950">
         <Card className="w-full max-w-md shadow-2xl border-2" data-testid="card-login">
           <CardHeader className="space-y-2 text-center pb-8">
             <div className="mx-auto mb-4">
-              <img src={bankLogo} alt="Fundamental Financial Credit" className="h-16 w-16 object-contain rounded-full" />
+              <img src={bankLogo} alt="Corvenza Capital Finance" className="h-16 w-16 object-contain rounded-full" />
             </div>
             <CardTitle className="text-2xl font-bold" data-testid="text-title">
               Sign In to Your Account

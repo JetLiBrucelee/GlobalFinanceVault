@@ -42,7 +42,7 @@ export default function TravelBanking() {
             Banking for Your Global Adventures
           </h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Experience seamless international banking with Fundamental Financial Credit. 
+            Experience seamless travel banking with Corvenza Capital Finance.
             Travel the world with confidence knowing your money is accessible anywhere.
           </p>
         </div>
@@ -98,7 +98,7 @@ export default function TravelBanking() {
             <p className="text-muted-foreground mb-6">
               Hold and transact in multiple currencies with competitive exchange rates. Perfect for frequent travelers and international business.
             </p>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-1 max-w-sm">
               <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/30">
                 <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
                   $
@@ -106,24 +106,6 @@ export default function TravelBanking() {
                 <div>
                   <p className="font-semibold">US Dollar (USD)</p>
                   <p className="text-xs text-muted-foreground">United States</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/30">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                  $
-                </div>
-                <div>
-                  <p className="font-semibold">Australian Dollar (AUD)</p>
-                  <p className="text-xs text-muted-foreground">Australia</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/30">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                  $
-                </div>
-                <div>
-                  <p className="font-semibold">New Zealand Dollar (NZD)</p>
-                  <p className="text-xs text-muted-foreground">New Zealand</p>
                 </div>
               </div>
             </div>

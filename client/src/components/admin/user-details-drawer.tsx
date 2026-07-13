@@ -281,9 +281,7 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
                     <CardHeader className="flex flex-row items-center justify-between gap-2">
                       <div>
                         <CardTitle className="flex items-center gap-2">
-                          {account.region === "AU" && "🇦🇺 Australia"}
-                          {account.region === "US" && "🇺🇸 United States"}
-                          {account.region === "NZ" && "🇳🇿 New Zealand"}
+                          🇺🇸 United States
                         </CardTitle>
                         <CardDescription>{account.accountType} Account</CardDescription>
                       </div>
@@ -311,39 +309,15 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
                                 data-testid={`input-account-number-${account.region}`}
                               />
                             </div>
-                            {account.region === "AU" && (
-                              <div className="space-y-2">
-                                <Label>BSB</Label>
-                                <Input
-                                  value={accountForm.bsb || ""}
-                                  onChange={(e) => setAccountForm({ ...accountForm, bsb: e.target.value })}
-                                  maxLength={6}
-                                  data-testid="input-bsb"
-                                />
-                              </div>
-                            )}
-                            {account.region === "US" && (
-                              <div className="space-y-2">
-                                <Label>Routing Number</Label>
-                                <Input
-                                  value={accountForm.routingNumber || ""}
-                                  onChange={(e) => setAccountForm({ ...accountForm, routingNumber: e.target.value })}
-                                  maxLength={9}
-                                  data-testid="input-routing-number"
-                                />
-                              </div>
-                            )}
-                            {account.region === "NZ" && (
-                              <div className="space-y-2">
-                                <Label>Branch Code</Label>
-                                <Input
-                                  value={accountForm.branchCode || ""}
-                                  onChange={(e) => setAccountForm({ ...accountForm, branchCode: e.target.value })}
-                                  maxLength={6}
-                                  data-testid="input-branch-code"
-                                />
-                              </div>
-                            )}
+                            <div className="space-y-2">
+                              <Label>Routing Number</Label>
+                              <Input
+                                value={accountForm.routingNumber || ""}
+                                onChange={(e) => setAccountForm({ ...accountForm, routingNumber: e.target.value })}
+                                maxLength={9}
+                                data-testid="input-routing-number"
+                              />
+                            </div>
                             <div className="space-y-2">
                               <Label>SWIFT Code</Label>
                               <Input
@@ -384,9 +358,7 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
                       ) : (
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div><span className="font-medium">Account Number:</span> {account.accountNumber}</div>
-                          {account.bsb && <div><span className="font-medium">BSB:</span> {account.bsb}</div>}
                           {account.routingNumber && <div><span className="font-medium">Routing:</span> {account.routingNumber}</div>}
-                          {account.branchCode && <div><span className="font-medium">Branch:</span> {account.branchCode}</div>}
                           <div><span className="font-medium">SWIFT:</span> {account.swiftCode}</div>
                           <div><span className="font-medium">Type:</span> {account.accountType}</div>
                           <div><span className="font-medium">Balance:</span> ${parseFloat(account.balance).toLocaleString()}</div>

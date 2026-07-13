@@ -56,7 +56,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
   const avatarImage = user?.avatar ? avatarImages[user.avatar] || avatarImages.cat : avatarImages.cat;
 
   const userMenuItems = [
-    { title: "Dashboard", url: "/", icon: Home, testId: "link-dashboard", iconColor: "text-blue-500" },
+    { title: "Dashboard", url: "/", icon: Home, testId: "link-dashboard", iconColor: "text-red-500" },
     { title: "My Cards", url: "/cards", icon: CreditCard, testId: "link-cards", iconColor: "text-purple-500" },
     { title: "Transfers", url: "/transfers", icon: ArrowLeftRight, testId: "link-transfers", iconColor: "text-green-500" },
     { title: "Statements", url: "/statements", icon: FileText, testId: "link-statements", iconColor: "text-orange-500" },
@@ -64,7 +64,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
   ];
 
   const adminMenuItems = [
-    { title: "Admin Dashboard", url: "/admin", icon: ShieldCheck, testId: "link-admin-dashboard", iconColor: "text-blue-500" },
+    { title: "Admin Dashboard", url: "/admin", icon: ShieldCheck, testId: "link-admin-dashboard", iconColor: "text-red-500" },
     { title: "Manage Users", url: "/admin/users", icon: Users, testId: "link-admin-users", iconColor: "text-purple-500" },
     { title: "Pending Transactions", url: "/admin/pending-transactions", icon: Shield, testId: "link-admin-pending", iconColor: "text-yellow-500" },
     { title: "Transactions", url: "/admin/transactions", icon: ArrowLeftRight, testId: "link-admin-transactions", iconColor: "text-green-500" },
@@ -78,8 +78,8 @@ export function AppSidebar({ user }: AppSidebarProps) {
         <div className="flex items-center gap-2">
           <img src={bankLogo} alt="Logo" className="h-8 w-8 rounded" data-testid="logo-icon" />
           <div className="flex flex-col">
-            <span className="text-lg font-bold leading-tight" data-testid="text-brand-name">Fundamental</span>
-            <span className="text-sm font-semibold text-muted-foreground leading-tight">Financial Credit</span>
+            <span className="text-lg font-bold leading-tight" data-testid="text-brand-name">Corvenza</span>
+            <span className="text-sm font-semibold text-muted-foreground leading-tight">Capital Finance</span>
           </div>
         </div>
       </SidebarHeader>

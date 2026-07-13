@@ -24,9 +24,9 @@ export default function Statements() {
   const primaryAccount = accounts?.[0];
 
   const formatCurrency = (amount: string | number) => {
-    return new Intl.NumberFormat('en-AU', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'AUD',
+      currency: 'USD',
     }).format(Number(amount));
   };
 
@@ -138,7 +138,7 @@ export default function Statements() {
                   {filteredTransactions.map((transaction, index) => (
                     <TableRow key={transaction.id} data-testid={`row-transaction-${index}`}>
                       <TableCell className="font-mono text-sm" data-testid={`cell-date-${index}`}>
-                        {new Date(transaction.createdAt!).toLocaleDateString('en-AU')}
+                        {new Date(transaction.createdAt!).toLocaleDateString('en-US')}
                       </TableCell>
                       <TableCell data-testid={`cell-description-${index}`}>
                         <div className="flex items-center gap-2">

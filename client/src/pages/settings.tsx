@@ -70,7 +70,7 @@ export default function Settings() {
   const [city, setCity] = useState(user?.city || '');
   const [state, setState] = useState(user?.state || '');
   const [postalCode, setPostalCode] = useState(user?.postalCode || '');
-  const [country, setCountry] = useState(user?.country || 'Australia');
+  const [country, setCountry] = useState(user?.country || 'United States');
 
   const updateAvatarMutation = useMutation({
     mutationFn: async (avatar: string) => {
@@ -260,7 +260,7 @@ export default function Settings() {
             <div>
               <p className="text-sm font-medium text-muted-foreground">Member Since</p>
               <p className="text-base" data-testid="text-member-since">
-                {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-AU') : '-'}
+                {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US') : '-'}
               </p>
             </div>
           </div>

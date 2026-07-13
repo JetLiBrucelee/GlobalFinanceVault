@@ -478,13 +478,6 @@ export function generateAccountNumber(): string {
   return accountNumber;
 }
 
-export function generateBSB(): string {
-  // Generate a valid Australian BSB (bank code 062-999, branch 000-999)
-  const bankCode = (62 + Math.floor(Math.random() * 938)).toString().padStart(3, '0');
-  const branchCode = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-  return bankCode + branchCode;
-}
-
 export function generateRoutingNumber(): string {
   // Generate a random 9-digit routing number for USA
   let routing = '';
@@ -495,7 +488,7 @@ export function generateRoutingNumber(): string {
 }
 
 export function generateSwiftCode(): string {
-  // Generate a random 11-character SWIFT code for New Zealand
+  // Generate a random 11-character SWIFT code for a US bank
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const digits = '0123456789';
   let swift = '';
@@ -505,8 +498,8 @@ export function generateSwiftCode(): string {
     swift += letters[Math.floor(Math.random() * letters.length)];
   }
   
-  // Next 2 characters: Country code (NZ)
-  swift += 'NZ';
+  // Next 2 characters: Country code (US)
+  swift += 'US';
   
   // Next 2 characters: Location code (letters/digits)
   for (let i = 0; i < 2; i++) {
@@ -554,7 +547,4 @@ export function generateAccessCode(): string {
   return code;
 }
 
-export function generateNZBranchCode(): string {
-  // Generate a random 6-digit New Zealand branch code
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
+

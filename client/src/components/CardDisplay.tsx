@@ -141,17 +141,15 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
         <div className="flex items-start justify-between">
           <div>
             <div className="flex flex-col gap-0.5">
-              <h2 className="text-sm font-bold tracking-tight text-white">Fundamental</h2>
-              <h2 className="text-sm font-bold tracking-tight -mt-0.5 text-white">Financial Credit</h2>
+              <h2 className="text-sm font-bold tracking-tight text-white">Corvenza</h2>
+              <h2 className="text-sm font-bold tracking-tight -mt-0.5 text-white">Capital Finance</h2>
             </div>
             <p className="text-[8px] text-white/70 uppercase tracking-wider mt-1">
               {card.cardType === 'credit' ? 'Credit Card' : 'Debit Card'}
             </p>
             {account && (
               <p className="text-[8px] text-white/60 mt-0.5">
-                {account.region === 'AU' && 'Australia'}
-                {account.region === 'US' && 'United States'}
-                {account.region === 'NZ' && 'New Zealand'}
+                United States
               </p>
             )}
           </div>
@@ -238,9 +236,7 @@ export default function CardDisplay({ card, account, index }: CardDisplayProps) 
                 {account.accountNumber.slice(0, 4)}...{account.accountNumber.slice(-4)}
               </p>
               <p className="text-[10px] text-white/70">
-                {account.region === 'AU' && account.bsb && `BSB: ${account.bsb.slice(0, 3)}-${account.bsb.slice(3)}`}
-                {account.region === 'US' && account.routingNumber && `Routing: ${account.routingNumber}`}
-                {account.region === 'NZ' && account.swiftCode && `SWIFT: ${account.swiftCode}`}
+                {account.routingNumber && `Routing: ${account.routingNumber}`}
               </p>
             </div>
           </div>

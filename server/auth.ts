@@ -17,7 +17,7 @@ export function getSession() {
     tableName: "sessions",
   });
   return session({
-    secret: process.env.SESSION_SECRET || "fundamental-financial-secret-key",
+    secret: process.env.SESSION_SECRET || "corvenza-capital-finance-secret-key",
     store: sessionStore,
     resave: false,
     saveUninitialized: false,

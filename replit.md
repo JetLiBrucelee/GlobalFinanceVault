@@ -1,16 +1,19 @@
-# Fundamental Financial Credit - Banking Application
+# Corvenza Capital Finance - Banking Application
 
 ## Overview
-Fundamental Financial Credit is a modern, multi-region online banking platform for Australia, USA, and New Zealand. It offers comprehensive banking services including account management, card services, transfers (domestic and international), bill payments, PayID integration, and administrative controls. The platform prioritizes security and a professional user experience, mimicking established financial institutions. Key capabilities include:
+Corvenza Capital Finance is a modern, USA-only online banking platform. It offers comprehensive banking services including account management, card services, transfers, bill payments, PayID integration, and administrative controls. The platform prioritizes security and a professional user experience, mimicking established financial institutions. Key capabilities include:
 - Secure access code systems
 - Advanced card brand detection and design
 - Versatile transfer methods
 - Personalized user dashboards
-- Professional banking features (security alerts, regional contact information, regulatory compliance badges, mobile app promotion)
-- **Smart address autocomplete** with automatic city/state lookup via postal code for AU, US, and NZ regions
+- Professional banking features (security alerts, contact information, regulatory compliance badges, mobile app promotion)
+- **Smart address autocomplete** with automatic city/state lookup via ZIP code (USA only)
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
+- Brand name: "Corvenza Capital Finance" (renamed from "Fundamental Financial Credit").
+- Primary theme color: red (was blue).
+- Platform scope: USA only. All Australia/New Zealand region logic, account fields, and references were removed.
 
 ## System Architecture
 
@@ -20,9 +23,9 @@ Preferred communication style: Simple, everyday language.
 - **State Management**: TanStack Query (React Query v5) for server state and caching.
 - **Routing**: Wouter for client-side routing.
 - **Smart Address Input**: Reusable `AddressInput` component with automatic city/state lookup via Zippopotam.us free API (no API key required). Features:
-  - Real-time postal code validation
+  - Real-time ZIP code validation
   - Auto-fills city and state within 500ms
-  - Supports AU, US, and NZ postal codes
+  - USA only
   - Debounced API calls for efficiency
   - Error handling for invalid codes
   - Integrated in: Admin user management, user registration, and profile settings
@@ -40,7 +43,7 @@ Preferred communication style: Simple, everyday language.
 - **Schema**:
     - `sessions`: Express session storage.
     - `users`: User profiles with authentication details and roles.
-    - `accounts`: Bank accounts with region-specific identifiers, balances, and currency.
+    - `accounts`: Bank accounts with US routing number, SWIFT code, balances, and currency.
     - `cards`: Credit/debit cards linked to accounts, including brand, number, CVV, expiry, and status.
     - `transactions`: Financial transactions with sender/receiver accounts, amounts, types (transfer, bill, PayID), `transferMethod` (internal, external, wire), and `transferDetails` (JSONB for method-specific data).
     - `accessCodes`: Single-use, 12-digit numeric activation codes with expiration.

@@ -85,7 +85,7 @@ export default function Landing() {
       {/* Overlay pattern */}
       <div className="fixed inset-0 z-0 opacity-[0.03]" 
         style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(59 130 246) 1px, transparent 0)`,
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(220 38 38) 1px, transparent 0)`,
           backgroundSize: '40px 40px'
         }}
       />
@@ -97,8 +97,8 @@ export default function Landing() {
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between gap-8">
             <div className="flex items-center gap-3">
-              <img src={bankLogo} alt="Fundamental Financial Credit" className="h-10 w-10 object-contain" data-testid="logo-icon" />
-              <span className="text-xl font-bold hidden lg:block" data-testid="text-brand-name">Fundamental Financial Credit</span>
+              <img src={bankLogo} alt="Corvenza Capital Finance" className="h-10 w-10 object-contain" data-testid="logo-icon" />
+              <span className="text-xl font-bold hidden lg:block" data-testid="text-brand-name">Corvenza Capital Finance</span>
             </div>
             
             {/* Navigation Menu */}
@@ -143,10 +143,10 @@ export default function Landing() {
 
       {/* Hero Section with Premium Background */}
       <section className="relative py-12 md:py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-purple-500/5 to-blue-600/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 via-rose-500/5 to-red-600/5" />
         <div className="absolute inset-0" 
           style={{
-            backgroundImage: `linear-gradient(to right, rgb(59 130 246 / 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgb(59 130 246 / 0.03) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(to right, rgb(220 38 38 / 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgb(220 38 38 / 0.03) 1px, transparent 1px)`,
             backgroundSize: '80px 80px'
           }}
         />
@@ -161,7 +161,7 @@ export default function Landing() {
               <span className="block text-primary mt-2">Secure, & Global</span>
             </h1>
             <p className="mt-4 md:mt-6 text-sm md:text-base lg:text-lg text-muted-foreground px-4" data-testid="text-hero-description">
-              Experience modern banking across Australia, USA, and New Zealand. 
+              Experience modern, secure banking across the United States.
               Manage your money with confidence, security, and ease.
             </p>
             <div className="mt-6 md:mt-8 flex flex-col sm:flex-row justify-center gap-3 md:gap-4 px-4">
@@ -226,11 +226,11 @@ export default function Landing() {
       </section>
 
       {/* Promotional Offers */}
-      <section className="py-16 md:py-20 bg-gradient-to-b from-background to-blue-50/30 dark:to-blue-950/10">
+      <section className="py-16 md:py-20 bg-gradient-to-b from-background to-red-50/30 dark:to-red-950/10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="grid gap-6 md:grid-cols-3">
             <Card className="overflow-hidden border-2 hover-elevate" data-testid="promo-checking">
-              <div className="h-2 bg-gradient-to-r from-blue-600 to-purple-600" />
+              <div className="h-2 bg-gradient-to-r from-red-600 to-rose-600" />
               <CardContent className="p-6">
                 <Badge variant="secondary" className="mb-3">Limited Time Offer</Badge>
                 <h3 className="text-2xl font-bold mb-2">Earn $300 Bonus</h3>
@@ -447,7 +447,7 @@ export default function Landing() {
       </section>
 
       {/* Customer Testimonials */}
-      <section className="py-12 md:py-16 bg-gradient-to-b from-blue-50/30 to-background dark:from-blue-950/10">
+      <section className="py-12 md:py-16 bg-gradient-to-b from-red-50/30 to-background dark:from-red-950/10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold mb-2">Trusted by Thousands of Customers</h2>
@@ -463,7 +463,7 @@ export default function Landing() {
                   ))}
                 </div>
                 <p className="text-sm mb-4">
-                  "Switching to Fundamental Financial Credit was the best decision. We're saving $5,329 this year on our home loan!"
+                  "Switching to Corvenza Capital Finance was the best decision. We're saving $5,329 this year on our home loan!"
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -624,7 +624,7 @@ export default function Landing() {
                         <div className="h-10 w-10 rounded-full bg-primary/10"></div>
                       </div>
                       <div className="space-y-3 flex-1">
-                        <div className="bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl p-4 text-white">
+                        <div className="bg-gradient-to-r from-red-500 to-red-700 rounded-xl p-4 text-white">
                           <p className="text-xs opacity-80">Checking Account</p>
                           <p className="text-lg font-bold">$12,430</p>
                         </div>
@@ -646,7 +646,7 @@ export default function Landing() {
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="mx-auto mb-8 md:mb-12 max-w-2xl text-center">
-            <h2 className="text-2xl md:text-3xl font-bold" data-testid="text-features-title">Why Choose Fundamental Financial Credit?</h2>
+            <h2 className="text-2xl md:text-3xl font-bold" data-testid="text-features-title">Why Choose Corvenza Capital Finance?</h2>
             <p className="mt-3 md:mt-4 text-sm md:text-base text-muted-foreground" data-testid="text-features-description">
               Everything you need for modern banking in one secure platform
             </p>
@@ -660,7 +660,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">Global Banking</h3>
                 <p className="mt-2 text-xs md:text-sm text-muted-foreground">
-                  Operate seamlessly across Australia, USA, and New Zealand with local account details
+                  Manage your checking, savings, and business accounts with US routing and SWIFT details
                 </p>
               </CardContent>
             </Card>
@@ -729,7 +729,7 @@ export default function Landing() {
       </section>
 
       {/* Tools & Calculators Section */}
-      <section className="py-12 md:py-16 bg-gradient-to-b from-background to-blue-50/20 dark:to-blue-950/10">
+      <section className="py-12 md:py-16 bg-gradient-to-b from-background to-red-50/20 dark:to-red-950/10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="mx-auto mb-8 md:mb-12 max-w-2xl text-center">
             <h2 className="text-2xl md:text-3xl font-bold">Financial Tools & Calculators</h2>

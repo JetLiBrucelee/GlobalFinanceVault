@@ -69,28 +69,8 @@ export function ProfessionalFooter() {
           </a>
         </div>
         
-        {/* Regional Contact Information */}
+        {/* Contact Information */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 pb-8 border-b">
-          <div>
-            <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              Australia
-            </h4>
-            <div className="space-y-2 text-xs text-muted-foreground">
-              <p className="flex items-center gap-2">
-                <Phone className="h-3 w-3" />
-                1800 FUNDCRED (1800 386 327)
-              </p>
-              <p className="flex items-center gap-2">
-                <Mail className="h-3 w-3" />
-                support@fundamentalfinancialcredit.com
-              </p>
-              <p className="mt-3 font-medium text-foreground">Routing Information:</p>
-              <p>BSB: 062-001</p>
-              <p>SWIFT: FUNDAUSX</p>
-            </div>
-          </div>
-
           <div>
             <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
               <MapPin className="h-4 w-4" />
@@ -99,35 +79,15 @@ export function ProfessionalFooter() {
             <div className="space-y-2 text-xs text-muted-foreground">
               <p className="flex items-center gap-2">
                 <Phone className="h-3 w-3" />
-                1-800-FUND-USA (1-800-386-3872)
+                1-800-CORVENZA (1-800-267-8369)
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="h-3 w-3" />
-                support@fundamentalfinancialcredit.com
+                support@corvenzacapitalfinance.com
               </p>
               <p className="mt-3 font-medium text-foreground">Routing Information:</p>
               <p>Routing Number: 021000021</p>
-              <p>SWIFT: FUNDUSNYX</p>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              New Zealand
-            </h4>
-            <div className="space-y-2 text-xs text-muted-foreground">
-              <p className="flex items-center gap-2">
-                <Phone className="h-3 w-3" />
-                0800 FUNDCRED (0800 386 327)
-              </p>
-              <p className="flex items-center gap-2">
-                <Mail className="h-3 w-3" />
-                support@fundamentalfinancialcredit.com
-              </p>
-              <p className="mt-3 font-medium text-foreground">Routing Information:</p>
-              <p>Bank Code: 03-0001</p>
-              <p>SWIFT: FUNDNZAX</p>
+              <p>SWIFT: CCFNUS01</p>
             </div>
           </div>
         </div>
@@ -158,10 +118,10 @@ export function ProfessionalFooter() {
             Equal Housing Lender. All loans subject to credit approval.
           </p>
           <p className="mb-3">
-            For Fundamental Financial Credit-issued products, conditions, fees and charges apply. These may change or we may introduce new ones in the future. Full details are available on request. Lending criteria apply to approved credit products. This information does not take your personal objectives, circumstances or needs into account. Consider its appropriateness to these factors before acting on it. Read the disclosure documents for your selected product or service, including the Terms and Conditions, before deciding. Target Market Determinations for the products and services described on this website are available only in Australia from Fundamental Financial Credit Corporation ABN 33 007 457 141 AFSL and Australian credit licence 233714.
+            For Corvenza Capital Finance-issued products, conditions, fees and charges apply. These may change or we may introduce new ones in the future. Full details are available on request. Lending criteria apply to approved credit products. This information does not take your personal objectives, circumstances or needs into account. Consider its appropriateness to these factors before acting on it. Read the disclosure documents for your selected product or service, including the Terms and Conditions, before deciding.
           </p>
           <p className="text-xs">
-            Fundamental Financial Credit operates under banking licenses in Australia (APRA), United States (FDIC), and New Zealand (RBNZ). 
+            Corvenza Capital Finance operates under United States banking regulations (FDIC).
             Investment products are not FDIC insured, are not deposits or obligations of the bank, and may lose value.
           </p>
         </div>
@@ -169,7 +129,7 @@ export function ProfessionalFooter() {
       
       <div className="relative overflow-hidden">
         <div 
-          className="h-32 w-full bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 relative"
+          className="h-32 w-full bg-gradient-to-r from-red-500 via-red-600 to-red-700 relative"
           style={{
             backgroundImage: `repeating-linear-gradient(
               45deg,
@@ -184,11 +144,11 @@ export function ProfessionalFooter() {
             )`
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-blue-500/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-red-400/20 via-rose-400/20 to-red-500/20" />
           <div className="container mx-auto px-4 md:px-6 lg:px-8 h-full flex items-center justify-center">
             <div className="bg-white/95 dark:bg-background/95 backdrop-blur-sm px-8 py-4 rounded-lg shadow-lg">
               <p className="text-xs text-center text-foreground/80 max-w-4xl">
-                Fundamental Financial Credit acknowledges the Traditional Owners as the custodians of this land, recognising their connection to land, waters and community. We pay our respects to all peoples and their Elders past and present.
+                Corvenza Capital Finance is proud to serve customers across the United States with secure, reliable banking built on trust and integrity.
               </p>
             </div>
           </div>
@@ -198,7 +158,7 @@ export function ProfessionalFooter() {
       <div className="bg-muted/30 py-3">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <p className="text-xs text-center text-muted-foreground">
-            © 2024 Fundamental Financial Credit. All rights reserved. | Serving customers in Australia, USA, and New Zealand
+            © 2024 Corvenza Capital Finance. All rights reserved. | Serving customers across the United States
           </p>
         </div>
       </div>

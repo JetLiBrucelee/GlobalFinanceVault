@@ -52,7 +52,7 @@ export default function OpenAccount() {
       username: "",
       password: "",
       confirmPassword: "",
-      country: "Australia",
+      country: "United States",
       state: "",
       city: "",
       postalCode: "",
@@ -130,9 +130,9 @@ export default function OpenAccount() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
               <CheckCircle2 className="h-10 w-10 text-green-600" />
             </div>
-            <CardTitle className="text-3xl">Accounts Created Successfully!</CardTitle>
+            <CardTitle className="text-3xl">Account Created Successfully!</CardTitle>
             <CardDescription>
-              Your accounts in all three regions have been set up. Please wait for admin approval.
+              Your account has been set up. Please wait for admin approval.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -149,41 +149,26 @@ export default function OpenAccount() {
               </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-1 max-w-md mx-auto w-full">
               {accounts.map((account: any, index: number) => {
-                const regionName = account.region === 'AU' ? 'Australia' : account.region === 'US' ? 'United States' : 'New Zealand';
                 return (
                   <Card key={index} className="overflow-hidden">
                     <div className="bg-primary/10 px-4 py-2">
-                      <h4 className="font-semibold text-center">{regionName}</h4>
+                      <h4 className="font-semibold text-center">United States</h4>
                     </div>
                     <CardContent className="p-4 space-y-3">
                       <div>
                         <p className="text-xs text-muted-foreground">Account Number</p>
                         <p className="text-sm font-mono font-bold">{account.accountNumber}</p>
                       </div>
-                      
-                      {account.bsb && (
-                        <div>
-                          <p className="text-xs text-muted-foreground">BSB</p>
-                          <p className="text-sm font-mono font-bold">{account.bsb}</p>
-                        </div>
-                      )}
-                      
+
                       {account.routingNumber && (
                         <div>
                           <p className="text-xs text-muted-foreground">Routing Number</p>
                           <p className="text-sm font-mono font-bold">{account.routingNumber}</p>
                         </div>
                       )}
-                      
-                      {account.branchCode && (
-                        <div>
-                          <p className="text-xs text-muted-foreground">Branch Code</p>
-                          <p className="text-sm font-mono font-bold">{account.branchCode}</p>
-                        </div>
-                      )}
-                      
+
                       {account.swiftCode && (
                         <div>
                           <p className="text-xs text-muted-foreground">SWIFT Code</p>
@@ -201,9 +186,9 @@ export default function OpenAccount() {
               })}
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-900">
-              <p className="text-sm text-blue-900 dark:text-blue-100">
-                <strong>Important:</strong> Please save these account details securely. Once your accounts are approved by an administrator, you can sign in using your username and password.
+            <div className="bg-primary/5 dark:bg-primary/10 p-4 rounded-lg border border-primary/20">
+              <p className="text-sm text-foreground">
+                <strong>Important:</strong> Please save these account details securely. Once your account is approved by an administrator, you can sign in using your username and password.
               </p>
             </div>
 
@@ -247,7 +232,7 @@ export default function OpenAccount() {
           <CardHeader>
             <CardTitle className="text-3xl">Open Your Account</CardTitle>
             <CardDescription>
-              Join thousands of satisfied customers banking with Fundamental Financial Credit
+              Join thousands of satisfied customers banking with Corvenza Capital Finance
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -476,9 +461,9 @@ export default function OpenAccount() {
                     )}
                   />
 
-                  <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-900">
-                    <p className="text-sm text-blue-900 dark:text-blue-100">
-                      <strong>Note:</strong> Your application will create accounts in all three regions (USA, Australia, and New Zealand) automatically. Each account will have unique account numbers and region-specific identifiers.
+                  <div className="bg-primary/5 dark:bg-primary/10 p-4 rounded-lg border border-primary/20">
+                    <p className="text-sm text-foreground">
+                      <strong>Note:</strong> Your application will create a US bank account automatically, complete with a routing number and SWIFT code.
                     </p>
                   </div>
 
@@ -492,7 +477,7 @@ export default function OpenAccount() {
                       disabled={createAccountMutation.isPending}
                       data-testid="button-submit-account"
                     >
-                      {createAccountMutation.isPending ? "Creating Accounts..." : "Open Accounts"}
+                      {createAccountMutation.isPending ? "Creating Account..." : "Open Account"}
                     </Button>
                   </div>
                 </form>
