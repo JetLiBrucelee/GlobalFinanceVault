@@ -39,11 +39,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        phone: user.phone,
+        addressLine1: user.addressLine1,
+        addressLine2: user.addressLine2,
+        city: user.city,
+        state: user.state,
+        postalCode: user.postalCode,
+        country: user.country,
         avatar: user.avatar || 'cat',
         isAdmin: user.isAdmin,
         isBlocked: user.isBlocked,
         isLocked: user.isLocked,
         isApproved: user.isApproved,
+        createdAt: user.createdAt,
       });
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -194,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch('/api/user/profile', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
-      const { firstName, lastName } = req.body;
+      const { firstName, lastName, phone, addressLine1, addressLine2, city, state, postalCode, country } = req.body;
 
       if (!firstName || !lastName) {
         return res.status(400).json({ message: "First name and last name are required" });
@@ -204,7 +212,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "First name and last name cannot be empty" });
       }
 
-      await storage.updateUserProfile(userId, { firstName: firstName.trim(), lastName: lastName.trim() });
+      const toTrimmedOrNull = (value: unknown) =>
+        typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
+
+      await storage.updateUserDetails(userId, {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        phone: toTrimmedOrNull(phone),
+        addressLine1: toTrimmedOrNull(addressLine1),
+        addressLine2: toTrimmedOrNull(addressLine2),
+        city: toTrimmedOrNull(city),
+        state: toTrimmedOrNull(state),
+        postalCode: toTrimmedOrNull(postalCode),
+        country: toTrimmedOrNull(country),
+      });
       res.json({ message: "Profile updated successfully" });
     } catch (error) {
       console.error("Error updating profile:", error);

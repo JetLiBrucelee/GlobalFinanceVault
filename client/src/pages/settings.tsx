@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AddressInput } from "@/components/address-input";
 
@@ -71,6 +71,22 @@ export default function Settings() {
   const [state, setState] = useState(user?.state || '');
   const [postalCode, setPostalCode] = useState(user?.postalCode || '');
   const [country, setCountry] = useState(user?.country || 'United States');
+
+  // Sync form fields once the user's profile finishes loading/refetching
+  // (e.g. on a hard page refresh the query resolves after this component mounts).
+  useEffect(() => {
+    if (!user) return;
+    setSelectedAvatar(user.avatar || 'cat');
+    setFirstName(user.firstName || '');
+    setLastName(user.lastName || '');
+    setPhone(user.phone || '');
+    setAddressLine1(user.addressLine1 || '');
+    setAddressLine2(user.addressLine2 || '');
+    setCity(user.city || '');
+    setState(user.state || '');
+    setPostalCode(user.postalCode || '');
+    setCountry(user.country || 'United States');
+  }, [user]);
 
   const updateAvatarMutation = useMutation({
     mutationFn: async (avatar: string) => {
