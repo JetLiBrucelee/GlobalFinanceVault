@@ -2,8 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function Business() {
+  useSeo({
+    title: "Business Banking - Corvenza Capital Finance",
+    description: "Comprehensive business banking solutions from Corvenza Capital Finance, including business checking, merchant services, and cash management for US companies.",
+    path: "/business",
+  });
   const [, setLocation] = useLocation();
 
   return (

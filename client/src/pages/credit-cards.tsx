@@ -2,8 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function CreditCards() {
+  useSeo({
+    title: "Credit Cards - Rewards & Cashback - Corvenza Capital Finance",
+    description: "Explore Corvenza Capital Finance's credit cards with cashback rewards and travel benefits, available to US customers.",
+    path: "/credit-cards",
+  });
   const [, setLocation] = useLocation();
 
   return (

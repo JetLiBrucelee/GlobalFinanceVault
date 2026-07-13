@@ -2,8 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function BillPay() {
+  useSeo({
+    title: "Bill Pay - Corvenza Capital Finance",
+    description: "Pay your bills securely and efficiently online with Corvenza Capital Finance's bill pay service.",
+    path: "/bill-pay",
+  });
   const [, setLocation] = useLocation();
 
   return (

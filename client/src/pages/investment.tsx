@@ -2,8 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function Investment() {
+  useSeo({
+    title: "Investment Services - Corvenza Capital Finance",
+    description: "Grow your wealth with Corvenza Capital Finance's investment solutions and expert guidance for US customers.",
+    path: "/investment",
+  });
   const [, setLocation] = useLocation();
 
   return (

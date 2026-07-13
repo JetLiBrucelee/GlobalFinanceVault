@@ -14,6 +14,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { CreditCard, PiggyBank, Building2, ArrowLeft, CheckCircle2 } from "lucide-react";
 import bgPattern from "@assets/banking-background.jpg";
 import { AddressInput } from "@/components/address-input";
+import { useSeo } from "@/hooks/use-seo";
 
 const accountOpeningSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -39,6 +40,11 @@ const accountOpeningSchema = z.object({
 type AccountOpeningForm = z.infer<typeof accountOpeningSchema>;
 
 export default function OpenAccount() {
+  useSeo({
+    title: "Open a Bank Account Online - Corvenza Capital Finance",
+    description: "Open a checking, savings, or business account online in minutes with Corvenza Capital Finance, a secure US bank.",
+    path: "/open-account",
+  });
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [isSuccess, setIsSuccess] = useState(false);

@@ -2,8 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function Loans() {
+  useSeo({
+    title: "Personal, Home & Auto Loans - Corvenza Capital Finance",
+    description: "Compare personal loans, home loans, and auto loans at competitive rates with Corvenza Capital Finance, a secure US online bank.",
+    path: "/loans",
+  });
   const [, setLocation] = useLocation();
 
   return (

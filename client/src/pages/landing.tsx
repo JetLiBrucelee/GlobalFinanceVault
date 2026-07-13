@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSeo } from "@/hooks/use-seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +47,11 @@ import coinsStackIcon3D from "@assets/stock_images/3d_realistic_coins_s_38701241
 import plantGrowthIcon3D from "@assets/stock_images/3d_realistic_plant_p_1007f9cd.jpg";
 
 export default function Landing() {
+  useSeo({
+    title: "Corvenza Capital Finance - Secure Online Banking in the United States",
+    description: "Open a checking or savings account, get a rewards credit card, and manage transfers, bill pay, loans, and investments with Corvenza Capital Finance's secure US online banking.",
+    path: "/",
+  });
   const [, setLocation] = useLocation();
   const [showScamAlerts, setShowScamAlerts] = useState(false);
   

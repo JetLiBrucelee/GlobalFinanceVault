@@ -2,8 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Phone, Mail, MessageCircle } from "lucide-react";
 import { useLocation } from "wouter";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function Support() {
+  useSeo({
+    title: "Customer Support - Corvenza Capital Finance",
+    description: "Get help from Corvenza Capital Finance's 24/7 customer support by phone, email, or live chat.",
+    path: "/support",
+  });
   const [, setLocation] = useLocation();
 
   return (
