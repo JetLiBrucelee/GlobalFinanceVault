@@ -83,7 +83,7 @@ export function ProfessionalFooter() {
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="h-3 w-3" />
-                support@corvenzacapitalfinance.com
+                customersupport@corvenzacapitalfianance.com
               </p>
               <p className="mt-3 font-medium text-foreground">Routing Information:</p>
               <p>Routing Number: 021000021</p>
