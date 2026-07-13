@@ -51,6 +51,17 @@ export function AddressInput({
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [lookupError, setLookupError] = useState<string | null>(null);
 
+  // The country selector currently only supports "United States". If the
+  // caller passes an empty/unset value, the <select> below will visually
+  // show "United States" as selected (it's the only option) without ever
+  // firing a change event, silently leaving the underlying form state
+  // empty. Proactively sync the value here so it can't be saved as blank.
+  useEffect(() => {
+    if (showCountry && onCountryChange && !country) {
+      onCountryChange("United States");
+    }
+  }, [showCountry, onCountryChange, country]);
+
   useEffect(() => {
     const lookupPostalCode = async () => {
       if (!postalCode || postalCode.length < 4) {

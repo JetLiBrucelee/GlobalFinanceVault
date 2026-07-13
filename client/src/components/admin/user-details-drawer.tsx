@@ -95,7 +95,7 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
         city: userDetails.user.city || "",
         state: userDetails.user.state || "",
         postalCode: userDetails.user.postalCode || "",
-        country: userDetails.user.country || "",
+        country: userDetails.user.country || "United States",
       });
       setEditingProfile(true);
     }
