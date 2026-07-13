@@ -69,7 +69,6 @@ export default function Transfers() {
     description: '',
     // External transfer fields
     routingNumber: '',
-    bsb: '',
     beneficiaryName: '',
     beneficiaryAddress: '',
     // Wire transfer fields
@@ -109,8 +108,7 @@ export default function Transfers() {
       if (method === 'external') {
         transferDetails = {
           routingNumber: data.routingNumber || undefined,
-          bsb: data.bsb || undefined,
-          swiftCode: data.swiftCode || undefined, // For NZ domestic transfers
+          swiftCode: data.swiftCode || undefined,
           beneficiaryName: data.beneficiaryName,
           beneficiaryAddress: data.beneficiaryAddress,
         };
@@ -144,7 +142,6 @@ export default function Transfers() {
         amount: '',
         description: '',
         routingNumber: '',
-        bsb: '',
         beneficiaryName: '',
         beneficiaryAddress: '',
         swiftCode: '',
