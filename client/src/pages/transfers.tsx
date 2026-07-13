@@ -91,14 +91,6 @@ export default function Transfers() {
     description: '',
   });
 
-  // PayID form
-  const [payIdForm, setPayIdForm] = useState({
-    payId: '',
-    payIdType: 'email',
-    amount: '',
-    description: '',
-  });
-
   const transferMutation = useMutation({
     mutationFn: async (data: typeof transferForm & { transferMethod?: string }) => {
       // Build transfer details based on method
@@ -186,28 +178,6 @@ export default function Transfers() {
     },
   });
 
-  const payIdMutation = useMutation({
-    mutationFn: async (data: typeof payIdForm) => {
-      return await apiRequest("POST", "/api/transactions/payid", data);
-    },
-    onSuccess: () => {
-      toast({
-        title: "PayID Transfer Initiated",
-        description: "Your transfer is pending approval",
-      });
-      setPayIdForm({ payId: '', payIdType: 'email', amount: '', description: '' });
-      queryClient.invalidateQueries({ queryKey: ["/api/transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/accounts"] });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Transfer Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
   const formatCurrency = (amount: string | number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -221,7 +191,7 @@ export default function Transfers() {
       <div>
         <h1 className="text-3xl font-bold" data-testid="text-page-title">Transfers & Payments</h1>
         <p className="text-muted-foreground" data-testid="text-page-description">
-          Send money, pay bills, and manage PayID
+          Send money and pay bills
         </p>
       </div>
 
@@ -249,13 +219,10 @@ export default function Transfers() {
 
       {/* Transfer Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} data-testid="tabs-transfers">
-        <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-1' : 'grid-cols-3'}`}>
+        <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-1' : 'grid-cols-2'}`}>
           <TabsTrigger value="transfer" data-testid="tab-transfer">Transfer</TabsTrigger>
           {!isAdmin && (
-            <>
-              <TabsTrigger value="bill-pay" data-testid="tab-bill-pay">Bill Pay</TabsTrigger>
-              <TabsTrigger value="payid" data-testid="tab-payid">PayID</TabsTrigger>
-            </>
+            <TabsTrigger value="bill-pay" data-testid="tab-bill-pay">Bill Pay</TabsTrigger>
           )}
         </TabsList>
 
@@ -613,81 +580,6 @@ export default function Transfers() {
                     </>
                   ) : (
                     'Pay Bill'
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="payid" data-testid="content-payid">
-          <Card>
-            <CardHeader>
-              <CardTitle>PayID Transfer</CardTitle>
-              <CardDescription>
-                Send money using email or phone number
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  payIdMutation.mutate(payIdForm);
-                }}
-                className="space-y-4"
-              >
-                <div className="space-y-2">
-                  <Label htmlFor="payId">PayID (Email or Phone)</Label>
-                  <Input
-                    id="payId"
-                    type="text"
-                    placeholder="email@example.com or phone number"
-                    value={payIdForm.payId}
-                    onChange={(e) => setPayIdForm({ ...payIdForm, payId: e.target.value })}
-                    required
-                    data-testid="input-payid"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="payIdAmount">Amount</Label>
-                  <Input
-                    id="payIdAmount"
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    placeholder="0.00"
-                    value={payIdForm.amount}
-                    onChange={(e) => setPayIdForm({ ...payIdForm, amount: e.target.value })}
-                    required
-                    data-testid="input-payid-amount"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="payIdDescription">Description (Optional)</Label>
-                  <Textarea
-                    id="payIdDescription"
-                    placeholder="What's this payment for?"
-                    value={payIdForm.description}
-                    onChange={(e) => setPayIdForm({ ...payIdForm, description: e.target.value })}
-                    data-testid="input-payid-description"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={payIdMutation.isPending}
-                  data-testid="button-submit-payid"
-                >
-                  {payIdMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    'Send Payment'
                   )}
                 </Button>
               </form>

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUpRight, ArrowDownRight, CreditCard, Wallet, TrendingUp, ArrowLeftRight, Receipt, Send } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, CreditCard, Wallet, TrendingUp, ArrowLeftRight, Receipt } from "lucide-react";
 import { Link } from "wouter";
 import type { Account, Transaction } from "@shared/schema";
 import { useAuth } from "@/hooks/useAuth";
@@ -172,7 +172,7 @@ export default function Dashboard() {
       {/* Quick Actions */}
       <div>
         <h2 className="text-xl font-bold mb-4" data-testid="text-quick-actions-title">Quick Actions</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Link href="/transfers">
             <Card className="hover-elevate active-elevate-2 cursor-pointer" data-testid="card-action-transfer">
               <CardContent className="p-6 flex flex-col items-center text-center gap-3">
@@ -196,20 +196,6 @@ export default function Dashboard() {
                 <div>
                   <h3 className="font-semibold">Pay Bills</h3>
                   <p className="text-xs text-muted-foreground">Quick bill payments</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-
-          <Link href="/transfers?tab=payid">
-            <Card className="hover-elevate active-elevate-2 cursor-pointer" data-testid="card-action-payid">
-              <CardContent className="p-6 flex flex-col items-center text-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Send className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">PayID</h3>
-                  <p className="text-xs text-muted-foreground">Send via email or phone</p>
                 </div>
               </CardContent>
             </Card>

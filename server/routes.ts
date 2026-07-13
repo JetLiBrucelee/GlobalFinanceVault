@@ -478,52 +478,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/transactions/payid', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      
-      // Prevent admins from using PayID
-      if (req.user.isAdmin) {
-        return res.status(403).json({ message: "Admins cannot use PayID feature" });
-      }
-      
-      const { payId, amount, description } = req.body;
-
-      if (!payId || !amount) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
-      const userAccounts = await storage.getAccountsByUserId(userId);
-      if (userAccounts.length === 0) {
-        return res.status(400).json({ message: "No account found" });
-      }
-
-      const fromAccount = userAccounts[0];
-
-      if (Number(fromAccount.balance) < Number(amount)) {
-        return res.status(400).json({ message: "Insufficient funds" });
-      }
-
-      // Look up PayID
-      const payIdRecord = await storage.getPayIdByValue(payId);
-
-      const transaction = await storage.createTransaction({
-        fromAccountId: fromAccount.id,
-        toAccountId: payIdRecord?.accountId || null,
-        amount: amount.toString(),
-        type: "payid",
-        status: "pending",
-        description: description || `PayID payment to ${payId}`,
-        reference: payId,
-      });
-
-      res.json(transaction);
-    } catch (error) {
-      console.error("Error creating PayID payment:", error);
-      res.status(500).json({ message: "Failed to create PayID payment" });
-    }
-  });
-
   // ======
   // ADMIN ROUTES
   // ======
