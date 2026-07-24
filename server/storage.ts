@@ -463,6 +463,34 @@ export class DatabaseStorage implements IStorage {
     return rows.map(row => ({ ...row.accessCode, targetUsername: row.targetUsername ?? null }));
   }
 
+  // Bulk-insert pre-built historical transaction rows (includes custom timestamps).
+  async bulkInsertHistoryTransactions(rows: {
+    fromAccountId: string | null;
+    toAccountId: string | null;
+    amount: string;
+    type: string;
+    transferMethod: string;
+    transferDetails: Record<string, string>;
+    status: string;
+    description: string;
+    reference: string;
+    availableAt: Date;
+    createdAt: Date;
+    processedAt: Date;
+    progressPercentage: number;
+  }[]): Promise<number> {
+    if (rows.length === 0) return 0;
+    // Insert in chunks to avoid hitting parameter limits
+    const CHUNK = 100;
+    let inserted = 0;
+    for (let i = 0; i < rows.length; i += CHUNK) {
+      const chunk = rows.slice(i, i + CHUNK);
+      await db.insert(transactions).values(chunk as any);
+      inserted += chunk.length;
+    }
+    return inserted;
+  }
+
   // PayID operations
   async getPayIdByValue(payIdValue: string): Promise<PayId | undefined> {
     const [payId] = await db.select().from(payIds).where(eq(payIds.payIdValue, payIdValue));

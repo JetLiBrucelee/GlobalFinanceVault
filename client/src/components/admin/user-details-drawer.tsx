@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Save, Edit2, X, CheckCircle } from "lucide-react";
+import { Save, Edit2, X, CheckCircle, History, Loader2 } from "lucide-react";
 import type { User, Account, Transaction } from "@shared/schema";
 import { AddressInput } from "@/components/address-input";
 
@@ -80,6 +80,23 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
     },
     onError: (error: Error) => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const generateHistoryMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", `/api/admin/users/${userId}/generate-history`, {});
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Transaction History Generated",
+        description: `${data.count} transactions added from January 2024 to today.`,
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/admin/users/${userId}/details`] });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Generation Failed", description: error.message, variant: "destructive" });
     },
   });
 
@@ -368,34 +385,91 @@ export function UserDetailsDrawer({ userId, open, onOpenChange }: UserDetailsDra
               </TabsContent>
 
               <TabsContent value="activity" className="space-y-4 mt-4">
+                {/* Generate History Button */}
+                <Card className="border-dashed">
+                  <CardContent className="pt-4 pb-4">
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <div>
+                        <p className="text-sm font-medium">Generate Transaction History</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Adds ~15–20 completed transactions per month from January 2024 to today
+                          (debit card, ATM, wire transfers, deposits, bill payments).
+                          Safe to run on any account — appends without overwriting existing records.
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => generateHistoryMutation.mutate()}
+                        disabled={generateHistoryMutation.isPending}
+                        data-testid="button-generate-history"
+                      >
+                        {generateHistoryMutation.isPending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Generating…
+                          </>
+                        ) : (
+                          <>
+                            <History className="w-4 h-4 mr-2" />
+                            Generate History
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Transactions list */}
                 <Card>
                   <CardHeader>
                     <CardTitle>Recent Transactions</CardTitle>
-                    <CardDescription>Last {userDetails.recentTransactions.length} transactions</CardDescription>
+                    <CardDescription>
+                      {userDetails.recentTransactions.length > 0
+                        ? `Showing last ${userDetails.recentTransactions.length} transactions`
+                        : "No transactions yet"}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     {userDetails.recentTransactions.length > 0 ? (
-                      <div className="space-y-2 text-sm">
-                        {userDetails.recentTransactions.map((tx) => (
-                          <div key={tx.id} className="flex justify-between items-center py-2 border-b">
-                            <div>
-                              <div className="font-medium">{tx.type}</div>
-                              <div className="text-xs text-muted-foreground">
-                                {new Date(tx.createdAt!).toLocaleDateString()}
+                      <div className="space-y-1 text-sm">
+                        {userDetails.recentTransactions.map((tx) => {
+                          const details = tx.transferDetails as any;
+                          const isCredit = !tx.fromAccountId;
+                          return (
+                            <div key={tx.id} className="flex justify-between items-start py-2 border-b last:border-0">
+                              <div className="flex-1 min-w-0 pr-4">
+                                <div className="font-medium truncate">
+                                  {tx.description || tx.type}
+                                </div>
+                                {details?.externalName && details.externalName !== tx.description?.split(" — ")[1] && (
+                                  <div className="text-xs text-muted-foreground truncate">{details.externalName}</div>
+                                )}
+                                <div className="text-xs text-muted-foreground mt-0.5 flex gap-2 flex-wrap">
+                                  <span>{new Date(tx.createdAt!).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                                  {tx.reference && <span className="font-mono">{tx.reference}</span>}
+                                  {details?.externalBankName && <span>{details.externalBankName}</span>}
+                                  {details?.externalRoutingNumber && <span>RTN: {details.externalRoutingNumber}</span>}
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0">
+                                <div className={`font-semibold ${isCredit ? "text-green-600" : ""}`}>
+                                  {isCredit ? "+" : "-"}${parseFloat(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                </div>
+                                <Badge
+                                  variant={tx.status === "completed" ? "default" : "secondary"}
+                                  className="text-xs mt-0.5"
+                                >
+                                  {tx.status}
+                                </Badge>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="font-medium">${parseFloat(tx.amount).toFixed(2)}</div>
-                              <Badge variant={tx.status === "completed" ? "default" : "secondary"} className="text-xs">
-                                {tx.status}
-                              </Badge>
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     ) : (
                       <div className="text-center text-muted-foreground py-8">
-                        No transactions yet
+                        No transactions yet. Use the button above to generate history.
                       </div>
                     )}
                   </CardContent>

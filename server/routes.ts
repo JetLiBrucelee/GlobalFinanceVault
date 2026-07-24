@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage, generateAccountNumber, generateRoutingNumber, generateSwiftCode, generateCardNumber, generateCVV, generateCardExpiry, generateAccessCode, generateVerificationCode } from "./storage";
 import { setupAuth, isAuthenticated, isAdmin, requiresAccessCode } from "./auth";
 import { detectCardBrand, generateCardNumberWithBrand } from "./utils/cardBrands";
+import { buildTransactionHistory } from "./utils/historyGenerator";
 
 // Currency codes (USA only)
 const REGION_CURRENCIES: Record<string, { code: string; symbol: string; name: string }> = {
@@ -1011,6 +1012,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching access codes:", error);
       res.status(500).json({ message: "Failed to fetch access codes" });
+    }
+  });
+
+  app.post('/api/admin/users/:userId/generate-history', isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+
+      // Verify the user exists and has an account
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const userAccounts = await storage.getAccountsByUserId(userId);
+      if (userAccounts.length === 0) {
+        return res.status(400).json({ message: "User has no account. Create an account for this user first." });
+      }
+
+      const account = userAccounts[0];
+
+      // Build synthetic history rows (Jan 2024 → now)
+      const rows = buildTransactionHistory(account.id);
+
+      // Bulk-insert
+      const count = await storage.bulkInsertHistoryTransactions(rows);
+
+      res.json({ message: `Successfully generated ${count} transactions`, count });
+    } catch (error) {
+      console.error("Error generating transaction history:", error);
+      res.status(500).json({ message: "Failed to generate transaction history" });
     }
   });
 
