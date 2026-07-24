@@ -78,15 +78,16 @@ export default function AdminTransactions() {
   };
 
   const getStatusBadge = (status: string) => {
-    const config: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; icon?: any }> = {
-      completed: { variant: "default", icon: CheckCircle },
-      "in-progress": { variant: "secondary", icon: Clock },
-      pending: { variant: "outline", icon: AlertCircle },
-      declined: { variant: "destructive" },
+    const config: Record<string, { className: string; icon?: any }> = {
+      completed: { className: "bg-green-500/20 text-green-400 border-green-500/30", icon: CheckCircle },
+      "in-progress": { className: "bg-amber-500/20 text-amber-400 border-amber-500/30", icon: Clock },
+      pending: { className: "bg-amber-500/20 text-amber-400 border-amber-500/30", icon: AlertCircle },
+      declined: { className: "bg-red-500/20 text-red-400 border-red-500/30" },
+      failed: { className: "bg-red-500/20 text-red-400 border-red-500/30" },
     };
-    const { variant, icon: Icon } = config[status] || { variant: "secondary" };
+    const { className, icon: Icon } = config[status] || { className: "bg-amber-500/20 text-amber-400 border-amber-500/30" };
     return (
-      <Badge variant={variant}>
+      <Badge variant="outline" className={className}>
         {Icon && <Icon className="w-3 h-3 mr-1" />}
         {status}
       </Badge>

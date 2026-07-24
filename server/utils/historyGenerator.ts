@@ -256,7 +256,8 @@ function generateMonthTransactions(
   // 3. Outgoing wire transfers
   for (let i = 0; i < targets.wireOut; i++) {
     const cp = randFrom(WIRE_COUNTERPARTIES);
-    const amt = randAmount(800, 12000);
+    const isLargeWire = Math.random() < 0.15;
+    const amt = isLargeWire ? randAmount(50000, 250000) : randAmount(800, 12000);
     push({
       fromAccountId: accountId,
       toAccountId: null,
@@ -281,7 +282,8 @@ function generateMonthTransactions(
     const sender = randFrom(INCOMING_TRANSFER_SENDERS);
     // Payroll and tax refunds get larger amounts
     const isPayroll = sender.name.includes("Payroll") || sender.name.includes("IRS") || sender.name.includes("Tax");
-    const amt = isPayroll ? randAmount(1200, 4800) : randAmount(50, 1500);
+    const isLargeDeposit = !isPayroll && Math.random() < 0.15;
+    const amt = isPayroll ? randAmount(1200, 4800) : isLargeDeposit ? randAmount(25000, 250000) : randAmount(50, 1500);
     const method = isPayroll ? "ACH" : randFrom(["ACH", "Domestic Wire", "Internal Transfer"]);
     push({
       fromAccountId: null,

@@ -148,7 +148,7 @@ export default function PendingTransactions() {
                         {transaction.description || 'N/A'}
                       </TableCell>
                       <TableCell data-testid={`cell-status-${index}`}>
-                        <Badge variant="secondary">
+                        <Badge variant="outline" className="bg-amber-500/20 text-amber-400 border-amber-500/30">
                           <AlertCircle className="w-3 h-3 mr-1" />
                           Pending
                         </Badge>

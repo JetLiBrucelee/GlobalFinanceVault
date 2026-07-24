@@ -31,13 +31,16 @@ export default function Statements() {
   };
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive"> = {
-      completed: "default",
-      approved: "default",
-      pending: "secondary",
-      declined: "destructive",
+    const classes: Record<string, string> = {
+      completed: "bg-green-600 text-white border-0",
+      approved:  "bg-green-600 text-white border-0",
+      "in-progress": "bg-amber-600 text-white border-0",
+      pending:   "bg-amber-600 text-white border-0",
+      declined:  "bg-red-700 text-white border-0",
+      failed:    "bg-red-700 text-white border-0",
+      rejected:  "bg-red-700 text-white border-0",
     };
-    return <Badge variant={variants[status] || "secondary"}>{status}</Badge>;
+    return <Badge className={classes[status] ?? "bg-slate-500 text-white border-0"}>{status}</Badge>;
   };
 
   const getTransactionIcon = (fromAccountId: string | null) => {

@@ -56,13 +56,19 @@ export default function Dashboard() {
   };
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive"> = {
-      completed: "default",
-      approved: "default",
-      pending: "secondary",
-      declined: "destructive",
+    const classNames: Record<string, string> = {
+      completed: "bg-green-500/20 text-green-400 border-green-500/30",
+      approved: "bg-green-500/20 text-green-400 border-green-500/30",
+      pending: "bg-amber-500/20 text-amber-400 border-amber-500/30",
+      "in-progress": "bg-amber-500/20 text-amber-400 border-amber-500/30",
+      declined: "bg-red-500/20 text-red-400 border-red-500/30",
+      failed: "bg-red-500/20 text-red-400 border-red-500/30",
     };
-    return <Badge variant={variants[status] || "secondary"} data-testid={`badge-status-${status}`}>{status}</Badge>;
+    return (
+      <Badge variant="outline" className={classNames[status] || "bg-amber-500/20 text-amber-400 border-amber-500/30"} data-testid={`badge-status-${status}`}>
+        {status}
+      </Badge>
+    );
   };
 
   const getTransactionIcon = (type: string, fromAccountId: string | null) => {
