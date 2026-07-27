@@ -137,17 +137,38 @@ function buildReference(date: Date, suffix?: string): string {
   return `TXN${y}${m}${d}-${tail}`;
 }
 
-/** Spread a timestamp randomly within the given calendar month. */
+/** Spread a timestamp randomly within the given calendar month.
+ *  For the current (incomplete) month, caps day/time to strictly before now
+ *  so no future-dated transactions are ever generated.
+ */
 function randomDateInMonth(year: number, month: number, usedDays: Set<number>): Date {
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  // Try to avoid placing two transactions on the same day if possible
+  const now = new Date();
+  const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
+  // Cap to today's day for the current month; full month otherwise
+  const maxDay = isCurrentMonth ? now.getDate() : new Date(year, month + 1, 0).getDate();
+
   let day: number;
   let tries = 0;
   do {
-    day = randInt(1, daysInMonth);
+    day = randInt(1, maxDay);
     tries++;
   } while (usedDays.has(day) && tries < 20);
   usedDays.add(day);
+
+  const isToday = isCurrentMonth && day === now.getDate();
+
+  if (isToday) {
+    // For today, pick a random millisecond strictly before now.
+    // Use a window of up to 8 hours before now, floored at midnight,
+    // so the result is always a past timestamp regardless of server time.
+    const nowMs = now.getTime();
+    const midnightMs = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const windowStart = Math.max(midnightMs, nowMs - 8 * 60 * 60 * 1000);
+    // Ensure at least 1ms of range to avoid degenerate case at midnight
+    const range = Math.max(1, nowMs - windowStart);
+    return new Date(windowStart + Math.floor(Math.random() * range));
+  }
+
   const hour = randInt(8, 21);
   const minute = randInt(0, 59);
   return new Date(year, month, day, hour, minute, randInt(0, 59));

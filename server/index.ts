@@ -3,7 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { db } from "./db";
 import { users, accounts, accessCodes } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
 const app = express();
@@ -48,6 +48,22 @@ async function initializeDatabase() {
       ]).onConflictDoNothing();
 
       log("Database seeded successfully");
+    }
+
+    // One-time fix: clamp any transaction rows whose timestamps are in the future
+    // (can happen when the history generator ran during the current calendar month
+    //  before the day-cap fix was deployed).
+    const clamped = await db.execute(sql`
+      UPDATE transactions
+      SET
+        created_at   = NOW(),
+        processed_at = CASE WHEN processed_at > NOW() THEN NOW() ELSE processed_at END,
+        available_at = CASE WHEN available_at > NOW() THEN NOW() ELSE available_at END
+      WHERE created_at > NOW()
+    `);
+    const rowCount = (clamped as any).rowCount ?? 0;
+    if (rowCount > 0) {
+      log(`Clamped ${rowCount} future-dated transaction row(s) to NOW()`);
     }
   } catch (error: any) {
     log(`Database initialization: ${error.message || 'check skipped'}`);

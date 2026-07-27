@@ -754,7 +754,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount: validAmount,
         type: 'admin_credit',
         status: 'completed',
-        description: 'Admin credit - Account funded',
+        description: 'Corvenza Capital Credit - Account funded',
         createdBy: adminUserId,
         availableAt: new Date(),
       });
@@ -877,7 +877,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount: amount.toString(),
         type: 'admin_credit',
         status: availabilityOption === 'instant' ? 'completed' : 'pending',
-        description: description || 'Admin credit',
+        description: description || 'Corvenza Capital Credit',
         createdBy: adminUserId,
         availableAt: availableAt,
       });
